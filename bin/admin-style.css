@@ -1,0 +1,76 @@
+/* --- Admin Page Styling --- */
+body, html {
+    height: 100%;
+}
+
+.admin-container {
+    height: 100vh;
+    width: 100%;
+    background-image: url('images/admin-background1.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.admin-title {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    text-align: left;
+}
+
+.admin-title h1 {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 52px;
+    color: #f0f0f0;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.admin-title p {
+    font-size: 18px;
+    color: #e0e0e0;
+    font-style: italic;
+}
+
+.admin-menu {
+    position: absolute;
+    top: 80px; /* Moved down */
+    right: 40px;
+    background-color: #f7f3f0;
+    padding: 40px 50px;
+    border-radius: 5px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.admin-menu ul {
+    list-style-type: none;
+}
+
+.admin-menu li {
+    margin-bottom: 20px;
+}
+
+.admin-menu li:last-child {
+    margin-bottom: 0;
+}
+
+.admin-menu a {
+    display: block;
+    width: 300px;
+    padding: 15px 20px;
+    text-align: center;
+    text-decoration: none;
+    color: #444;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.admin-menu a:hover {
+    background-color: #f9f9f9;
+    border-color: #aaa;
+    transform: translateY(-2px);
+}

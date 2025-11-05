@@ -1,0 +1,34 @@
+/* Basic Reset and Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: #000;
+    overflow-x: hidden; 
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body.page-background {
+    background-color: #f7faff; /* A very light blue/grey */
+}
+
+#frames-section,
+#contact-section,
+#clip-section {
+    display: block !important;  /* Overrides any 'display: flex' */
+    float: none !important;     /* Clears any 'float: left' */
+    width: 100%;                /* Ensures sections are full-width */
+}

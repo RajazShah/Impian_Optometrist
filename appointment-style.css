@@ -1,0 +1,119 @@
+/* --- New Appointment List Styling --- */
+.appointment-page-body {
+    background-image: url('images/admin-background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Times New Roman', Times, serif;
+    margin: 0;
+    padding: 0;
+}
+
+.back-arrow {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    color: #333;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+.back-arrow:hover {
+    background: rgba(255, 255, 255, 1);
+}
+
+.appointments-container {
+    width: 90%;
+    max-width: 900px;
+    background-color: #fdfdfa;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAANElEQVR42mP8/4D/DAxGCTIwMDAwMPB/IAYyEEmc0gQyEEmc0gQyEEmc0gQyEEmc0gQyMCgAALzIHVzVj8bQAAAAAElFTkSuQmCC');
+}
+
+.appointments-container h1 {
+    text-align: center;
+    font-size: 32px;
+    font-weight: normal;
+    letter-spacing: 5px;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.appointments-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.appointments-container th,
+.appointments-container td {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+}
+
+.appointments-container th {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    color: #777;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.appointments-container td {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 18px;
+    color: #444;
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 14px;
+    font-weight: bold;
+}
+.status-pending,
+.status-upcoming {
+    color: #f59e0b;
+}
+.status-confirmed {
+    color: #0284c7;
+}
+.status-completed {
+    color: #16a34a;
+}
+.status-cancelled {
+    color: #ef4444;
+}
+
+.book-new-wrapper {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.btn-book-new {
+    background-color: #000;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+.btn-book-new:hover {
+    background-color: #333;
+}

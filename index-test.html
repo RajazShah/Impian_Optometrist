@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impian Optometrist</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="logo">
+            <h1>IMPIAN OPTOMETRIST</h1>
+            <input type="text" id="searchBox" class="search-box" placeholder="Search products...">
+              <img src="images/search-icon.png" alt="Search Icon" class="search-icon" id="searchToggle">
+        </div>
+
+        <nav class="main-nav">
+            <ul>
+                <li><a href="#">Frames</a></li>
+                <li><a href="#" class="active">Contact Lense</a></li>
+                <li><a href="#">Clip On</a></li>
+            </ul>
+        </nav>
+
+        <div class="user-actions">
+            <a href="login-test.html" class="button">Login/Register</a>
+        </div>
+    </header>
+
+    <main class="hero-section">
+        </main>
+
+        <section id="frames-section" class="frames-container">
+            <h2>FRAMES</h2>
+
+            <div class="slider-wrapper">
+                <a href="#" class="arrow left-arrow">
+                    <img src="images/back-button.png" alt="Previous">
+                </a>
+
+                <div class="product-grid">
+
+                    <div class="product-card">
+                        <img src="images/ray-ban-rx6495.png" alt="Ray-Ban Glasses">
+                        <h3>Ray-Ban RX6495</h3>
+                        <p>RM 276</p>
+                    </div>
+
+                    <div class="product-card">
+                        <img src="images/ralph-ra7158u.png" alt="Ralph Glasses">
+                        <h3>Ralph RA7158U</h3>
+                        <p>RM 230</p>
+                    </div>
+
+                    <div class="product-card">
+                        <img src="images/masuraga.png" alt="Masuraga Glasses">
+                        <h3>Masuraga</h3>
+                        <p>RM 336</p>
+                    </div>
+
+                    <div class="product-card">
+                        <img src="images/Adidas.png" alt="New Frame 4">
+                        <h3>Adidas OR5076</h3>
+                        <p>RM 450</p>
+                    </div>
+
+                    <div class="product-card">
+                        <img src="images/Prada.png" alt="New Frame 5">
+                        <h3>Prada VPR 17W</h3>
+                        <p>RM 420</p>
+                    </div>
+                </div>
+
+                <a href="#" class="arrow right-arrow">
+                    <img src="images/next-button.png" alt="Next">
+                </a>
+            </div>
+        </section>
+
+</body>
+</html>
+
+<script>
+    //Swith between frames, contact lense, clip on
+    const navLinks = document.querySelectorAll('.main-nav ul li a');
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.forEach(link => link.classList.remove('active'));
+            link.classList.add('active');
+        });
+    });
+    
+</script>

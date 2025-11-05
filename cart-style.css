@@ -1,0 +1,210 @@
+/* --- Cart Page Styling --- */
+
+.cart-container {
+    max-width: 1200px;
+    margin: 40px auto; 
+    padding: 0 20px;
+}
+
+.cart-container h1 {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 36px;
+    font-weight: normal;
+    margin-bottom: 30px;
+}
+
+.cart-layout {
+    display: flex;
+    gap: 30px;
+}
+
+.cart-items {
+    flex: 3; 
+}
+
+.cart-items table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.cart-items thead {
+    border-bottom: 2px solid #eee;
+}
+
+.cart-items th {
+    text-align: left;
+    padding-bottom: 15px;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    color: #555;
+}
+
+.cart-items td {
+    padding: 20px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.cart-items td img {
+    width: 100px;
+    height: auto;
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+}
+
+.cart-items td:first-child {
+    width: 120px;
+}
+
+.cart-items strong {
+    font-size: 18px;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.remove-item {
+    font-size: 14px;
+    color: #999;
+    text-decoration: underline;
+    display: block;
+    margin-top: 5px;
+}
+
+.cart-items input[type="number"] {
+    width: 60px;
+    padding: 8px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.order-summary {
+    flex: 1; 
+    background-color: #f9f9f9;
+    padding: 30px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    height: fit-content; 
+}
+
+.order-summary h2 {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 24px;
+    font-weight: normal;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+}
+
+.btn-checkout {
+    width: 100%;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    padding: 15px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 30px;
+}
+
+/* --- Back Link Styling --- */
+.btn-back-shopping {
+    display: inline-block;
+    margin-bottom: 20px; /* Space below the link */
+    font-size: 16px;
+    font-weight: bold;
+    color: #555;
+    text-decoration: none;
+    font-family: Arial, sans-serif;
+}
+
+.btn-back-shopping:hover {
+    text-decoration: underline;
+    color: #000;
+}
+
+.btn-update {
+    background-color: #000;    /* Black background */
+    color: #fff;              /* White text */
+    border: none;
+    padding: 8px 15px;       /* More padding */
+    border-radius: 30px;       /* Fully rounded corners */
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-update:hover {
+    background-color: #333;    /* Dark grey on hover */
+}
+
+.quantity-form {
+    display: flex; 
+    align-items: center;
+    gap: 8px; 
+}
+
+.quantity-input {
+    width: 55px; 
+    padding: 8px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* --- Styling for Shipping Options --- */
+.shipping-options {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.shipping-option {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.shipping-option label {
+    font-size: 16px;
+    color: #4a5568;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.shipping-option input[type="radio"] {
+    /* Style the radio button itself */
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.3s;
+}
+
+.shipping-option input[type="radio"]:checked {
+    border-color: #000; /* Black border when checked */
+    background-color: #fff; /* Keep center white */
+}
