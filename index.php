@@ -27,7 +27,11 @@
     <header class="main-header">
         <div class="logo-search-container"> 
             <h1>IMPIAN OPTOMETRIST</h1>
-            <input type="search" name="search_query" placeholder="Search items..." class="search-box">
+            
+            <form action="search.php" method="GET" class="search-form">
+                <input type="search" name="search_query" placeholder="Search items..." class="search-box">
+            </form>
+
         </div>
         <nav class="main-nav">
             <ul>

@@ -12,7 +12,7 @@ $user_id = $_SESSION['id'];
 
 $appointments = []; 
 
-$sql = "SELECT appointment_date, appointment_time, doctor, status 
+$sql = "SELECT appointment_id, appointment_date, appointment_time, doctor, status 
         FROM customer_appointments 
         WHERE user_id = ? 
         ORDER BY appointment_date DESC";
@@ -61,6 +61,7 @@ mysqli_close($conn);
                     <th>TIME</th>
                     <th>DOCTOR</th>
                     <th>STATUS</th>
+                    <th>ACTION</th>
                 </tr>
             </thead>
             <tbody>
@@ -68,7 +69,7 @@ mysqli_close($conn);
                 if (empty($appointments)): 
                 ?>
                     <tr>
-                        <td colspan="4" style="text-align: center; color: #777;">You have no appointments.</td>
+                        <td colspan="5" style="text-align: center; color: #777;">You have no appointments.</td>
                     </tr>
                 <?php 
                 else: 
@@ -96,7 +97,17 @@ mysqli_close($conn);
                                 ?>
                             </span>
                         </td>
-                    </tr>
+                        
+                        <td class="action-cell">
+                            <?php if (strtolower($appt['status']) == 'upcoming'): ?>
+                                <a href="cancel-appointment.php?id=<?php echo $appt['appointment_id']; ?>" 
+                                   class="btn-cancel"
+                                   onclick="return confirm('Are you sure you want to cancel this appointment?');">
+                                   Cancel
+                                </a>
+                            <?php endif; ?>
+                        </td>
+                        </tr>
                     <?php 
                     endforeach; 
                     ?>

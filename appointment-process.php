@@ -17,7 +17,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $doctor = $_POST['doctor'];
     $reason = $_POST['notes'];
 
-    // --- Check for Double Booking in customer_appointments ---
     $sql_check_customer = "SELECT appointment_id FROM customer_appointments WHERE appointment_date = ? AND appointment_time = ? AND doctor = ?";
     if ($stmt_check_customer = mysqli_prepare($conn, $sql_check_customer)) {
         mysqli_stmt_bind_param($stmt_check_customer, "sss", $appointment_date, $appointment_time, $doctor);
@@ -35,7 +34,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         die("Error checking customer appointments: " . mysqli_error($conn));
     }
 
-    // --- Insert into customer_appointments ---
     $sql_insert_customer = "INSERT INTO customer_appointments (user_id, appointment_date, appointment_time, doctor, reason) VALUES (?, ?, ?, ?, ?)";
     $success_customer = false;
     if ($stmt_insert_customer = mysqli_prepare($conn, $sql_insert_customer)) {
@@ -50,10 +48,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error_customer = mysqli_error($conn);
     }
 
-    // --- Insert into staff_appointments IF Dr. Llana is selected ---
-    $success_staff = true; // Assume success if not Dr. Llana
+    $success_staff = true; 
     if ($doctor === 'Dr. Liana') {
-        $success_staff = false; // Reset flag, needs successful insert
+        $success_staff = false;
         $staff_nric_llana = '940715102384';
 
         $sql_insert_staff = "INSERT INTO staff_appointments (staff_nric, appointment_date, appointment_time, doctor, reason) VALUES (?, ?, ?, ?, ?)";
@@ -70,14 +67,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // --- Final Redirect or Error ---
     mysqli_close($conn);
 
     if ($success_customer && $success_staff) {
-        header("Location: customer-appointment.php"); // Redirect to customer appointment list
+        header("Location: customer-appointment.php");
         exit();
     } else {
-        // Display specific errors if available
         $error_message = "There was an error saving the appointment.";
         if (isset($error_customer)) {
             $error_message .= " Customer error: " . $error_customer;

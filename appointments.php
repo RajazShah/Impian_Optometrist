@@ -39,8 +39,8 @@
                             echo "<td>" . htmlspecialchars($row["appointment_id"]) . "</td>";
                             echo "<td>" . htmlspecialchars($row["staff_nric"]) . "</td>";
                             echo "<td>" . htmlspecialchars($row["doctor"]) . "</td>";
-                            echo "<td>" . htmlspecialchars(date('M d, Y', strtotime($row["appointment_date"]))) . "</td>"; // Format date
-                            echo "<td>" . htmlspecialchars(date('h:i A', strtotime($row["appointment_time"]))) . "</td>"; // Format time
+                            echo "<td>" . htmlspecialchars(date('M d, Y', strtotime($row["appointment_date"]))) . "</td>"; 
+                            echo "<td>" . htmlspecialchars(date('h:i A', strtotime($row["appointment_time"]))) . "</td>"; 
                             echo "<td>" . htmlspecialchars($row["reason"]) . "</td>";
                             echo "<td>" . htmlspecialchars($row["status"]) . "</td>";
                             echo "</tr>";
