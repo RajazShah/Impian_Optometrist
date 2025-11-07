@@ -1,10 +1,8 @@
 <?php
 session_start();
 
-// Get the order ID we saved in the session
 $order_id = isset($_SESSION['last_order_id']) ? $_SESSION['last_order_id'] : null;
 
-// Unset the variable so it doesn't show up again
 unset($_SESSION['last_order_id']);
 ?>
 
@@ -33,7 +31,7 @@ unset($_SESSION['last_order_id']);
             font-family: 'Times New Roman', Times, serif;
             font-size: 32px;
             font-weight: normal;
-            color: #16a34a; /* Green */
+            color: #16a34a; 
             margin-bottom: 20px;
         }
         .success-container p {
