@@ -19,9 +19,9 @@
             </tr>
 
             <?php
-            include '../db_connect.php';
+            include "../db_connect.php";
 
-            $sql = "SELECT * FROM appointments";
+            $sql = "SELECT * FROM customer_appointments";
             $result = $conn->query($sql);
 
             if ($result->num_rows > 0) {
@@ -30,8 +30,8 @@
                     echo "<td>" . $row["appointment_id"] . "</td>";
                     echo "<td>" . $row["user_id"] . "</td>";
                     echo "<td>" . $row["doctor"] . "</td>";
-                    echo "<td>" . $row["date"] . "</td>";
-                    echo "<td>" . $row["time"] . "</td>";
+                    echo "<td>" . $row["appointment_date"] . "</td>";
+                    echo "<td>" . $row["appointment_time"] . "</td>";
                     echo "<td>" . $row["reason"] . "</td>";
                     echo "<td>" . $row["status"] . "</td>";
                     echo "</tr>";
@@ -40,7 +40,7 @@
                 echo "<tr><td colspan='5'>No appointments found</td></tr>";
             }
             ?>
-            
+
         </table>
         <a href="admin_page.php" class="btn-back">&larr; Back to Dashboard</a>
     </div>
