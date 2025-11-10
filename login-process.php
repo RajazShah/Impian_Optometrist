@@ -8,10 +8,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST["email"];
     $password_from_form = $_POST["password"];
 
-    if ($email === "admin@impian.com" && $password_from_form === "admin123") {
-        $_SESSION["loggedin"] = true;
-        $_SESSION["email"] = $email;
-        $_SESSION["role"] = "admin";
+    if ($email === 'admin@impian.com' && $password_from_form === 'admin123') {
+        $_SESSION['loggedin'] = true;
+        $_SESSION['email'] = $email;
+        $_SESSION['role'] = 'admin'; 
         header("Location: admin/admin_page.php");
         exit();
     }
@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $_SESSION["role"] = "staff";
                         mysqli_stmt_close($stmt_staff);
                         mysqli_close($conn);
-                        header("Location: admin/admin_page.php");
+                        header("Location: admin/admin/admin_page.php");
                         exit();
                     }
                 }

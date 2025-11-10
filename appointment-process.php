@@ -16,6 +16,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $appointment_time = $_POST['appointment_time'];
     $doctor = $_POST['doctor'];
     $reason = $_POST['notes'];
+    
+
 
     $sql_check_customer = "SELECT appointment_id FROM customer_appointments WHERE appointment_date = ? AND appointment_time = ? AND doctor = ?";
     if ($stmt_check_customer = mysqli_prepare($conn, $sql_check_customer)) {
@@ -38,37 +40,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $success_customer = false;
     if ($stmt_insert_customer = mysqli_prepare($conn, $sql_insert_customer)) {
         mysqli_stmt_bind_param($stmt_insert_customer, "issss", $user_id, $appointment_date, $appointment_time, $doctor, $reason);
-        if (mysqli_stmt_execute($stmt_insert_customer)) {
-            $success_customer = true;
-        } else {
-            $error_customer = mysqli_stmt_error($stmt_insert_customer);
-        }
+            if (mysqli_stmt_execute($stmt_insert_customer)) {
+                $success_customer = true;
+            } else {
+                $error_customer = mysqli_stmt_error($stmt_insert_customer);
+            }
         mysqli_stmt_close($stmt_insert_customer);
-    } else {
-        $error_customer = mysqli_error($conn);
-    }
+        } else {
+            $error_customer = mysqli_error($conn);
+        }
 
     $success_staff = true; 
     if ($doctor === 'Dr. Liana') {
-        $success_staff = false;
         $staff_nric_llana = '940715102384';
 
-        $sql_insert_staff = "INSERT INTO staff_appointments (staff_nric, appointment_date, appointment_time, doctor, reason) VALUES (?, ?, ?, ?, ?)";
+
+        $sql_insert_staff = "INSERT INTO staff_appointments (user_id, date, time, doctor, reason) VALUES (?, ?, ?, ?, ?)";
+        
         if ($stmt_insert_staff = mysqli_prepare($conn, $sql_insert_staff)) {
+
             mysqli_stmt_bind_param($stmt_insert_staff, "sssss", $staff_nric_llana, $appointment_date, $appointment_time, $doctor, $reason);
+            
             if (mysqli_stmt_execute($stmt_insert_staff)) {
-                $success_staff = true;
+                $success_staff = true; 
             } else {
                 $error_staff = mysqli_stmt_error($stmt_insert_staff);
+                $success_staff = false; 
             }
             mysqli_stmt_close($stmt_insert_staff);
         } else {
             $error_staff = mysqli_error($conn);
+            $success_staff = false; 
         }
     }
 
     mysqli_close($conn);
 
+    // --- Check Success and Redirect ---
     if ($success_customer && $success_staff) {
         header("Location: customer-appointment.php");
         exit();
