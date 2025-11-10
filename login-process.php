@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $_SESSION["role"] = "staff";
                         mysqli_stmt_close($stmt_staff);
                         mysqli_close($conn);
-                        header("Location: admin_page.php");
+                        header("Location: admin/admin_page.php");
                         exit();
                     }
                 }
