@@ -1,12 +1,16 @@
 <?php
-/*include '../db_connect.php';
 session_start();
-if (!isset($_SESSION['loggedin']) || $_SESSION['role'] !== 'admin') {
-    header("Location: index.php");
-    exit();
-} */
+include '../db_connect.php';
 
-// I need to make this system complex
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || !isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    header("Location: ../index.php"); // Redirect to main index if not admin
+    exit();
+}
+
+$admin_name = "Admin";
+if (isset($_SESSION['first_name'])) {
+    $admin_name = $_SESSION['first_name']; 
+}
 ?>
 
 <!DOCTYPE html>
@@ -21,7 +25,9 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['role'] !== 'admin') {
 <body>
     <div class="header-section">
         <h1 class="main-title">IMPIAN OPTOMETRIST DASHBOARD</h1>
-        <p class="tagline">Welcome, Admin</p>
+        
+        <p class="tagline">Welcome, <?php echo htmlspecialchars($admin_name); ?></p>
+        
     </div>
 
         <div class="card-section">
