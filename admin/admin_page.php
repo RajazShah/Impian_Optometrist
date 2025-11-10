@@ -1,10 +1,12 @@
 <?php
-include "../db_connect.php";
+/*include '../db_connect.php';
 session_start();
-if (!isset($_SESSION["loggedin"]) || $_SESSION["role"] !== "admin") {
-    header("Location: admin_page.php");
+if (!isset($_SESSION['loggedin']) || $_SESSION['role'] !== 'admin') {
+    header("Location: index.php");
     exit();
-}
+} */
+
+// I need to make this system complex
 ?>
 
 <!DOCTYPE html>
@@ -19,7 +21,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["role"] !== "admin") {
 <body>
     <div class="header-section">
         <h1 class="main-title">IMPIAN OPTOMETRIST DASHBOARD</h1>
-        <p class="tagline">Welcome, <?php echo $_SESSION["first_name"]; ?></p>
+        <p class="tagline">Welcome, Admin</p>
     </div>
 
         <div class="card-section">
@@ -30,7 +32,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["role"] !== "admin") {
                 <a href="user_details.php" class="action-button">Users</a>
                 <a href="staff_details.php" class="action-button">Staffs</a>
                 <a href="analytics/analytics.php" class="action-button">Analytics</a>
-                <a href="../index.php" class="action-button">Exit</a>
+                <a href="../logout.php" class="action-button">Exit</a>
             </div>
     </div>
 </body>
