@@ -21,10 +21,24 @@
     color: #555;
     margin-bottom: 40px;
 }
-.btn-back:hover {
-    color: #000;
+.btn-add-to-cart {
+    display: inline-block;
+    width: 80%;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 15px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
 }
-
+.btn-add-to-cart:hover {
+    background-color: #333;
+}
 /* This is the new grid layout */
 .all-frames-grid {
     display: flex;
