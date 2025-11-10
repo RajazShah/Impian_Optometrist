@@ -1,136 +1,105 @@
 <?php
-    include "../../db_connect.php";
 
-    if (!isset($conn) || !$conn instanceof mysqli) {
-        die(
-            "Database connection failed. Check '../db_connect.php'. (Expecting a MySQLi connection)"
-        );
-    }
+include "../../db_connect.php";
 
-    function format_rm($value)
-    {
-        return "RM " . number_format($value, 2);
-    }
-    function get_status_span($status)
-    {
-        $status_lower = strtolower($status);
-        $class = "status-" . $status_lower;
-        $text = ucfirst($status_lower);
-
-        if (
-            !in_array($status_lower, [
-                "completed",
-                "pending",
-                "cancelled",
-                "processing",
-            ])
-        ) {
-            $class = "status-other";
-            $text = ucfirst($status_lower);
-        }
-        return "<span class=\"status {$class}\">" .
-            htmlspecialchars($text) .
-            "</span>";
-    }
-
-    $dateFrom = $_GET["from"] ?? "2025-10-09";
-    $dateTo = $_GET["to"] ?? "2025-11-08";
-
-    $stmt = $conn->prepare("
-        SELECT
-            SUM(total_price) AS totalRevenue,
-            COUNT(order_id) AS totalSales
-        FROM orders
-        WHERE DATE(order_date) BETWEEN ? AND ?
-    ");
-    $stmt->bind_param("ss", $dateFrom, $dateTo);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $kpi_data = $result->fetch_assoc();
-
-    $totalRevenue = $kpi_data["totalRevenue"] ?? 0;
-    $totalSales = $kpi_data["totalSales"] ?? 0;
-    $avgOrderValue = $totalSales > 0 ? $totalRevenue / $totalSales : 0;
-
-    $stmt = $conn->prepare("
-        SELECT COUNT(DISTINCT user_id) AS newCustomers
-        FROM orders o1
-        WHERE DATE(o1.order_date) BETWEEN ? AND ?
-        AND NOT EXISTS (
-            SELECT 1 FROM orders o2
-            WHERE o2.user_id = o1.user_id AND DATE(o2.order_date) < ?
-        )
-    ");
-    $stmt->bind_param("sss", $dateFrom, $dateTo, $dateFrom);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $newCustomers = $result->fetch_assoc()["newCustomers"] ?? 0;
-
-    $stmt = $conn->prepare("
-        SELECT
-            DATE_FORMAT(order_date, '%b %d') AS date_label,
-            SUM(total_price) AS daily_revenue
-        FROM orders
-        WHERE DATE(order_date) BETWEEN ? AND ?
-        GROUP BY date_label
-        ORDER BY DATE(order_date) ASC
-    ");
-    $stmt->bind_param("ss", $dateFrom, $dateTo);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $revenue_rows = $result->fetch_all(MYSQLI_ASSOC);
-    $revenueChartData = [
-        "labels" => array_column($revenue_rows, "date_label"),
-        "data" => array_column($revenue_rows, "daily_revenue"),
-    ];
-
-    $stmt = $conn->prepare("
-        SELECT
-            oi.product_id,
-            SUM(oi.quantity) AS units_sold
-        FROM order_items oi
-        JOIN orders o ON oi.order_id = o.order_id
-        WHERE DATE(o.order_date) BETWEEN ? AND ?
-        GROUP BY oi.product_id
-        ORDER BY units_sold DESC
-        LIMIT 5
-    ");
-    $stmt->bind_param("ss", $dateFrom, $dateTo);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $product_rows = $result->fetch_all(MYSQLI_ASSOC);
-    $productsChartData = [
-        "labels" => array_column($product_rows, "product_id"),
-        "data" => array_column($product_rows, "units_sold"),
-    ];
-
-    $stmt = $conn->prepare("
-        SELECT
-            o.order_id,
-            CONCAT(u.first_name, ' ', u.last_name) AS user_name,
-            o.order_date,
-            o.order_status,
-            o.total_price
-        FROM orders o
-        JOIN users u ON o.user_id = u.id
-        WHERE DATE(o.order_date) BETWEEN ? AND ?
-        ORDER BY o.order_date DESC
-        LIMIT 10
-    ");
-    $stmt->bind_param("ss", $dateFrom, $dateTo);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $tableRows = $result->fetch_all(MYSQLI_ASSOC);
-
-    $stmt = $conn->prepare(
-        "SELECT COUNT(order_id) AS total FROM orders WHERE DATE(order_date) BETWEEN ? AND ?",
+if (!isset($conn) || !$conn instanceof mysqli) {
+    die(
+        "Database connection failed. Check '../db_connect.php'. (Expecting a MySQLi connection)"
     );
-    $stmt->bind_param("ss", $dateFrom, $dateTo);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $total_records = $result->fetch_assoc()["total"] ?? 0;
-    $paginationInfo =
-        "Showing " . count($tableRows) . " of {$total_records} results";
+}
+
+function format_rm($value)
+{
+    return "RM " . number_format($value, 2);
+}
+
+$dateFrom = $_GET["from"] ?? "2025-10-09";
+$dateTo = $_GET["to"] ?? "2025-11-08";
+
+$stmt = $conn->prepare("
+    SELECT
+        SUM(PRICE * QTY) AS totalRevenue,
+        COUNT(DISTINCT SALES_ID) AS totalSales,
+        SUM(QTY) AS totalUnitsSold
+    FROM sales
+    WHERE SALES_DATE BETWEEN ? AND ?
+");
+$stmt->bind_param("ss", $dateFrom, $dateTo);
+$stmt->execute();
+$result = $stmt->get_result();
+$kpi_data = $result->fetch_assoc();
+
+$totalRevenue = $kpi_data["totalRevenue"] ?? 0;
+$totalSales = $kpi_data["totalSales"] ?? 0;
+$totalUnitsSold = $kpi_data["totalUnitsSold"] ?? 0;
+$avgOrderValue = $totalSales > 0 ? $totalRevenue / $totalSales : 0;
+
+$stmt = $conn->prepare("
+    SELECT
+        DATE_FORMAT(SALES_DATE, '%b %d') AS date_label,
+        SUM(PRICE * QTY) AS daily_revenue
+    FROM sales
+    WHERE SALES_DATE BETWEEN ? AND ?
+    GROUP BY date_label
+    ORDER BY DATE(SALES_DATE) ASC
+");
+$stmt->bind_param("ss", $dateFrom, $dateTo);
+$stmt->execute();
+$result = $stmt->get_result();
+$revenue_rows = $result->fetch_all(MYSQLI_ASSOC);
+$revenueChartData = [
+    "labels" => array_column($revenue_rows, "date_label"),
+    "data" => array_column($revenue_rows, "daily_revenue"),
+];
+
+$stmt = $conn->prepare("
+    SELECT
+        i.item_name,
+        SUM(s.QTY) AS units_sold
+    FROM sales s
+    JOIN item i ON s.ITEM_ID = i.ITEM_ID
+    WHERE s.SALES_DATE BETWEEN ? AND ?
+    GROUP BY s.ITEM_ID
+    ORDER BY units_sold DESC
+    LIMIT 5
+");
+$stmt->bind_param("ss", $dateFrom, $dateTo);
+$stmt->execute();
+$result = $stmt->get_result();
+$product_rows = $result->fetch_all(MYSQLI_ASSOC);
+$productsChartData = [
+    "labels" => array_column($product_rows, "item_name"),
+    "data" => array_column($product_rows, "units_sold"),
+];
+
+$stmt = $conn->prepare("
+    SELECT
+        s.SALES_ID,
+        s.CUST_NICKNAME,
+        s.SALES_DATE,
+        CONCAT(st.STAFF_FNAME, ' ', st.STAFF_LNAME) AS staff_name,
+        SUM(s.PRICE * s.QTY) AS total_amount
+    FROM sales s
+    JOIN staff st ON s.STAFF_NRIC = st.STAFF_NRIC
+    WHERE s.SALES_DATE BETWEEN ? AND ?
+    GROUP BY s.SALES_ID
+    ORDER BY s.SALES_DATE DESC, s.SALES_TIME DESC
+    LIMIT 10
+");
+$stmt->bind_param("ss", $dateFrom, $dateTo);
+$stmt->execute();
+$result = $stmt->get_result();
+$tableRows = $result->fetch_all(MYSQLI_ASSOC);
+
+$stmt = $conn->prepare(
+    "SELECT COUNT(DISTINCT SALES_ID) AS total FROM sales WHERE SALES_DATE BETWEEN ? AND ?",
+);
+$stmt->bind_param("ss", $dateFrom, $dateTo);
+$stmt->execute();
+$result = $stmt->get_result();
+$total_records = $result->fetch_assoc()["total"] ?? 0;
+$paginationInfo =
+    "Showing " . count($tableRows) . " of {$total_records} results";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -196,9 +165,9 @@
                 ); ?></p>
             </div>
             <div class="card kpi-card">
-                <h3 class="kpi-title">New Customers</h3>
+                <h3 class="kpi-title">Total Units Sold</h3>
                 <p class="kpi-value"><?php echo htmlspecialchars(
-                    $newCustomers,
+                    $totalUnitsSold,
                 ); ?></p>
             </div>
         </div>
@@ -225,10 +194,10 @@
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th>Order ID</th>
+                        <th>Sales ID</th>
                         <th>Customer</th>
                         <th>Date</th>
-                        <th>Status</th>
+                        <th>Staff</th>
                         <th>Amount (RM)</th>
                     </tr>
                 </thead>
@@ -241,22 +210,22 @@
                         <?php foreach ($tableRows as $row): ?>
                             <tr>
                                 <td>#<?php echo htmlspecialchars(
-                                    $row["order_id"],
+                                    $row["SALES_ID"],
                                 ); ?></td>
                                 <td><?php echo htmlspecialchars(
-                                    $row["user_name"],
+                                    $row["CUST_NICKNAME"],
                                 ); ?></td>
                                 <td>
                                     <?php
-                                    $date = new DateTime($row["order_date"]);
+                                    $date = new DateTime($row["SALES_DATE"]);
                                     echo $date->format("d M Y");
                                     ?>
                                 </td>
-                                <td><?php echo get_status_span(
-                                    $row["order_status"],
+                                <td><?php echo htmlspecialchars(
+                                    $row["staff_name"],
                                 ); ?></td>
                                 <td><?php echo htmlspecialchars(
-                                    number_format($row["total_price"], 2),
+                                    number_format($row["total_amount"], 2),
                                 ); ?></td>
                             </tr>
                         <?php endforeach; ?>
@@ -360,7 +329,7 @@
             const initialProductsData = <?php echo json_encode(
                 $productsChartData,
             ); ?>;
-            
+
             const tableData = <?php echo json_encode($tableRows); ?>;
             const dateFrom = "<?php echo htmlspecialchars($dateFrom); ?>";
             const dateTo = "<?php echo htmlspecialchars($dateTo); ?>";
@@ -392,16 +361,16 @@
             }
 
             function exportToCSV(data, filename) {
-                const headers = ["Order ID", "Customer", "Date", "Status", "Amount (RM)"];
+                const headers = ["Sales ID", "Customer", "Date", "Staff", "Amount (RM)"];
                 let csvContent = headers.join(",") + "\n";
 
                 data.forEach(row => {
                     const rowData = [
-                        escapeCSV(`#${row.order_id}`),
-                        escapeCSV(row.user_name),
-                        escapeCSV(formatDateForCSV(row.order_date)),
-                        escapeCSV(row.order_status),
-                        parseFloat(row.total_price).toFixed(2)
+                        escapeCSV(`#${row.SALES_ID}`),
+                        escapeCSV(row.CUST_NICKNAME),
+                        escapeCSV(formatDateForCSV(row.SALES_DATE)),
+                        escapeCSV(row.staff_name),
+                        parseFloat(row.total_amount).toFixed(2)
                     ];
                     csvContent += rowData.join(",") + "\n";
                 });
