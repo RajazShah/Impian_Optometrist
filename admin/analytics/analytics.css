@@ -1,0 +1,134 @@
+:root {
+    --bg-color: #f8f9fa; /* Lighter, standard grey */
+    --card-bg: #ffffff;
+    --primary-color: #0056b3; /* A solid, professional blue */
+    --primary-hover: #004494;
+    --text-color: #333;
+    --title-color: #1a1a1a;
+    --danger-color: #dc3545; /* Professional red */
+    --danger-hover-bg: #fdf2f3;
+    --danger-hover-color: #c82333;
+    --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.05);
+    --shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.1);
+    --border-color: #eef0f2;
+}
+
+body {
+    font-family: "Inter", sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding-top: 3rem; /* Adjusted padding */
+    box-sizing: border-box;
+}
+
+/* --- Header Section --- */
+.header-section {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.main-title {
+    font-size: 2.25rem; /* Slightly smaller */
+    font-weight: 600; /* Less bold */
+    color: var(--title-color);
+    letter-spacing: -0.5px; /* Tighter spacing */
+    text-transform: uppercase; /* More professional title case */
+}
+
+/* --- Card Section --- */
+.card-section {
+    width: 100%;
+    max-width: 900px;
+    padding: 0 1.5rem;
+    box-sizing: border-box;
+}
+
+.action-card {
+    display: grid;
+    /* Responsive grid: 2 columns on medium, 1 on small */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+/* --- Action Button Styling (as Cards) --- */
+.action-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--card-bg);
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 1.05rem; /* Refined font size */
+    font-weight: 500; /* Lighter weight */
+    padding: 1.75rem; /* Adjusted padding */
+    border-radius: 10px; /* Slightly less rounded */
+    box-shadow: var(--shadow-light);
+    /* More subtle transition, removed transform */
+    transition:
+        box-shadow 0.2s ease-in-out,
+        border-color 0.2s ease-in-out;
+    text-align: center;
+    border: 2px solid var(--border-color); /* Subtle border */
+}
+
+.action-button:hover {
+    /* No more 'translateY', just shadow and border */
+    box-shadow: var(--shadow-hover);
+    color: var(--primary-hover);
+    border-color: var(--primary-color); /* Highlight with border */
+}
+
+/* Specific button styling for 'Exit' */
+.action-button[href*="index.php"] {
+    background-color: var(--card-bg);
+    color: var(--danger-color);
+    border-color: var(--border-color);
+}
+
+.action-button[href*="index.php"]:hover {
+    background-color: var(--danger-hover-bg);
+    color: var(--danger-hover-color);
+    border-color: var(--danger-hover-color);
+}
+
+/* --- Responsive Design --- */
+
+/* For tablets and smaller */
+@media (max-width: 768px) {
+    .main-title {
+        font-size: 2rem;
+    }
+
+    .action-card {
+        /* Stack to 1 column on smaller screens */
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .action-button {
+        padding: 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+/* For mobile phones */
+@media (max-width: 480px) {
+    body {
+        padding-top: 2rem;
+    }
+
+    .header-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .card-section {
+        padding: 0 1rem;
+    }
+}
