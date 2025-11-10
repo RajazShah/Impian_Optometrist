@@ -183,7 +183,16 @@ $total = $subtotal + $shipping;
                     </span>
                 </div>
 
-                <button type="submit" class="btn-checkout">Proceed to Checkout</button>
+                <?php if (empty($cart_items)): ?>
+                    <button type="button" class="btn-checkout" 
+                            onclick="alert('Your cart is empty. Please add items before checking out.');" 
+                            style="background-color: #ccc; cursor: not-allowed;">
+                        Proceed to Checkout
+                    </button>
+                <?php else: ?>
+                    <button type="submit" class="btn-checkout">Proceed to Checkout</button>
+                <?php endif; ?>
+
             </form>
 
         </div>
