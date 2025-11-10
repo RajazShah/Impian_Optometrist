@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $_SESSION["staff_ic"] = $staff_nric_from_db;
                         $_SESSION["email"] = $email;
                         $_SESSION["first_name"] = $staff_fname_from_db;
-                        $_SESSION["role"] = "staff";
+                        $_SESSION["role"] = "admin";
                         mysqli_stmt_close($stmt_staff);
                         mysqli_close($conn);
                         header("Location: admin/admin_page.php");
