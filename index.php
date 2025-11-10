@@ -7,6 +7,7 @@
     <title>Impian Optometrist</title>
     
     <link rel="stylesheet" href="header.css">
+    <link rel="stylesheet" href="best-selling.css"> <link rel="stylesheet" href="frames.css">
     <link rel="stylesheet" href="hero.css">
     <link rel="stylesheet" href="frames.css">
     <link rel="stylesheet" href="contact.css">
@@ -72,6 +73,51 @@
     }
     ?>
 
+    <section id="best-selling-section" class="best-selling-container">
+        <h2>BEST SELLERS</h2>
+        
+        <div class="slider-wrapper">
+            <a href="#" id="best-arrow-left" class="arrow left-arrow"><img src="images/back-button.png" alt="Previous"></a>
+            
+            <div class="product-grid-window">
+                <div id="best-grid" class="product-grid">
+                    <?php
+                    $sql_best = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image 
+                                 FROM item 
+                                 WHERE item_name IS NOT NULL AND sales_count > 0
+                                 ORDER BY sales_count DESC
+                                 LIMIT 5";
+                    
+                    $result_best = $conn->query($sql_best);
+
+                    if ($result_best && $result_best->num_rows > 0) {
+                        while ($row = $result_best->fetch_assoc()) {
+                            echo '<div class="product-card">';
+                            echo '    <img src="images/' . htmlspecialchars($row['item_image']) . '" alt="' . htmlspecialchars($row['ITEM_BRAND']) . ' ' . htmlspecialchars($row['item_name']) . '">';
+                            echo '    <h3>' . htmlspecialchars($row['ITEM_BRAND']) . ' ' . htmlspecialchars($row['item_name']) . '</h3>';
+                            echo '    <p>RM ' . htmlspecialchars(number_format($row['ITEM_PRICE'], 0)) . '</p>';
+                            
+                            if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
+                                echo '<form action="add_to_cart.php" method="POST" class="cart-form">';
+                                echo '    <input type="hidden" name="item_id" value="' . htmlspecialchars($row['ITEM_ID']) . '">';
+                                echo '    <button type="submit" class="btn-add-to-cart">Add to Cart</button>';
+                                echo '</form>';
+                            } else {
+                                echo '<a href="#" class="btn-add-to-cart login-trigger">Login to Add</a>';
+                            }
+                            echo '</div>';
+                        }
+                    } else {
+                        echo '<p>No best sellers found yet.</p>';
+                    }
+                    ?>
+                </div>
+            </div>
+            
+            <a href="#" id="best-arrow-right" class="arrow right-arrow"><img src="images/next-button.png" alt="Next"></a>
+        </div>
+    </section>
+
     <section id="frames-section" class="frames-container">
         <h2>FRAMES</h2>
         <a href="all-frames.php" class="btn-see-all">See All</a>
@@ -82,7 +128,8 @@
                     <?php
                     $sql_frames = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image 
                                    FROM item 
-                                   WHERE CATEGORY_ID = 'CAT001' AND item_name IS NOT NULL";
+                                   WHERE CATEGORY_ID = 'CAT001' AND item_name IS NOT NULL
+                                   ORDER BY sales_count DESC, ITEM_BRAND ASC"; 
                     $result_frames = $conn->query($sql_frames);
 
                     if ($result_frames && $result_frames->num_rows > 0) {
@@ -120,7 +167,8 @@
                     <?php
                     $sql_contacts = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image 
                                      FROM item 
-                                     WHERE CATEGORY_ID = 'CAT005' AND item_name IS NOT NULL";
+                                     WHERE CATEGORY_ID = 'CAT005' AND item_name IS NOT NULL
+                                     ORDER BY sales_count DESC, ITEM_BRAND ASC";
                     $result_contacts = $conn->query($sql_contacts);
 
                     if ($result_contacts && $result_contacts->num_rows > 0) {
@@ -156,10 +204,10 @@
             <div class="product-grid-window">
                 <div id="clip-grid" class="product-grid">
                     <?php
-                    // Query for Clip Ons (CAT003)
                     $sql_clipons = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image 
                                     FROM item 
-                                    WHERE CATEGORY_ID = 'CAT003' AND item_name IS NOT NULL";
+                                    WHERE CATEGORY_ID = 'CAT003' AND item_name IS NOT NULL
+                                    ORDER BY sales_count DESC, ITEM_BRAND ASC"; 
                     $result_clipons = $conn->query($sql_clipons);
 
                     if ($result_clipons && $result_clipons->num_rows > 0) {

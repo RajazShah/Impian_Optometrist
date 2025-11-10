@@ -1,4 +1,18 @@
-<?php session_start(); ?>
+<?php
+session_start();
+include 'db_connect.php'; 
+
+$sort_option = $_GET['sort'] ?? 'default';
+
+$order_by = "ORDER BY ITEM_BRAND ASC"; 
+
+if ($sort_option === 'price_asc') {
+    $order_by = "ORDER BY ITEM_PRICE ASC";
+} else if ($sort_option === 'best_selling') {
+    $order_by = "ORDER BY sales_count DESC";
+} 
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,8 +25,10 @@
     <link rel="stylesheet" href="all-frames.css">
     <link rel="stylesheet" href="login.css">
     <link rel="stylesheet" href="register.css">
-    </head>
-<body class="page-background"> <header class="main-header">
+</head>
+<body class="page-background"> 
+    
+    <header class="main-header">
         <div class="logo-search-container"> 
             <h1>IMPIAN OPTOMETRIST</h1>
             <form action="search.php" method="GET" class="search-form">
@@ -51,21 +67,34 @@
         <h1>All Frames</h1>
         <a href="index.php#frames-section" class="btn-back">← Back to Home</a>
 
+        <form action="all-frames.php" method="GET" class="filter-form">
+            <label for="sort-select">Sort by:</label>
+            <select name="sort" id="sort-select" onchange="this.form.submit()">
+                <option value="default" <?php if ($sort_option === 'default') echo 'selected'; ?>>
+                    Default
+                </option>
+                <option value="best_selling" <?php if ($sort_option === 'best_selling') echo 'selected'; ?>>
+                    Best Selling
+                </option>
+                <option value="price_asc" <?php if ($sort_option === 'price_asc') echo 'selected'; ?>>
+                    Price: Low to High
+                </option>
+                <option value="price_desc" <?php if ($sort_option === 'price_desc') echo 'selected'; ?>>
+                    Price: High to Low
+                </option>
+            </select>
+        </form>
+
         <div class="all-frames-grid">
             <?php
-            include 'db_connect.php';
-
-            // BUG FIX 1: Added ITEM_ID to the SQL query
             $sql = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image 
                     FROM item 
-                    WHERE CATEGORY_ID = 'CAT001' 
-                    AND item_name IS NOT NULL";
+                    WHERE CATEGORY_ID = 'CAT001' AND item_name IS NOT NULL
+                    $order_by"; 
             
             $result = $conn->query($sql);
 
             if ($result && $result->num_rows > 0) {
-                
-                // BUG FIX 2: Changed $result_frames to $result
                 while ($row = $result->fetch_assoc()) { 
                     echo '<div class="product-card">';
                     echo '    <img src="images/' . htmlspecialchars($row['item_image']) . '" alt="' . htmlspecialchars($row['ITEM_BRAND']) . ' ' . htmlspecialchars($row['item_name']) . '">';
@@ -77,7 +106,6 @@
                         echo '    <button type="submit" class="btn-add-to-cart">Add to Cart</button>';
                         echo '</form>';
                     } else {
-                        // BUG FIX 3: Use a class for JS, not an ID
                         echo '<a href="#" class="btn-add-to-cart login-trigger">Login to Add</a>';
                     }
                     echo '</div>';

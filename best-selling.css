@@ -1,0 +1,88 @@
+/* --- Frames Section Styling --- */
+#best-selling-section {
+    width: 100%;
+    background-color: #FAF3E0;
+    text-align: center;
+    padding: 100px 20px;
+    position: relative;
+}
+#best-selling-section h2 {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 36px;
+    margin-bottom: 40px;
+    font-weight: normal;
+    letter-spacing: 3px;
+}
+#best-selling-section .btn-see-all {
+    display: block; margin-top: -30px; margin-bottom: 30px;
+    font-family: Arial, sans-serif;
+    text-decoration: none;
+    font-weight: bold;
+    color: #555;
+    transition: color 0.3s ease;
+}
+#best-selling-section .btn-see-all:hover { color: #000; }
+#best-selling-section .slider-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+#best-selling-section .product-grid-window {
+    width: 810px; 
+    overflow: hidden; 
+}
+#best-selling-section .product-grid {
+    display: flex;
+    gap: 30px; 
+    flex-wrap: nowrap; /* Fixes wrapping */
+    justify-content: flex-start; 
+    transition: transform 0.5s ease-in-out;
+}
+#best-selling-section .product-card {
+    background-color: #fff;
+    padding: 20px;
+    width: 250px; 
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid #eee;
+    transition: transform 0.3s ease;
+    flex-shrink: 0; 
+}
+#best-selling-section .product-card:hover { transform: translateY(-5px); }
+#best-selling-section .product-card img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+}
+#best-selling-section .product-card h3 {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+#best-selling-section .product-card p {
+    font-size: 16px;
+    color: #555;
+}
+#best-selling-section .arrow img {
+    width: 40px;
+    height: 40px;
+}
+#best-selling-section .btn-add-to-cart {
+    display: inline-block;
+    width: 80%;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 15px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+#best-selling-section .btn-add-to-cart:hover {
+    background-color: #333;
+}

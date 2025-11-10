@@ -30,6 +30,35 @@ document.addEventListener("DOMContentLoaded", function() {
         };
     }
 
+    /* --- Best Selling Slider Logic (NEW) --- */
+    const gridBest = document.getElementById("best-grid");
+    const leftArrowBest = document.getElementById("best-arrow-left");
+    const rightArrowBest = document.getElementById("best-arrow-right");
+
+    if (gridBest && leftArrowBest && rightArrowBest) {
+        let currentIndex = 0;
+        const cardWidth = 250;
+        const cardGap = 30;
+        const slideDistance = cardWidth + cardGap;
+        const totalCards = gridBest.querySelectorAll(".product-card").length;
+        const visibleCards = 3;
+
+        rightArrowBest.onclick = function(event) {
+            event.preventDefault();
+            if (currentIndex < totalCards - visibleCards) {
+                currentIndex++;
+                gridBest.style.transform = `translateX(-${currentIndex * slideDistance}px)`;
+            }
+        };
+        leftArrowBest.onclick = function(event) {
+            event.preventDefault();
+            if (currentIndex > 0) {
+                currentIndex--;
+                gridBest.style.transform = `translateX(-${currentIndex * slideDistance}px)`;
+            }
+        };
+    }
+
     /* --- Contact Lense Slider Logic --- */
     const gridContact = document.getElementById("contact-grid");
     const leftArrowContact = document.getElementById("contact-arrow-left");
