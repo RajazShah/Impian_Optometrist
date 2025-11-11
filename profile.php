@@ -59,7 +59,11 @@ mysqli_close($conn);
 <body>
 
     <header class="main-header">
-        <div class="logo"><h1>IMPIAN OPTOMETRIST</h1><input type="search" name="search_query" placeholder="Search frames..." class="search-box"></div>
+        <div class="logo"><h1>IMPIAN OPTOMETRIST</h1>
+        <form action="search.php" method="GET" class="search-form">
+                <input type="search" name="search_query" placeholder="Search items..." class="search-box">
+            </form>
+    </div>
         <nav class="main-nav"><ul><li><a href="index.php#frames-section">Frames</a></li><li><a href="index.php#contact-section">Contact Lense</a></li><li><a href="index.php#clip-section">Clip On</a></li></ul></nav>
         <div class="user-actions"><?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) { ?><div class="user-icons-box"><a href="customer-appointment.php" title="Appointment"><img src="images/appointment-icon.png" alt="Appointment"></a><a href="cart.php" title="Cart"><img src="images/bag-icon.png" alt="Cart"></a><div class="profile-dropdown"><a href="#" id="user-icon-link" title="Profile"><img src="images/user-icon.png" alt="User Profile"></a><div class="dropdown-content"><a href="profile.php">My Profile</a><a href="logout.php">Sign Out</a></div></div></div><?php } else { ?><a href="#" id="login-link" class="login-signup-link">Login / Sign Up</a><?php } ?></div>
     </header>

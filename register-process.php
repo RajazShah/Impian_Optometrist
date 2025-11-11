@@ -17,6 +17,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
 
+    if(strlen($first_name) > 7 || strlen($first_name) < 40){
+        echo "<script>alert('First name must be between 7 and 40 characters.'); window.history.back();</script>";
+        exit();
+    }
+
+    if(strlen($last_name) > 7 || strlen($last_name) < 40){
+        echo "<script>alert('Last name must be between 7 and 40 characters.'); window.history.back();</script>";
+        exit();
+    }
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo "<script>alert('Please enter a valid email address.'); window.history.back();</script>";
+        exit();
+    }
+
+    $phone_regex = "/^(\+|0)[0-9\s-]{9,}$/";
+    if (!empty($phone_number) && !preg_match($phone_regex, $phone_number)) {
+        echo "<script>alert('Please enter a valid phone number (e.g., +60 12-345 6789 or 012-345 6789).'); window.history.back();</script>";
+        exit();
+    }
+
+    if (strlen($password) < 5 || strlen($password) > 15) {
+        echo "<script>alert('Password must be between 5 and 15 characters.'); window.history.back();</script>";
+        exit();
+    }
 
     if ($password !== $confirm_password) {
         echo "<script>alert('Passwords do not match!'); window.history.back();</script>";

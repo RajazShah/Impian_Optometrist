@@ -34,14 +34,15 @@ if (!$user) {
     
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="header.css">
-    <link rel="stylesheet" href="book-appointment-style.css"> <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="book-appointment-style.css"> 
+    <link rel="stylesheet" href="login.css">
     <link rel="stylesheet" href="register.css">
 </head>
 <body class="page-background">
 
     <header class="main-header">
         <div class="logo-search-container"> 
-            <h1>IMPIAN OPTOMETRIST</h1>
+            <h1>IMPIAN Optometrist</h1>
             <input type="search" name="search_query" placeholder="Search items..." class="search-box">
         </div>
         <nav class="main-nav">
@@ -82,22 +83,37 @@ if (!$user) {
                 <div class="form-row">
                     <div class="input-group">
                         <label for="first_name">First Name</label>
-                        <input type="text" id="first_name" name="first_name" value="<?php echo htmlspecialchars($user['first_name']); ?>" required>
+                        <input type="text" id="first_name" name="first_name" 
+                               value="<?php echo htmlspecialchars($user['first_name']); ?>" 
+                               required 
+                               minlength="7" 
+                               maxlength="40" 
+                               title="Must be between 7 and 40 characters">
                     </div>
                     <div class="input-group">
                         <label for="last_name">Last Name</label>
-                        <input type="text" id="last_name" name="last_name" value="<?php echo htmlspecialchars($user['last_name']); ?>" required>
+                        <input type="text" id="last_name" name="last_name" 
+                               value="<?php echo htmlspecialchars($user['last_name']); ?>" 
+                               required 
+                               minlength="7" 
+                               maxlength="40" 
+                               title="Must be between 7 and 40 characters">
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="input-group">
                         <label for="email">Email</label>
-                        <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" required>
+                        <input type="email" id="email" name="email" 
+                               value="<?php echo htmlspecialchars($user['email']); ?>" 
+                               required>
                     </div>
                     <div class="input-group">
                         <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone" name="phone_number" value="<?php echo htmlspecialchars($user['phone_number']); ?>">
+                        <input type="tel" id="phone" name="phone_number" 
+                               value="<?php echo htmlspecialchars($user['phone_number']); ?>"
+                               pattern="^(\+|0)[0-9\s-]{9,}"
+                               title="Please enter a valid number (e.g., +60 10-840 6912 or 010-840 6912)">
                     </div>
                 </div>
 
@@ -105,46 +121,11 @@ if (!$user) {
                 <a href="profile.php" class="btn-back-form">Cancel</a>
 
             </form>
-        </div>
+            </div>
     </main>
     
     <div id="login-modal" class="modal-overlay">
-        <div class="login-container">
-            <div class="auth-toggle">
-                <a href="#" id="login-toggle" class="active">LOGIN</a>
-                <a href="#" id="register-toggle">REGISTER</a>
-            </div>
-            <div id="login-form">
-                <form action="login-process.php" method="POST">
-                    <div class="input-group"><input type="email" name="email" placeholder="Email" required></div>
-                    <div class="input-group"><input type="password" name="password" placeholder="Password" required></div>
-                    <a href="#" class="forgot-password">Forget Your Password?</a>
-                    <button type="submit" class="btn-signin">SIGN IN</button>
-                </form>
-            </div>
-            <div id="register-form" style="display: none;">
-                <form action="register-process.php" method="POST">
-                    <div class="form-row">
-                        <div class="input-group"><input type="text" name="first_name" placeholder="First Name" required></div>
-                        <div class="input-group"><input type="text" name="last_name" placeholder="Last Name" required></div>
-                    </div>
-                    <div class="input-group"><input type="email" name="email" placeholder="Email" required></div>
-                    <div class="input-group"><input type="tel" name="phone_number" placeholder="Phone Number"></div>
-                    <div class="input-group">
-                        <select name="gender" class="form-select" required>
-                            <option value="" disabled selected>Gender *</option>
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                    <div class="input-group"><input type="password" name="password" placeholder="Password" required></div>
-                    <div class="input-group"><input type="password" name="confirm_password" placeholder="Confirm Password" required></div>
-                    <button type="submit" class="btn-signin">CREATE ACCOUNT NOW</button>
-                </form> 
-            </div>
         </div>
-    </div>
     
     <script src="script.js"></script>
 </body>

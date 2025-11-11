@@ -138,15 +138,12 @@
         <?php
         include 'db_connect.php';
 
-        // Get the search query from the URL (e.g., search.php?search_query=...)
         $search_query = isset($_GET['search_query']) ? $_GET['search_query'] : '';
         
-        // Prepare the search term for a LIKE query
         $search_term = "%" . $search_query . "%";
         
         echo '<h2>Search Results for "' . htmlspecialchars($search_query) . '"</h2>';
 
-        // Use a prepared statement to prevent SQL injection
         $sql_search = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image 
                        FROM item 
                        WHERE (item_name LIKE ? OR ITEM_BRAND LIKE ?)
@@ -161,7 +158,6 @@
         if ($result_search && $result_search->num_rows > 0) {
             echo '<div class="product-grid">';
             while ($row = $result_search->fetch_assoc()) {
-                // --- This is the same product card HTML from your index.php ---
                 echo '<div class="product-card">';
                 echo '    <img src="images/' . htmlspecialchars($row['item_image']) . '" alt="' . htmlspecialchars($row['ITEM_BRAND']) . ' ' . htmlspecialchars($row['item_name']) . '">';
                 echo '    <h3>' . htmlspecialchars($row['ITEM_BRAND']) . ' ' . htmlspecialchars($row['item_name']) . '</h3>';
@@ -175,9 +171,8 @@
                     echo '<a href="#" class="btn-add-to-cart login-trigger">Login to Add</a>';
                 }
                 echo '</div>';
-                // --- End of product card ---
             }
-            echo '</div>'; // End .product-grid
+            echo '</div>'; 
         } else {
             echo '<p class="no-results">No products found matching your search.</p>';
         }

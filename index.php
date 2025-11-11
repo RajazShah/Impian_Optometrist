@@ -84,7 +84,7 @@
                     <?php
                     $sql_best = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image 
                                  FROM item 
-                                 WHERE item_name IS NOT NULL AND sales_count > 0
+                                 WHERE item_name IS NOT NULL AND sales_count > 0 AND ITEM_STATUS = 'Available'
                                  ORDER BY sales_count DESC
                                  LIMIT 5";
                     
@@ -128,7 +128,7 @@
                     <?php
                     $sql_frames = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image 
                                    FROM item 
-                                   WHERE CATEGORY_ID = 'CAT001' AND item_name IS NOT NULL
+                                   WHERE CATEGORY_ID = 'CAT001' AND item_name IS NOT NULL AND ITEM_STATUS = 'Available'
                                    ORDER BY sales_count DESC, ITEM_BRAND ASC"; 
                     $result_frames = $conn->query($sql_frames);
 
@@ -160,15 +160,16 @@
 
     <section id="contact-section" class="contact-container">
         <h2>CONTACT LENSE</h2>
+        <a href="all-contact-lenses.php" class="btn-see-all">See All</a> 
         <div class="slider-wrapper">
             <a href="#" id="contact-arrow-left" class="arrow left-arrow"><img src="images/back-button.png" alt="Previous"></a>
             <div class="product-grid-window">
                 <div id="contact-grid" class="product-grid">
                     <?php
                     $sql_contacts = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image 
-                                     FROM item 
-                                     WHERE CATEGORY_ID = 'CAT005' AND item_name IS NOT NULL
-                                     ORDER BY sales_count DESC, ITEM_BRAND ASC";
+                                    FROM item 
+                                    WHERE CATEGORY_ID = 'CAT005' AND item_name IS NOT NULL AND ITEM_STATUS = 'Available'
+                                    ORDER BY sales_count DESC, ITEM_BRAND ASC";
                     $result_contacts = $conn->query($sql_contacts);
 
                     if ($result_contacts && $result_contacts->num_rows > 0) {
@@ -199,6 +200,7 @@
 
     <section id="clip-section" class="clip-container">
         <h2>CLIP-ON</h2>
+        <a href="all-clip-ons.php" class="btn-see-all">See All</a> 
         <div class="slider-wrapper">
             <a href="#" id="clip-arrow-left" class="arrow left-arrow"><img src="images/back-button.png" alt="Previous"></a>
             <div class="product-grid-window">
@@ -206,7 +208,7 @@
                     <?php
                     $sql_clipons = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image 
                                     FROM item 
-                                    WHERE CATEGORY_ID = 'CAT003' AND item_name IS NOT NULL
+                                    WHERE CATEGORY_ID = 'CAT003' AND item_name IS NOT NULL AND ITEM_STATUS = 'Available'
                                     ORDER BY sales_count DESC, ITEM_BRAND ASC"; 
                     $result_clipons = $conn->query($sql_clipons);
 
@@ -259,7 +261,13 @@
                         <div class="input-group"><input type="text" name="last_name" placeholder="Last Name" required></div>
                     </div>
                     <div class="input-group"><input type="email" name="email" placeholder="Email" required></div>
-                    <div class="input-group"><input type="tel" name="phone_number" placeholder="Phone Number"></div>
+                    <div class="input-group">
+                    <input type="tel" 
+                           name="phone_number" 
+                           placeholder="Phone Number" 
+                           pattern="^(\+|0)[0-9\s-]{9,}"
+                           title="Please enter a valid number (e.g., +60 10-840 6912 or 010-840 6912)">
+                    </div>
                     <div class="input-group">
                         <select name="gender" class="form-select" required>
                             <option value="" disabled selected>Gender *</option>
