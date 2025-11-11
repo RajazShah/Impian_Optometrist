@@ -4,7 +4,7 @@ session_start();
 include 'db_connect.php'; // Include your database connection
 
 // --- SECURITY CHECK ---
-if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || !isset($_SESSION['id'])) {
     header("Location: index.php");
     exit();
 }
