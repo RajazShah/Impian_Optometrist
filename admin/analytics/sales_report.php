@@ -13,16 +13,39 @@ function format_rm($value)
     return "RM " . number_format($value, 2);
 }
 
+// Function to make status labels look nice
+function get_status_span($status)
+{
+    $status_lower = strtolower($status);
+    $class = "status-" . $status_lower;
+    $text = ucfirst($status_lower);
+
+    if (
+        !in_array($status_lower, [
+            "completed",
+            "pending",
+            "cancelled",
+            "processing",
+        ])
+    ) {
+        $class = "status-other";
+        $text = ucfirst($status_lower);
+    }
+    return "<span class=\"status {$class}\">" .
+        htmlspecialchars($text) .
+        "</span>";
+}
+
 $dateFrom = $_GET["from"] ?? "2025-10-09";
 $dateTo = $_GET["to"] ?? "2025-11-08";
 
+// --- KPIs: Updated for 'orders' table ---
 $stmt = $conn->prepare("
     SELECT
-        SUM(PRICE * QTY) AS totalRevenue,
-        COUNT(DISTINCT SALES_ID) AS totalSales,
-        SUM(QTY) AS totalUnitsSold
-    FROM sales
-    WHERE SALES_DATE BETWEEN ? AND ?
+        SUM(total_price) AS totalRevenue,
+        COUNT(order_id) AS totalSales
+    FROM orders
+    WHERE DATE(order_date) BETWEEN ? AND ?
 ");
 $stmt->bind_param("ss", $dateFrom, $dateTo);
 $stmt->execute();
@@ -31,17 +54,29 @@ $kpi_data = $result->fetch_assoc();
 
 $totalRevenue = $kpi_data["totalRevenue"] ?? 0;
 $totalSales = $kpi_data["totalSales"] ?? 0;
-$totalUnitsSold = $kpi_data["totalUnitsSold"] ?? 0;
 $avgOrderValue = $totalSales > 0 ? $totalRevenue / $totalSales : 0;
 
+// --- KPI: Get Total Units Sold from 'order_items' ---
+$stmt = $conn->prepare("
+    SELECT SUM(oi.quantity) AS totalUnitsSold
+    FROM order_items oi
+    JOIN orders o ON oi.order_id = o.order_id
+    WHERE DATE(o.order_date) BETWEEN ? AND ?
+");
+$stmt->bind_param("ss", $dateFrom, $dateTo);
+$stmt->execute();
+$result = $stmt->get_result();
+$totalUnitsSold = $result->fetch_assoc()["totalUnitsSold"] ?? 0;
+
+// --- Chart 1: Revenue Over Time from 'orders' ---
 $stmt = $conn->prepare("
     SELECT
-        DATE_FORMAT(SALES_DATE, '%b %d') AS date_label,
-        SUM(PRICE * QTY) AS daily_revenue
-    FROM sales
-    WHERE SALES_DATE BETWEEN ? AND ?
+        DATE_FORMAT(order_date, '%b %d') AS date_label,
+        SUM(total_price) AS daily_revenue
+    FROM orders
+    WHERE DATE(order_date) BETWEEN ? AND ?
     GROUP BY date_label
-    ORDER BY DATE(SALES_DATE) ASC
+    ORDER BY DATE(order_date) ASC
 ");
 $stmt->bind_param("ss", $dateFrom, $dateTo);
 $stmt->execute();
@@ -52,14 +87,16 @@ $revenueChartData = [
     "data" => array_column($revenue_rows, "daily_revenue"),
 ];
 
+// --- Chart 2: Top Selling Products from 'order_items' ---
 $stmt = $conn->prepare("
     SELECT
         i.item_name,
-        SUM(s.QTY) AS units_sold
-    FROM sales s
-    JOIN item i ON s.ITEM_ID = i.ITEM_ID
-    WHERE s.SALES_DATE BETWEEN ? AND ?
-    GROUP BY s.ITEM_ID
+        SUM(oi.quantity) AS units_sold
+    FROM order_items oi
+    JOIN orders o ON oi.order_id = o.order_id
+    JOIN item i ON oi.product_id = i.ITEM_ID
+    WHERE DATE(o.order_date) BETWEEN ? AND ?
+    GROUP BY oi.product_id
     ORDER BY units_sold DESC
     LIMIT 5
 ");
@@ -72,18 +109,18 @@ $productsChartData = [
     "data" => array_column($product_rows, "units_sold"),
 ];
 
+// --- Table: Recent Transactions from 'orders' ---
 $stmt = $conn->prepare("
     SELECT
-        s.SALES_ID,
-        s.CUST_NICKNAME,
-        s.SALES_DATE,
-        CONCAT(st.STAFF_FNAME, ' ', st.STAFF_LNAME) AS staff_name,
-        SUM(s.PRICE * s.QTY) AS total_amount
-    FROM sales s
-    JOIN staff st ON s.STAFF_NRIC = st.STAFF_NRIC
-    WHERE s.SALES_DATE BETWEEN ? AND ?
-    GROUP BY s.SALES_ID
-    ORDER BY s.SALES_DATE DESC, s.SALES_TIME DESC
+        o.order_id,
+        CONCAT(u.first_name, ' ', u.last_name) AS customer_name,
+        o.order_date,
+        o.order_status,
+        o.total_price
+    FROM orders o
+    JOIN users u ON o.user_id = u.id
+    WHERE DATE(o.order_date) BETWEEN ? AND ?
+    ORDER BY o.order_date DESC
     LIMIT 10
 ");
 $stmt->bind_param("ss", $dateFrom, $dateTo);
@@ -91,8 +128,9 @@ $stmt->execute();
 $result = $stmt->get_result();
 $tableRows = $result->fetch_all(MYSQLI_ASSOC);
 
+// --- Pagination count from 'orders' ---
 $stmt = $conn->prepare(
-    "SELECT COUNT(DISTINCT SALES_ID) AS total FROM sales WHERE SALES_DATE BETWEEN ? AND ?",
+    "SELECT COUNT(order_id) AS total FROM orders WHERE DATE(order_date) BETWEEN ? AND ?",
 );
 $stmt->bind_param("ss", $dateFrom, $dateTo);
 $stmt->execute();
@@ -110,6 +148,21 @@ $paginationInfo =
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="report.css">
+
+    <style>
+        .status {
+            padding: 5px 10px;
+            border-radius: 15px;
+            color: #fff;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .status-pending { background-color: #f0ad4e; }
+        .status-processing { background-color: #0275d8; }
+        .status-completed { background-color: #5cb85c; }
+        .status-cancelled { background-color: #d9534f; }
+        .status-other { background-color: #777; }
+    </style>
 </head>
 <body>
 
@@ -117,7 +170,7 @@ $paginationInfo =
         <div class="header-bar">
             <h1 class="page-title">Sales Report</h1>
             <a href="analytics.php" class="back-link">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                 <span>Back to Dashboard</span>
             </a>
         </div>
@@ -189,15 +242,15 @@ $paginationInfo =
 
         <div class="card table-container">
             <div class="table-header">
-                <h3 class="table-title">Recent Transactions</h3>
+                <h3 class="table-title">Recent Orders</h3>
             </div>
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th>Sales ID</th>
+                        <th>Order ID</th>
                         <th>Customer</th>
                         <th>Date</th>
-                        <th>Staff</th>
+                        <th>Status</th>
                         <th>Amount (RM)</th>
                     </tr>
                 </thead>
@@ -210,22 +263,22 @@ $paginationInfo =
                         <?php foreach ($tableRows as $row): ?>
                             <tr>
                                 <td>#<?php echo htmlspecialchars(
-                                    $row["SALES_ID"],
+                                    $row["order_id"],
                                 ); ?></td>
                                 <td><?php echo htmlspecialchars(
-                                    $row["CUST_NICKNAME"],
+                                    $row["customer_name"],
                                 ); ?></td>
                                 <td>
                                     <?php
-                                    $date = new DateTime($row["SALES_DATE"]);
+                                    $date = new DateTime($row["order_date"]);
                                     echo $date->format("d M Y");
                                     ?>
                                 </td>
-                                <td><?php echo htmlspecialchars(
-                                    $row["staff_name"],
+                                <td><?php echo get_status_span(
+                                    $row["order_status"],
                                 ); ?></td>
                                 <td><?php echo htmlspecialchars(
-                                    number_format($row["total_amount"], 2),
+                                    number_format($row["total_price"], 2),
                                 ); ?></td>
                             </tr>
                         <?php endforeach; ?>
@@ -361,21 +414,21 @@ $paginationInfo =
             }
 
             function exportToCSV(data, filename) {
-                const headers = ["Sales ID", "Customer", "Date", "Staff", "Amount (RM)"];
+                const headers = ["Order ID", "Customer", "Date", "Status", "Amount (RM)"];
                 let csvContent = headers.join(",") + "\n";
 
                 data.forEach(row => {
                     const rowData = [
-                        escapeCSV(`#${row.SALES_ID}`),
-                        escapeCSV(row.CUST_NICKNAME),
-                        escapeCSV(formatDateForCSV(row.SALES_DATE)),
-                        escapeCSV(row.staff_name),
-                        parseFloat(row.total_amount).toFixed(2)
+                        escapeCSV(`#${row.order_id}`),
+                        escapeCSV(row.customer_name),
+                        escapeCSV(formatDateForCSV(row.order_date)),
+                        escapeCSV(row.order_status),
+                        parseFloat(row.total_price).toFixed(2)
                     ];
                     csvContent += rowData.join(",") + "\n";
                 });
 
-                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf8;' });
                 const link = document.createElement("a");
                 const url = URL.createObjectURL(blob);
                 link.setAttribute("href", url);
