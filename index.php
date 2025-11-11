@@ -259,7 +259,13 @@
                         <div class="input-group"><input type="text" name="last_name" placeholder="Last Name" required></div>
                     </div>
                     <div class="input-group"><input type="email" name="email" placeholder="Email" required></div>
-                    <div class="input-group"><input type="tel" name="phone_number" placeholder="Phone Number"></div>
+                    <div class="input-group">
+                    <input type="tel" 
+                           name="phone_number" 
+                           placeholder="Phone Number" 
+                           pattern="^(\+|0)[0-9\s-]{9,}"
+                           title="Please enter a valid number (e.g., +60 10-840 6912 or 010-840 6912)">
+                    </div>
                     <div class="input-group">
                         <select name="gender" class="form-select" required>
                             <option value="" disabled selected>Gender *</option>

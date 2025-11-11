@@ -17,6 +17,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
 
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo "<script>alert('Please enter a valid email address.'); window.history.back();</script>";
+        exit();
+    }
+
+    $phone_regex = "/^(\+|0)[0-9\s-]{9,}$/";
+    if (!empty($phone_number) && !preg_match($phone_regex, $phone_number)) {
+        echo "<script>alert('Please enter a valid phone number (e.g., +60 12-345 6789 or 012-345 6789).'); window.history.back();</script>";
+        exit();
+    }
 
     if ($password !== $confirm_password) {
         echo "<script>alert('Passwords do not match!'); window.history.back();</script>";
