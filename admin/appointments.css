@@ -1,21 +1,29 @@
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family:
+        "Inter",
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        "Helvetica Neue",
+        Arial,
+        sans-serif;
     background-color: #f7faff;
     margin: 0;
     padding: 20px;
     display: flex;
     justify-content: center;
-    align-items: flex-start; 
+    align-items: flex-start;
     min-height: 100vh;
     box-sizing: border-box;
 }
 
 .appointments-container {
-    max-width: 1000px; 
+    max-width: 1000px;
     width: 100%;
-    margin: 40px 20px; 
+    margin: 40px 20px;
     background: #ffffff;
-    border: 1px solid #eef2f9; 
+    border: 1px solid #eef2f9;
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
     overflow: hidden;
@@ -23,7 +31,7 @@ body {
 
 h2 {
     text-align: left;
-    font-size: 1.5rem; 
+    font-size: 1.5rem;
     color: #1a202c;
     padding: 24px 28px;
     margin: 0;
@@ -42,13 +50,13 @@ h2 {
 }
 
 .appointments-table th {
-    background-color: #fdfdff; 
+    background-color: #fdfdff;
     border: none;
     padding: 20px 28px;
     text-align: left;
-    font-size: 0.8rem; 
+    font-size: 0.8rem;
     font-weight: 600;
-    color: #718096; 
+    color: #718096;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -57,9 +65,9 @@ h2 {
     border: none;
     padding: 22px 28px;
     text-align: left;
-    font-size: 0.95rem; 
-    color: #4a5568; 
-    border-bottom: 1px solid #eef2f9; 
+    font-size: 0.95rem;
+    color: #4a5568;
+    border-bottom: 1px solid #eef2f9;
     vertical-align: middle;
 }
 
@@ -76,7 +84,7 @@ h2 {
 }
 
 .text-primary {
-    color: #2d3748; 
+    color: #2d3748;
     font-weight: 500;
 }
 
@@ -90,12 +98,12 @@ h2 {
 .btn-back {
     display: inline-block;
     text-decoration: none;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-size: 0.9rem;
     font-weight: 600;
     color: #4a5568;
-    background-color: #f7faff; 
-    border: 1px solid #eef2f9; 
+    background-color: #f7faff;
+    border: 1px solid #eef2f9;
     padding: 10px 16px;
     border-radius: 8px;
     transition: all 0.2s ease-in-out;
@@ -106,5 +114,39 @@ h2 {
     border-color: #dbe1eb;
     color: #2d3748;
     transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+}
+
+.appointments-table .status {
+    padding: 5px 10px;
+    border-radius: 15px;
+    color: #fff;
+    font-weight: bold;
+    font-size: 0.9em;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.status-pending {
+    background-color: #f0ad4e;
+}
+.status-completed {
+    background-color: #5cb85c;
+}
+.status-cancelled {
+    background-color: #d9534f;
+}
+.status-other {
+    background-color: #777;
+}
+
+.status-form select {
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.status-form {
+    margin: 0;
 }
