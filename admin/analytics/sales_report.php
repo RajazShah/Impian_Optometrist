@@ -13,33 +13,9 @@ function format_rm($value)
     return "RM " . number_format($value, 2);
 }
 
-// Function to make status labels look nice
-function get_status_span($status)
-{
-    $status_lower = strtolower($status);
-    $class = "status-" . $status_lower;
-    $text = ucfirst($status_lower);
-
-    if (
-        !in_array($status_lower, [
-            "completed",
-            "pending",
-            "cancelled",
-            "processing",
-        ])
-    ) {
-        $class = "status-other";
-        $text = ucfirst($status_lower);
-    }
-    return "<span class=\"status {$class}\">" .
-        htmlspecialchars($text) .
-        "</span>";
-}
-
 $dateFrom = $_GET["from"] ?? "2025-10-09";
 $dateTo = $_GET["to"] ?? "2025-11-08";
 
-// --- KPIs: Updated for 'orders' table ---
 $stmt = $conn->prepare("
     SELECT
         SUM(total_price) AS totalRevenue,
@@ -56,7 +32,6 @@ $totalRevenue = $kpi_data["totalRevenue"] ?? 0;
 $totalSales = $kpi_data["totalSales"] ?? 0;
 $avgOrderValue = $totalSales > 0 ? $totalRevenue / $totalSales : 0;
 
-// --- KPI: Get Total Units Sold from 'order_items' ---
 $stmt = $conn->prepare("
     SELECT SUM(oi.quantity) AS totalUnitsSold
     FROM order_items oi
@@ -68,7 +43,6 @@ $stmt->execute();
 $result = $stmt->get_result();
 $totalUnitsSold = $result->fetch_assoc()["totalUnitsSold"] ?? 0;
 
-// --- Chart 1: Revenue Over Time from 'orders' ---
 $stmt = $conn->prepare("
     SELECT
         DATE_FORMAT(order_date, '%b %d') AS date_label,
@@ -87,7 +61,6 @@ $revenueChartData = [
     "data" => array_column($revenue_rows, "daily_revenue"),
 ];
 
-// --- Chart 2: Top Selling Products from 'order_items' ---
 $stmt = $conn->prepare("
     SELECT
         i.item_name,
@@ -109,7 +82,6 @@ $productsChartData = [
     "data" => array_column($product_rows, "units_sold"),
 ];
 
-// --- Table: Recent Transactions from 'orders' ---
 $stmt = $conn->prepare("
     SELECT
         o.order_id,
@@ -128,7 +100,6 @@ $stmt->execute();
 $result = $stmt->get_result();
 $tableRows = $result->fetch_all(MYSQLI_ASSOC);
 
-// --- Pagination count from 'orders' ---
 $stmt = $conn->prepare(
     "SELECT COUNT(order_id) AS total FROM orders WHERE DATE(order_date) BETWEEN ? AND ?",
 );
@@ -148,21 +119,6 @@ $paginationInfo =
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="report.css">
-
-    <style>
-        .status {
-            padding: 5px 10px;
-            border-radius: 15px;
-            color: #fff;
-            font-weight: bold;
-            font-size: 0.9em;
-        }
-        .status-pending { background-color: #f0ad4e; }
-        .status-processing { background-color: #0275d8; }
-        .status-completed { background-color: #5cb85c; }
-        .status-cancelled { background-color: #d9534f; }
-        .status-other { background-color: #777; }
-    </style>
 </head>
 <body>
 
@@ -194,7 +150,7 @@ $paginationInfo =
                     <span>Filter</span>
                 </button>
                 <button type="button" class="btn btn-primary" id="export-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                     <span>Export as CSV</span>
                 </button>
             </div>
@@ -274,7 +230,7 @@ $paginationInfo =
                                     echo $date->format("d M Y");
                                     ?>
                                 </td>
-                                <td><?php echo get_status_span(
+                                <td><?php echo htmlspecialchars(
                                     $row["order_status"],
                                 ); ?></td>
                                 <td><?php echo htmlspecialchars(
