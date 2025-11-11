@@ -167,7 +167,7 @@
                     <?php
                     $sql_contacts = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image 
                                     FROM item 
-                                    WHERE CATEGORY_ID = 'CAT002' AND item_name IS NOT NULL AND ITEM_STATUS = 'Available'
+                                    WHERE CATEGORY_ID = 'CAT005' AND item_name IS NOT NULL AND ITEM_STATUS = 'Available'
                                     ORDER BY sales_count DESC, ITEM_BRAND ASC";
                     $result_contacts = $conn->query($sql_contacts);
 
