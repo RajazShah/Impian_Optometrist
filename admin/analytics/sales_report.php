@@ -13,8 +13,8 @@ function format_rm($value)
     return "RM " . number_format($value, 2);
 }
 
-$dateFrom = $_GET["from"] ?? "2025-10-09";
-$dateTo = $_GET["to"] ?? "2025-11-08";
+$dateFrom = $_GET["from"] ?? date("Y-m-01");
+$dateTo = $_GET["to"] ?? date("Y-m-d");
 
 $stmt = $conn->prepare("
     SELECT

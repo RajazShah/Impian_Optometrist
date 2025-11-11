@@ -1,36 +1,36 @@
 <?php
-    include "../../db_connect.php";
+include "../../db_connect.php";
 
-    if (!isset($conn) || !$conn instanceof mysqli) {
-        die(
-            "Database connection failed. Check '../db_connect.php'. (Expecting a MySQLi connection)"
-        );
-    }
+if (!isset($conn) || !$conn instanceof mysqli) {
+    die(
+        "Database connection failed. Check '../db_connect.php'. (Expecting a MySQLi connection)"
+    );
+}
 
-    function format_rm($value)
-    {
-        return "RM " . number_format($value, 2);
-    }
+function format_rm($value)
+{
+    return "RM " . number_format($value, 2);
+}
 
-    $dateFrom = $_GET["from"] ?? "2025-10-09";
-    $dateTo = $_GET["to"] ?? "2025-11-08";
+$dateFrom = $_GET["from"] ?? date("Y-m-01");
+$dateTo = $_GET["to"] ?? date("Y-m-d");
 
-    $stmt = $conn->prepare("
+$stmt = $conn->prepare("
         SELECT
             COUNT(DISTINCT user_id) AS totalCustomers,
             SUM(total_price) AS totalRevenue
         FROM orders
         WHERE DATE(order_date) BETWEEN ? AND ?
     ");
-    $stmt->bind_param("ss", $dateFrom, $dateTo);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $kpi_data = $result->fetch_assoc();
+$stmt->bind_param("ss", $dateFrom, $dateTo);
+$stmt->execute();
+$result = $stmt->get_result();
+$kpi_data = $result->fetch_assoc();
 
-    $totalCustomers = $kpi_data["totalCustomers"] ?? 0;
-    $totalRevenue = $kpi_data["totalRevenue"] ?? 0;
+$totalCustomers = $kpi_data["totalCustomers"] ?? 0;
+$totalRevenue = $kpi_data["totalRevenue"] ?? 0;
 
-    $stmt = $conn->prepare("
+$stmt = $conn->prepare("
         SELECT COUNT(DISTINCT user_id) AS newCustomers
         FROM orders o1
         WHERE DATE(o1.order_date) BETWEEN ? AND ?
@@ -39,22 +39,22 @@
             WHERE o2.user_id = o1.user_id AND DATE(o2.order_date) < ?
         )
     ");
-    $stmt->bind_param("sss", $dateFrom, $dateTo, $dateFrom);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $newCustomers = $result->fetch_assoc()["newCustomers"] ?? 0;
+$stmt->bind_param("sss", $dateFrom, $dateTo, $dateFrom);
+$stmt->execute();
+$result = $stmt->get_result();
+$newCustomers = $result->fetch_assoc()["newCustomers"] ?? 0;
 
-    $returningCustomers = $totalCustomers - $newCustomers;
+$returningCustomers = $totalCustomers - $newCustomers;
 
-    $avgRevenuePerCustomer =
-        $totalCustomers > 0 ? $totalRevenue / $totalCustomers : 0;
+$avgRevenuePerCustomer =
+    $totalCustomers > 0 ? $totalRevenue / $totalCustomers : 0;
 
-    $customerTypeChartData = [
-        "labels" => ["New Customers", "Returning Customers"],
-        "data" => [$newCustomers, $returningCustomers],
-    ];
+$customerTypeChartData = [
+    "labels" => ["New Customers", "Returning Customers"],
+    "data" => [$newCustomers, $returningCustomers],
+];
 
-    $stmt = $conn->prepare("
+$stmt = $conn->prepare("
         SELECT
             CONCAT(u.first_name, ' ', u.last_name) AS customer_name,
             SUM(o.total_price) AS total_spent
@@ -65,17 +65,17 @@
         ORDER BY total_spent DESC
         LIMIT 5
     ");
-    $stmt->bind_param("ss", $dateFrom, $dateTo);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $top_customer_rows = $result->fetch_all(MYSQLI_ASSOC);
+$stmt->bind_param("ss", $dateFrom, $dateTo);
+$stmt->execute();
+$result = $stmt->get_result();
+$top_customer_rows = $result->fetch_all(MYSQLI_ASSOC);
 
-    $topCustomerChartData = [
-        "labels" => array_column($top_customer_rows, "customer_name"),
-        "data" => array_column($top_customer_rows, "total_spent"),
-    ];
+$topCustomerChartData = [
+    "labels" => array_column($top_customer_rows, "customer_name"),
+    "data" => array_column($top_customer_rows, "total_spent"),
+];
 
-    $stmt = $conn->prepare("
+$stmt = $conn->prepare("
         SELECT
             u.id,
             CONCAT(u.first_name, ' ', u.last_name) AS customer_name,
@@ -90,16 +90,16 @@
         ORDER BY lifetime_spent DESC
         LIMIT 10
     ");
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $tableRows = $result->fetch_all(MYSQLI_ASSOC);
+$stmt->execute();
+$result = $stmt->get_result();
+$tableRows = $result->fetch_all(MYSQLI_ASSOC);
 
-    $stmt = $conn->prepare("SELECT COUNT(id) AS total FROM users");
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $total_records = $result->fetch_assoc()["total"] ?? 0;
-    $paginationInfo =
-        "Showing " . count($tableRows) . " of {$total_records} results";
+$stmt = $conn->prepare("SELECT COUNT(id) AS total FROM users");
+$stmt->execute();
+$result = $stmt->get_result();
+$total_records = $result->fetch_assoc()["total"] ?? 0;
+$paginationInfo =
+    "Showing " . count($tableRows) . " of {$total_records} results";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -353,7 +353,7 @@
             const initialTopCustomerData = <?php echo json_encode(
                 $topCustomerChartData,
             ); ?>;
-            
+
             const tableData = <?php echo json_encode($tableRows); ?>;
 
             createPieChart(initialPieData.labels, initialPieData.data);
@@ -401,7 +401,7 @@
                         escapeCSV(formatDateForCSV(row.first_order_date)),
                         escapeCSV(formatDateForCSV(row.last_order_date)),
                         row.total_orders,
-                        parseFloat(row.lifetime_spent).toFixed(2) 
+                        parseFloat(row.lifetime_spent).toFixed(2)
                     ];
                     csvContent += rowData.join(",") + "\n";
                 });
