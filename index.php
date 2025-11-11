@@ -160,6 +160,7 @@
 
     <section id="contact-section" class="contact-container">
         <h2>CONTACT LENSE</h2>
+        <a href="all-contact-lenses.php" class="btn-see-all">See All</a> 
         <div class="slider-wrapper">
             <a href="#" id="contact-arrow-left" class="arrow left-arrow"><img src="images/back-button.png" alt="Previous"></a>
             <div class="product-grid-window">
@@ -199,6 +200,7 @@
 
     <section id="clip-section" class="clip-container">
         <h2>CLIP-ON</h2>
+        <a href="all-clip-ons.php" class="btn-see-all">See All</a> 
         <div class="slider-wrapper">
             <a href="#" id="clip-arrow-left" class="arrow left-arrow"><img src="images/back-button.png" alt="Previous"></a>
             <div class="product-grid-window">
