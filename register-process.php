@@ -17,6 +17,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
 
+    if(strlen($first_name) > 7 || strlen($first_name) < 20){
+        echo "<script>alert('First name must be between 7 and 20 characters.'); window.history.back();</script>";
+        exit();
+    }
+
+    if(strlen($last_name) > 7 || strlen($last_name) < 20){
+        echo "<script>alert('Last name must be between 7 and 20 characters.'); window.history.back();</script>";
+        exit();
+    }
+
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         echo "<script>alert('Please enter a valid email address.'); window.history.back();</script>";
         exit();
