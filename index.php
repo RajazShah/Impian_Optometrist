@@ -84,7 +84,7 @@
                     <?php
                     $sql_best = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image 
                                  FROM item 
-                                 WHERE item_name IS NOT NULL AND sales_count > 0
+                                 WHERE item_name IS NOT NULL AND sales_count > 0 AND ITEM_STATUS = 'Available'
                                  ORDER BY sales_count DESC
                                  LIMIT 5";
                     
@@ -128,7 +128,7 @@
                     <?php
                     $sql_frames = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image 
                                    FROM item 
-                                   WHERE CATEGORY_ID = 'CAT001' AND item_name IS NOT NULL
+                                   WHERE CATEGORY_ID = 'CAT001' AND item_name IS NOT NULL AND ITEM_STATUS = 'Available'
                                    ORDER BY sales_count DESC, ITEM_BRAND ASC"; 
                     $result_frames = $conn->query($sql_frames);
 
@@ -166,9 +166,9 @@
                 <div id="contact-grid" class="product-grid">
                     <?php
                     $sql_contacts = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image 
-                                     FROM item 
-                                     WHERE CATEGORY_ID = 'CAT005' AND item_name IS NOT NULL
-                                     ORDER BY sales_count DESC, ITEM_BRAND ASC";
+                                    FROM item 
+                                    WHERE CATEGORY_ID = 'CAT002' AND item_name IS NOT NULL AND ITEM_STATUS = 'Available'
+                                    ORDER BY sales_count DESC, ITEM_BRAND ASC";
                     $result_contacts = $conn->query($sql_contacts);
 
                     if ($result_contacts && $result_contacts->num_rows > 0) {
@@ -206,7 +206,7 @@
                     <?php
                     $sql_clipons = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image 
                                     FROM item 
-                                    WHERE CATEGORY_ID = 'CAT003' AND item_name IS NOT NULL
+                                    WHERE CATEGORY_ID = 'CAT003' AND item_name IS NOT NULL AND ITEM_STATUS = 'Available'
                                     ORDER BY sales_count DESC, ITEM_BRAND ASC"; 
                     $result_clipons = $conn->query($sql_clipons);
 

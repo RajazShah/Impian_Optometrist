@@ -89,7 +89,7 @@ if ($sort_option === 'price_asc') {
             <?php
             $sql = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image 
                     FROM item 
-                    WHERE CATEGORY_ID = 'CAT001' AND item_name IS NOT NULL
+                    WHERE CATEGORY_ID = 'CAT001' AND item_name IS NOT NULL AND ITEM_STATUS = 'Available'
                     $order_by"; 
             
             $result = $conn->query($sql);
