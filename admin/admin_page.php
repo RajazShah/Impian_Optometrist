@@ -1,15 +1,20 @@
 <?php
 session_start();
-include '../db_connect.php';
+include "../db_connect.php";
 
-if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || !isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+if (
+    !isset($_SESSION["loggedin"]) ||
+    $_SESSION["loggedin"] !== true ||
+    !isset($_SESSION["role"]) ||
+    $_SESSION["role"] !== "admin"
+) {
     header("Location: ../index.php"); // Redirect to main index if not admin
     exit();
 }
 
 $admin_name = "Admin";
-if (isset($_SESSION['first_name'])) {
-    $admin_name = $_SESSION['first_name']; 
+if (isset($_SESSION["first_name"])) {
+    $admin_name = $_SESSION["first_name"];
 }
 ?>
 
@@ -25,9 +30,11 @@ if (isset($_SESSION['first_name'])) {
 <body>
     <div class="header-section">
         <h1 class="main-title">IMPIAN OPTOMETRIST DASHBOARD</h1>
-        
-        <p class="tagline">Welcome, <?php echo htmlspecialchars($admin_name); ?></p>
-        
+
+        <p class="tagline">Welcome, <?php echo htmlspecialchars(
+            $admin_name,
+        ); ?></p>
+
     </div>
 
         <div class="card-section">
@@ -38,7 +45,7 @@ if (isset($_SESSION['first_name'])) {
                 <a href="user_details.php" class="action-button">Users</a>
                 <a href="staff_details.php" class="action-button">Staffs</a>
                 <a href="analytics/analytics.php" class="action-button">Analytics</a>
-                <a href="../logout.php" class="action-button">Exit</a>
+                <a href="../logout.php" class="action-button exit-button">Exit</a>
             </div>
     </div>
 </body>
