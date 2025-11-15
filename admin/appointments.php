@@ -1,6 +1,9 @@
 <?php
 include "../db_connect.php";
 
+$filter_date = $_GET["filter_date"] ?? "";
+$filter_status = $_GET["filter_status"] ?? "";
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["appointment_id"])) {
     $appointment_id = $_POST["appointment_id"];
     $new_status = $_POST["status"];
@@ -11,7 +14,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["appointment_id"])) {
     $stmt->bind_param("si", $new_status, $appointment_id);
 
     if ($stmt->execute()) {
-        header("Location: appointments.php");
+        $redirect_url = "appointments.php";
+        $query_params = [];
+
+        if (isset($_POST["filter_date"]) && !empty($_POST["filter_date"])) {
+            $query_params["filter_date"] = $_POST["filter_date"];
+        }
+        if (isset($_POST["filter_status"]) && !empty($_POST["filter_status"])) {
+            $query_params["filter_status"] = $_POST["filter_status"];
+        }
+
+        if (!empty($query_params)) {
+            $redirect_url .= "?" . http_build_query($query_params);
+        }
+
+        header("Location: " . $redirect_url);
         exit();
     } else {
         echo "Error updating record: " . $conn->error;
@@ -46,6 +63,42 @@ function get_status_span($status)
 <body>
     <div class="appointments-container">
         <h2>Customer Appointments</h2>
+
+        <div class="filter-container">
+            <form action="appointments.php" method="GET">
+                <div class="filter-group">
+                    <label for="filter_date">Filter by Date:</label>
+                    <input type="date" id="filter_date" name="filter_date" value="<?php echo htmlspecialchars(
+                        $filter_date,
+                    ); ?>">
+                </div>
+
+                <div class="filter-group">
+                    <label for="filter_status">Filter by Status:</label>
+                    <select id="filter_status" name="filter_status">
+                        <option value="">All Statuses</option>
+                        <option value="Pending" <?php echo $filter_status ==
+                        "Pending"
+                            ? "selected"
+                            : ""; ?>>Pending</option>
+                        <option value="Completed" <?php echo $filter_status ==
+                        "Completed"
+                            ? "selected"
+                            : ""; ?>>Completed</option>
+                        <option value="Cancelled" <?php echo $filter_status ==
+                        "Cancelled"
+                            ? "selected"
+                            : ""; ?>>Cancelled</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <button type="submit" class="btn-filter">Filter</button>
+                    <a href="appointments.php" class="btn-clear">Clear</a>
+                </div>
+            </form>
+        </div>
+
         <table class="appointments-table">
             <tr>
                 <th>Appointment ID</th>
@@ -67,10 +120,37 @@ function get_status_span($status)
                         appointment_time AS time,
                         reason,
                         status
-                    FROM customer_appointments
-                    ORDER BY appointment_date DESC, appointment_time DESC";
+                    FROM customer_appointments";
 
-            $result = $conn->query($sql);
+            $where_clauses = [];
+            $params = [];
+            $types = "";
+
+            if (!empty($filter_date)) {
+                $where_clauses[] = "appointment_date = ?";
+                $params[] = $filter_date;
+                $types .= "s";
+            }
+            if (!empty($filter_status)) {
+                $where_clauses[] = "status = ?";
+                $params[] = $filter_status;
+                $types .= "s";
+            }
+
+            if (!empty($where_clauses)) {
+                $sql .= " WHERE " . implode(" AND ", $where_clauses);
+            }
+
+            $sql .= " ORDER BY appointment_date DESC, appointment_time DESC";
+
+            $stmt_select = $conn->prepare($sql);
+
+            if (!empty($params)) {
+                $stmt_select->bind_param($types, ...$params);
+            }
+
+            $stmt_select->execute();
+            $result = $stmt_select->get_result();
 
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
@@ -84,17 +164,21 @@ function get_status_span($status)
 
                     echo "<td>" . get_status_span($row["status"]) . "</td>";
 
-                    // This form submits automatically when the dropdown is changed
                     echo "<td>";
                     echo "<form action='appointments.php' method='POST' class='status-form' style='margin: 0;'>";
                     echo "<input type='hidden' name='appointment_id' value='" .
                         $row["appointment_id"] .
                         "'>";
 
-                    // The onchange='this.form.submit()' is the key
+                    echo "<input type='hidden' name='filter_date' value='" .
+                        htmlspecialchars($filter_date) .
+                        "'>";
+                    echo "<input type='hidden' name='filter_status' value='" .
+                        htmlspecialchars($filter_status) .
+                        "'>";
+
                     echo "<select name='status' onchange='this.form.submit()'>";
 
-                    // These lines make the dropdown default to the current status
                     $current_status_lower = strtolower($row["status"]);
                     $isPending =
                         $current_status_lower == "pending" ? "selected" : "";
@@ -114,9 +198,13 @@ function get_status_span($status)
                     echo "</tr>";
                 }
             } else {
-                // Colspan is now 8
-                echo "<tr><td colspan='8'>No appointments found</td></tr>";
+                if (!empty($filter_date) || !empty($filter_status)) {
+                    echo "<tr><td colspan='8'>No appointments found matching your filters.</td></tr>";
+                } else {
+                    echo "<tr><td colspan='8'>No appointments found</td></tr>";
+                }
             }
+            $stmt_select->close();
             ?>
 
         </table>

@@ -35,7 +35,8 @@ h2 {
     color: #1a202c;
     padding: 24px 28px;
     margin: 0;
-    border-bottom: 3px solid #eef2f9;
+    /* CHANGED: Softened the heavy border */
+    border-bottom: 1px solid #eef2f9;
 }
 
 .table-responsive {
@@ -77,7 +78,7 @@ h2 {
 
 .appointments-table tbody tr:hover {
     background-color: #f7faff;
-    cursor: pointer;
+    /* REMOVED: cursor: pointer; (can be misleading) */
 }
 .appointments-table tbody tr:last-child td {
     border-bottom: none;
@@ -88,12 +89,153 @@ h2 {
     font-weight: 500;
 }
 
-.status {
-    display: inline-flex;
+/* * * --- RE-STYLED STATUS BADGES ---
+ * */
+
+.appointments-table .status {
+    padding: 6px 12px;
+    border-radius: 9999px; /* Pill shape */
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-shadow: none; /* Removed text shadow */
+    display: inline-block;
+    line-height: 1;
+}
+
+/* Pending (Orange/Yellow) */
+.status-pending {
+    background-color: #fffbeb;
+    color: #b45309;
+}
+/* Completed (Green) */
+.status-completed {
+    background-color: #f0fdf4;
+    color: #15803d;
+}
+/* Cancelled (Red) */
+.status-cancelled {
+    background-color: #fef2f2;
+    color: #b91c1c;
+}
+/* Other (Gray) */
+.status-other {
+    background-color: #f3f4f6;
+    color: #4b5563;
+}
+
+/* * * --- RE-STYLED STATUS DROPDOWN ---
+ * */
+
+.status-form select {
+    font-family: "Inter", sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 8px 12px;
+    border: 1px solid #eef2f9;
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: #4a5568;
+    cursor: pointer;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+
+    /* Custom arrow */
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px; /* Space for arrow */
+}
+
+.status-form select:focus {
+    outline: none;
+    border-color: #dbe1eb;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.status-form {
+    margin: 0;
+}
+
+/* --- FILTER CONTAINER STYLES --- */
+
+.filter-container {
+    padding: 20px 28px;
+    border-bottom: 1px solid #eef2f9;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px;
+    background-color: #fdfdff;
+}
+
+.filter-group {
+    display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 0.9rem;
 }
+
+.filter-group label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+.filter-group input[type="date"],
+.filter-group select {
+    font-family: "Inter", sans-serif;
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    border: 1px solid #eef2f9;
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: #4a5568;
+}
+
+.filter-group .btn-filter {
+    display: inline-block;
+    text-decoration: none;
+    font-family: "Inter", sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #4299e1;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+}
+
+.filter-group .btn-filter:hover {
+    background-color: #3182ce;
+}
+
+/* CHANGED: Made "Clear" a secondary button */
+.filter-group .btn-clear {
+    display: inline-block;
+    text-decoration: none;
+    font-family: "Inter", sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #4a5568; /* Gray text */
+    background-color: #ffffff; /* White bg */
+    border: 1px solid #eef2f9; /* Light border */
+    padding: 10px 16px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.filter-group .btn-clear:hover {
+    background-color: #f7faff; /* Light hover */
+    border-color: #dbe1eb;
+    color: #2d3748;
+}
+
+/* --- BUTTON STYLES --- */
 
 .btn-back {
     display: inline-block;
@@ -107,6 +249,8 @@ h2 {
     padding: 10px 16px;
     border-radius: 8px;
     transition: all 0.2s ease-in-out;
+    /* ADDED: Spacing from the table */
+    margin: 20px 28px;
 }
 
 .btn-back:hover {
@@ -115,38 +259,4 @@ h2 {
     color: #2d3748;
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
-}
-
-.appointments-table .status {
-    padding: 5px 10px;
-    border-radius: 15px;
-    color: #fff;
-    font-weight: bold;
-    font-size: 0.9em;
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
-}
-
-.status-pending {
-    background-color: #f0ad4e;
-}
-.status-completed {
-    background-color: #5cb85c;
-}
-.status-cancelled {
-    background-color: #d9534f;
-}
-.status-other {
-    background-color: #777;
-}
-
-.status-form select {
-    padding: 5px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    cursor: pointer;
-}
-
-.status-form {
-    margin: 0;
 }
