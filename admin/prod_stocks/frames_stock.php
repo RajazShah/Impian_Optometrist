@@ -7,55 +7,106 @@ $updatedID = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST["action_type"]) && $_POST["action_type"] == "create") {
-        $prefix = "F";
+        $upload_ok = 1;
+        $target_path = "";
 
-        $stmt_get_last_id = $conn->prepare(
-            "SELECT ITEM_ID FROM item WHERE ITEM_ID LIKE ?
-             ORDER BY CAST(SUBSTRING(ITEM_ID, 2) AS UNSIGNED) DESC
-             LIMIT 1",
-        );
-        $like_prefix = $prefix . "%";
-        $stmt_get_last_id->bind_param("s", $like_prefix);
-        $stmt_get_last_id->execute();
-        $result = $stmt_get_last_id->get_result();
+        if (
+            isset($_FILES["item_image_new"]) &&
+            $_FILES["item_image_new"]["error"] == 0
+        ) {
+            $upload_dir = "../../images/";
+            $upload_dir_database = "/Impian_Optometrist/images/";
+            $image_name = basename($_FILES["item_image_new"]["name"]);
+            $file_extension = strtolower(
+                pathinfo($image_name, PATHINFO_EXTENSION),
+            );
 
-        $next_number = 1;
-        if ($result->num_rows > 0) {
-            $row = $result->fetch_assoc();
-            $last_id = $row["ITEM_ID"];
-            $number_part = intval(substr($last_id, 1));
-            $next_number = $number_part + 1;
-        }
-        $stmt_get_last_id->close();
+            $allowed_extensions = ["jpg", "jpeg", "png", "gif"];
+            if (!in_array($file_extension, $allowed_extensions)) {
+                $alertMessage =
+                    "Error: Only JPG, JPEG, PNG, & GIF files are allowed.";
+                $upload_ok = 0;
+            }
 
-        $item_id = $prefix . str_pad($next_number, 3, "0", STR_PAD_LEFT);
-
-        $item_name = $_POST["item_name_new"];
-        $item_brand = $_POST["item_brand_new"];
-        $item_price = $_POST["item_price_new"];
-        $item_qty = $_POST["item_qty_new"];
-        $item_status = $_POST["item_status_new"];
-        $category_id = "CAT001";
-
-        $stmt = $conn->prepare("INSERT INTO item (ITEM_ID, ITEM_NAME, ITEM_BRAND, ITEM_PRICE, ITEM_QTY, ITEM_STATUS, CATEGORY_ID)
-                                VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param(
-            "sssdiss",
-            $item_id,
-            $item_name,
-            $item_brand,
-            $item_price,
-            $item_qty,
-            $item_status,
-            $category_id,
-        );
-
-        if ($stmt->execute()) {
-            $alertMessage = "Product $item_id created successfully!";
+            if ($upload_ok && $_FILES["item_image_new"]["size"] > 5000000) {
+                $alertMessage = "Error: Your file is too large (Max 5MB).";
+                $upload_ok = 0;
+            }
         } else {
-            $alertMessage = "Error creating product: " . $stmt->error;
+            $alertMessage = "Error: An image file is required.";
+            $upload_ok = 0;
         }
-        $stmt->close();
+
+        if ($upload_ok) {
+            $prefix = "F";
+
+            $stmt_get_last_id = $conn->prepare(
+                "SELECT ITEM_ID FROM item WHERE ITEM_ID LIKE ?
+                 ORDER BY CAST(SUBSTRING(ITEM_ID, 2) AS UNSIGNED) DESC
+                 LIMIT 1",
+            );
+            $like_prefix = $prefix . "%";
+            $stmt_get_last_id->bind_param("s", $like_prefix);
+            $stmt_get_last_id->execute();
+            $result = $stmt_get_last_id->get_result();
+
+            $next_number = 1;
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                $last_id = $row["ITEM_ID"];
+                $number_part = intval(substr($last_id, strlen($prefix)));
+                $next_number = $number_part + 1;
+            }
+            $stmt_get_last_id->close();
+
+            $item_id = $prefix . str_pad($next_number, 3, "0", STR_PAD_LEFT);
+
+            $new_file_name = $item_id . "." . $file_extension;
+            $target_path = $upload_dir . $new_file_name;
+            $target_path_database = $upload_dir_database . $new_file_name;
+
+            if (
+                !move_uploaded_file(
+                    $_FILES["item_image_new"]["tmp_name"],
+                    $target_path,
+                )
+            ) {
+                $alertMessage =
+                    "Error: There was an error uploading your file.";
+                $upload_ok = 0;
+            }
+        }
+
+        if ($upload_ok) {
+            $item_name = $_POST["item_name_new"];
+            $item_brand = $_POST["item_brand_new"];
+            $item_price = $_POST["item_price_new"];
+            $item_qty = $_POST["item_qty_new"];
+            $item_status = $_POST["item_status_new"];
+            $category_id = "CAT001";
+
+            $stmt = $conn->prepare("INSERT INTO item (ITEM_ID, ITEM_NAME, ITEM_BRAND, ITEM_PRICE, ITEM_QTY, ITEM_STATUS, CATEGORY_ID, ITEM_IMAGE)
+                                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param(
+                "sssdisss",
+                $item_id,
+                $item_name,
+                $item_brand,
+                $item_price,
+                $item_qty,
+                $item_status,
+                $category_id,
+                $target_path_database,
+            );
+
+            if ($stmt->execute()) {
+                $alertMessage = "Product $item_id created successfully!";
+            } else {
+                $alertMessage = "Error creating product: " . $stmt->error;
+            }
+            $stmt->close();
+        }
+
         $showAlert = true;
     } elseif (isset($_POST["item_id"])) {
         $id = $_POST["item_id"];
@@ -74,7 +125,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $row = $res->fetch_assoc();
             $qty = $row["ITEM_QTY"];
         } else {
-            $qty = 0; // Default qty if item not found (though it should be)
+            $qty = 0;
         }
         $stmt_get_qty->close();
 
@@ -86,8 +137,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         $stmt_update = $conn->prepare("UPDATE item
-                                        SET ITEM_PRICE = ?, ITEM_QTY = ?, ITEM_STATUS = ?
-                                        WHERE ITEM_ID = ?");
+                                       SET ITEM_PRICE = ?, ITEM_QTY = ?, ITEM_STATUS = ?
+                                       WHERE ITEM_ID = ?");
         $stmt_update->bind_param("diss", $newPrice, $qty, $newStatus, $id);
 
         if ($stmt_update->execute()) {
@@ -100,11 +151,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-// Get the current search query from the URL (for GET request)
 $search_query = isset($_GET["search_query"]) ? $_GET["search_query"] : "";
 $current_page_url = strtok($_SERVER["REQUEST_URI"], "?");
-
-// Get URL without query params
 ?>
 
 <!DOCTYPE html>
@@ -126,7 +174,6 @@ $current_page_url = strtok($_SERVER["REQUEST_URI"], "?");
         </div>
     </div>
 
-    <!-- START: SEARCH FORM -->
     <div class="search-container">
         <form method="GET" action="<?php echo $current_page_url; ?>">
             <label for="search_query">Search Product:</label>
@@ -137,11 +184,11 @@ $current_page_url = strtok($_SERVER["REQUEST_URI"], "?");
             <a href="<?php echo $current_page_url; ?>">Clear</a>
         </form>
     </div>
-    <!-- END: SEARCH FORM -->
 
     <div id="createFormContainer" class="create-form-container" style="display:none;">
         <h3>Create New Product</h3>
-        <form method="POST" action="<?php echo $current_page_url; ?>">
+
+        <form method="POST" action="<?php echo $current_page_url; ?>" enctype="multipart/form-data">
             <input type="hidden" name="action_type" value="create">
 
             <div class="form-group">
@@ -152,6 +199,12 @@ $current_page_url = strtok($_SERVER["REQUEST_URI"], "?");
                 <label for="item_brand_new">Product Brand:</label>
                 <input type="text" id="item_brand_new" name="item_brand_new" required>
             </div>
+
+            <div class="form-group">
+                <label for="item_image_new">Product Image:</label>
+                <input type="file" id="item_image_new" name="item_image_new" accept="image/png, image/jpeg, image/gif" required>
+            </div>
+
             <div class="form-group">
                 <label for="item_price_new">Price (RM):</label>
                 <input type="number" id="item_price_new" name="item_price_new" step="0.01" value="0.00" required>
@@ -172,13 +225,9 @@ $current_page_url = strtok($_SERVER["REQUEST_URI"], "?");
     </div>
     <div class="product-grid">
         <?php
-        // --- START: MODIFIED SELECT QUERY ---
-
         $sql = "SELECT * FROM item WHERE CATEGORY_ID = 'CAT001'";
         $params = [];
         $types = "";
-
-        // Add search conditions if a search query is provided
         if (!empty($search_query)) {
             $sql .= " AND (ITEM_ID LIKE ? OR ITEM_NAME LIKE ?)";
             $search_term = "%" . $search_query . "%";
@@ -186,11 +235,7 @@ $current_page_url = strtok($_SERVER["REQUEST_URI"], "?");
             $types .= "ss";
         }
 
-        // Add the sorting
-        // Sorts by the number part of the ID (e.g., F001, F002...)
         $sql .= " ORDER BY CAST(SUBSTRING(ITEM_ID, 2) AS UNSIGNED) ASC";
-
-        // Prepare and execute the query
         $stmt_select = $conn->prepare($sql);
 
         if (!empty($params)) {
@@ -200,11 +245,20 @@ $current_page_url = strtok($_SERVER["REQUEST_URI"], "?");
         $stmt_select->execute();
         $result = $stmt_select->get_result();
 
-        // --- END: MODIFIED SELECT QUERY ---
-
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
                 echo "<div class='product-card'>";
+
+                if (!empty($row["ITEM_IMAGE"])) {
+                    echo "<img src='" .
+                        htmlspecialchars($row["ITEM_IMAGE"]) .
+                        "' alt='" .
+                        htmlspecialchars($row["item_name"]) .
+                        "' class='product-image'>";
+                } else {
+                    echo "<div class='product-image-placeholder'>No Image</div>";
+                }
+
                 echo "<h3>" .
                     $row["ITEM_ID"] .
                     " - " .
@@ -214,7 +268,7 @@ $current_page_url = strtok($_SERVER["REQUEST_URI"], "?");
                     "Brand: " .
                     htmlspecialchars($row["ITEM_BRAND"]) .
                     "</p>";
-                // Form action URL now includes the search query to stay on the same filtered page
+
                 echo "<form method='POST' action='" .
                     htmlspecialchars(
                         $current_page_url .
@@ -228,21 +282,35 @@ $current_page_url = strtok($_SERVER["REQUEST_URI"], "?");
                         <input type='number' name='new_price' value='{$row["ITEM_PRICE"]}' required>
                       </p>";
 
-                echo "<p>Quantity: {$row["ITEM_QTY"]}
-                        <button type='submit' name='action' value='plus'>+</button>
-                        <button type='submit' name='action' value='minus'>-</button>
-                      </p>";
+                // --- START: MODIFIED QUANTITY BUTTONS ---
+                echo "<p>Quantity: <span>{$row["ITEM_QTY"]}</span>
+                                              <span class='quantity-controls'>
+                                                  <button type='submit' name='action' value='minus'>-</button>
+                                                  <button type='submit' name='action' value='plus'>+</button>
+                                              </span>
+                                            </p>";
+                // --- END: MODIFIED QUANTITY BUTTONS ---
+
+                // --- START: MODIFIED STATUS SELECT ---
+                // Add a class to the select based on its current status
+                $status_class =
+                    $row["ITEM_STATUS"] == "Available"
+                        ? "status-available"
+                        : "status-unavailable";
 
                 echo "<p>Status:
-                        <select name='new_status'>
-                            <option value='Available' " .
+                                              <select name='new_status' class='status-select " .
+                    $status_class .
+                    "' onchange='this.className=\"status-select \" + (this.value === \"Available\" ? \"status-available\" : \"status-unavailable\")'>
+                                                  <option value='Available' " .
                     ($row["ITEM_STATUS"] == "Available" ? "selected" : "") .
                     ">Available</option>
-                            <option value='Unavailable' " .
+                                                  <option value='Unavailable' " .
                     ($row["ITEM_STATUS"] == "Unavailable" ? "selected" : "") .
                     ">Unavailable</option>
-                        </select>
-                      </p>";
+                                              </select>
+                                            </p>";
+                // --- END: MODIFIED STATUS SELECT ---
 
                 echo "<input type='hidden' name='item_id' value='{$row["ITEM_ID"]}'>";
 
@@ -255,12 +323,11 @@ $current_page_url = strtok($_SERVER["REQUEST_URI"], "?");
             echo "<p>No products found.</p>";
         }
 
-        $stmt_select->close(); // Close the prepared statement
-        $conn->close(); // Close the connection
+        $stmt_select->close();
+        $conn->close();
 
         if ($showAlert) {
             $jsAlertMessage = addslashes($alertMessage);
-            // Reload the page, preserving the search query if it exists
             $reload_url =
                 $current_page_url .
                 (!empty($search_query)

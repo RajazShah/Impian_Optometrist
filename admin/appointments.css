@@ -1,3 +1,4 @@
+/* --- Global & Body --- */
 body {
     font-family:
         "Inter",
@@ -8,7 +9,8 @@ body {
         "Helvetica Neue",
         Arial,
         sans-serif;
-    background-color: #121212;
+    /* Light background to match container */
+    background-color: #f7faff;
     margin: 0;
     padding: 20px;
     display: flex;
@@ -18,6 +20,7 @@ body {
     box-sizing: border-box;
 }
 
+/* --- Main Container --- */
 .appointments-container {
     max-width: 1000px;
     width: 100%;
@@ -35,132 +38,11 @@ h2 {
     color: #1a202c;
     padding: 24px 28px;
     margin: 0;
-    /* CHANGED: Softened the heavy border */
+    /* Softened border */
     border-bottom: 1px solid #eef2f9;
 }
 
-.table-responsive {
-    overflow-x: auto;
-    padding-bottom: 8px;
-}
-
-.appointments-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 0;
-}
-
-.appointments-table th {
-    background-color: #fdfdff;
-    border: none;
-    padding: 20px 28px;
-    text-align: left;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: #718096;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.appointments-table td {
-    border: none;
-    padding: 22px 28px;
-    text-align: left;
-    font-size: 0.95rem;
-    color: #4a5568;
-    border-bottom: 1px solid #eef2f9;
-    vertical-align: middle;
-}
-
-.appointments-table tbody tr {
-    transition: background-color 0.15s ease-in-out;
-}
-
-.appointments-table tbody tr:hover {
-    background-color: #f7faff;
-    /* REMOVED: cursor: pointer; (can be misleading) */
-}
-.appointments-table tbody tr:last-child td {
-    border-bottom: none;
-}
-
-.text-primary {
-    color: #2d3748;
-    font-weight: 500;
-}
-
-/* * * --- RE-STYLED STATUS BADGES ---
- * */
-
-.appointments-table .status {
-    padding: 6px 12px;
-    border-radius: 9999px; /* Pill shape */
-    font-weight: 600;
-    font-size: 0.8rem;
-    text-shadow: none; /* Removed text shadow */
-    display: inline-block;
-    line-height: 1;
-}
-
-/* Pending (Orange/Yellow) */
-.status-pending {
-    background-color: #fffbeb;
-    color: #b45309;
-}
-/* Completed (Green) */
-.status-completed {
-    background-color: #f0fdf4;
-    color: #15803d;
-}
-/* Cancelled (Red) */
-.status-cancelled {
-    background-color: #fef2f2;
-    color: #b91c1c;
-}
-/* Other (Gray) */
-.status-other {
-    background-color: #f3f4f6;
-    color: #4b5563;
-}
-
-/* * * --- RE-STYLED STATUS DROPDOWN ---
- * */
-
-.status-form select {
-    font-family: "Inter", sans-serif;
-    font-size: 0.9rem;
-    font-weight: 600;
-    padding: 8px 12px;
-    border: 1px solid #eef2f9;
-    border-radius: 8px;
-    background-color: #ffffff;
-    color: #4a5568;
-    cursor: pointer;
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
-
-    /* Custom arrow */
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    background-size: 16px;
-    padding-right: 40px; /* Space for arrow */
-}
-
-.status-form select:focus {
-    outline: none;
-    border-color: #dbe1eb;
-    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
-}
-
-.status-form {
-    margin: 0;
-}
-
-/* --- FILTER CONTAINER STYLES --- */
-
+/* --- Filter/Search Controls --- */
 .filter-container {
     padding: 20px 28px;
     border-bottom: 1px solid #eef2f9;
@@ -213,16 +95,16 @@ h2 {
     background-color: #3182ce;
 }
 
-/* CHANGED: Made "Clear" a secondary button */
+/* Secondary "Clear" button */
 .filter-group .btn-clear {
     display: inline-block;
     text-decoration: none;
     font-family: "Inter", sans-serif;
     font-size: 0.9rem;
     font-weight: 600;
-    color: #4a5568; /* Gray text */
-    background-color: #ffffff; /* White bg */
-    border: 1px solid #eef2f9; /* Light border */
+    color: #4a5568;
+    background-color: #ffffff;
+    border: 1px solid #eef2f9;
     padding: 10px 16px;
     border-radius: 8px;
     transition: all 0.2s ease;
@@ -230,13 +112,131 @@ h2 {
 }
 
 .filter-group .btn-clear:hover {
-    background-color: #f7faff; /* Light hover */
+    background-color: #f7faff;
     border-color: #dbe1eb;
     color: #2d3748;
 }
 
-/* --- BUTTON STYLES --- */
+/* --- Table Styles --- */
+.table-responsive {
+    overflow-x: auto;
+    padding-bottom: 8px;
+}
 
+.appointments-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+.appointments-table th {
+    background-color: #fdfdff;
+    border: none;
+    padding: 20px 28px;
+    text-align: left;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.appointments-table td {
+    border: none;
+    padding: 22px 28px;
+    text-align: left;
+    font-size: 0.95rem;
+    color: #4a5568;
+    border-bottom: 1px solid #eef2f9;
+    vertical-align: middle;
+}
+
+.appointments-table tbody tr {
+    transition: background-color 0.15s ease-in-out;
+}
+
+.appointments-table tbody tr:hover {
+    background-color: #f7faff;
+}
+.appointments-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.text-primary {
+    color: #2d3748;
+    font-weight: 500;
+}
+
+/* --- Modern Status Badges --- */
+.status {
+    padding: 6px 12px;
+    border-radius: 9999px; /* Pill shape */
+    font-weight: 600;
+    font-size: 0.8rem;
+    display: inline-block;
+    line-height: 1;
+}
+
+.status-pending {
+    background-color: #fffbeb;
+    color: #b45309;
+}
+.status-processing {
+    background-color: #eef2ff;
+    color: #4338ca;
+}
+.status-shipped {
+    background-color: #f0f9ff;
+    color: #0284c7;
+}
+.status-completed {
+    background-color: #f0fdf4;
+    color: #15803d;
+}
+.status-cancelled {
+    background-color: #fef2f2;
+    color: #b91c1c;
+}
+.status-other {
+    background-color: #f3f4f6;
+    color: #4b5563;
+}
+
+/* --- Modern Status Dropdown --- */
+.status-form select {
+    font-family: "Inter", sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 8px 12px;
+    border: 1px solid #eef2f9;
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: #4a5568;
+    cursor: pointer;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+
+    /* Custom arrow */
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px; /* Space for arrow */
+}
+
+.status-form select:focus {
+    outline: none;
+    border-color: #dbe1eb;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.status-form {
+    margin: 0;
+}
+
+/* --- Back Button --- */
 .btn-back {
     display: inline-block;
     text-decoration: none;
@@ -249,7 +249,7 @@ h2 {
     padding: 10px 16px;
     border-radius: 8px;
     transition: all 0.2s ease-in-out;
-    /* ADDED: Spacing from the table */
+    /* Added spacing */
     margin: 20px 28px;
 }
 

@@ -8,7 +8,8 @@ body {
         "Helvetica Neue",
         Arial,
         sans-serif;
-    background-color: #121212;
+    /* Changed to light background */
+    background-color: #f7faff;
     margin: 0;
     padding: 20px;
     display: flex;
@@ -35,8 +36,91 @@ h2 {
     color: #1a202c;
     padding: 24px 28px;
     margin: 0;
-    border-bottom: 3px solid #eef2f9;
+    /* Softened border */
+    border-bottom: 1px solid #eef2f9;
 }
+
+/* --- SEARCH BAR STYLES --- */
+.search-container {
+    padding: 20px 28px;
+    border-bottom: 1px solid #eef2f9;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.search-container label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #4a5568;
+    flex-shrink: 0;
+}
+
+.search-container input[type="text"] {
+    font-family: "Inter", sans-serif;
+    font-size: 0.9rem;
+    padding: 10px 16px;
+    border: 1px solid #eef2f9;
+    border-radius: 8px;
+    background-color: #fdfdff;
+    color: #4a5568;
+    flex-grow: 1;
+    min-width: 200px;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.search-container input[type="text"]:focus {
+    outline: none;
+    border-color: #dbe1eb;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+/* Primary "Search" button */
+.search-container button {
+    display: inline-block;
+    text-decoration: none;
+    font-family: "Inter", sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #4299e1; /* Blue */
+    border: 1px solid #4299e1;
+    padding: 10px 16px;
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.search-container button:hover {
+    background-color: #3182ce;
+    border-color: #3182ce;
+}
+
+/* Secondary "Clear" button */
+.search-container a {
+    display: inline-block;
+    text-decoration: none;
+    font-family: "Inter", sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #4a5568; /* Dark text */
+    background-color: #ffffff; /* White bg */
+    border: 1px solid #eef2f9;
+    padding: 10px 16px;
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.search-container a:hover {
+    background-color: #f7faff;
+    border-color: #dbe1eb;
+    color: #2d3748;
+}
+/* --- END OF SEARCH STYLES --- */
 
 .table-responsive {
     overflow-x: auto;
@@ -77,7 +161,7 @@ h2 {
 
 .appointments-table tbody tr:hover {
     background-color: #f7faff;
-    cursor: pointer;
+    /* cursor: pointer; (Removed) */
 }
 .appointments-table tbody tr:last-child td {
     border-bottom: none;
@@ -107,6 +191,8 @@ h2 {
     padding: 10px 16px;
     border-radius: 8px;
     transition: all 0.2s ease-in-out;
+    /* Added spacing */
+    margin: 20px 28px;
 }
 
 .btn-back:hover {
@@ -115,76 +201,4 @@ h2 {
     color: #2d3748;
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
-}
-
-.search-container {
-    padding: 20px 28px;
-    border-bottom: 1px solid #eef2f9;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 12px;
-}
-
-.search-container label {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #4a5568;
-    flex-shrink: 0;
-}
-
-.search-container input[type="text"] {
-    font-family: "Inter", sans-serif;
-    font-size: 0.9rem;
-    padding: 10px 16px;
-    border: 1px solid #eef2f9;
-    border-radius: 8px;
-    background-color: #fdfdff;
-    color: #4a5568;
-    flex-grow: 1;
-    min-width: 200px;
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.search-container input[type="text"]:focus {
-    outline: none;
-    border-color: #dbe1eb;
-    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
-}
-
-.search-container button,
-.search-container a {
-    display: inline-block;
-    text-decoration: none;
-    font-family: "Inter", sans-serif;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #4a5568;
-    background-color: #f7faff;
-    border: 1px solid #eef2f9;
-    padding: 10px 16px;
-    border-radius: 8px;
-    transition: all 0.2s ease-in-out;
-    cursor: pointer;
-}
-
-.search-container button:hover,
-.search-container a:hover {
-    background-color: #eef2f9;
-    border-color: #dbe1eb;
-    color: #2d3748;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
-}
-
-.search-container a {
-    background-color: #ffffff;
-    color: #718096;
-}
-
-.search-container a:hover {
-    background-color: #f7faff;
-    color: #4a5568;
 }
