@@ -28,7 +28,44 @@ body.page-background {
 #frames-section,
 #contact-section,
 #clip-section {
-    display: block !important;  /* Overrides any 'display: flex' */
-    float: none !important;     /* Clears any 'float: left' */
-    width: 100%;                /* Ensures sections are full-width */
+    display: block !important;  
+    float: none !important;     
+    width: 100%;              
+}
+
+.main-slider-page h2 {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 36px;
+    font-weight: normal;
+    letter-spacing: 3px;
+    
+    display: flex;           
+    flex-direction: column;  
+    align-items: center;     
+    margin-bottom: 30px;     
+}
+
+.main-slider-page h2::before,
+.main-slider-page h2::after {
+    content: none !important; 
+    display: none !important;
+}
+
+.main-slider-page h2 .btn-see-all {
+    font-family: Arial, sans-serif;
+    font-weight: normal;
+    font-size: 14px;
+    text-decoration: none;
+    color: #555;
+    transition: color 0.3s ease;
+    
+    margin-top: 10px; 
+}
+
+.main-slider-page h2 .btn-see-all:hover {
+    color: #000;
+}
+.main-card-container {
+    background-color: #EDE8D0;
+    box-shadow: none; 
 }

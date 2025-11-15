@@ -1,0 +1,79 @@
+/* ------------------------------------------------ */
+/* --- 1. NEW STYLES FOR THE MAIN SLIDER CARD --- */
+/* ------------------------------------------------ */
+
+/* This is the white card container */
+.main-card-container {
+    width: 90%;
+    max-width: 1100px; /* Max width of the card */
+    background: #eed9c4;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    padding: 30px 40px;
+    position: relative; /* Sits on top of the hero */
+    z-index: 10;
+    overflow: hidden; /* This is the "window" for the slider */
+}
+
+/* This is the track that moves left and right */
+.main-slider-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+/* This is each "page" of the slider (Best Sellers, Frames...) */
+.main-slider-page {
+    width: 100%;
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+/* This styles the title (e.g., "BEST SELLERS") on each slide */
+.main-slider-page h2 {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 36px;
+    font-weight: normal;
+    text-align: center;
+    margin-bottom: 25px;
+    color: #000;
+}
+
+/* These are the NEW main arrows (left/right) */
+.main-slider-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 20; /* On top of the card */
+    
+    background: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.main-slider-arrow:hover {
+    background: #000;
+    color: #fff;
+}
+
+#main-arrow-left {
+    left: 20px;
+}
+
+#main-arrow-right {
+    right: 20px;
+}
+
+/* Hide arrows if they are not needed */
+.main-slider-arrow.is-hidden {
+    display: none;
+}

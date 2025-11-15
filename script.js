@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (gridFrames && leftArrowFrames && rightArrowFrames) {
         let currentIndex = 0;
-        const cardWidth = 250;
+        const cardWidth = 220;
         const cardGap = 30;
         const slideDistance = cardWidth + cardGap;
         const totalCards = gridFrames.querySelectorAll(".product-card").length;
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (gridBest && leftArrowBest && rightArrowBest) {
         let currentIndex = 0;
-        const cardWidth = 250;
+        const cardWidth = 220;
         const cardGap = 30;
         const slideDistance = cardWidth + cardGap;
         const totalCards = gridBest.querySelectorAll(".product-card").length;
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (gridContact && leftArrowContact && rightArrowContact) {
         let currentIndex = 0;
-        const cardWidth = 250;
+        const cardWidth = 220;
         const cardGap = 30;
         const slideDistance = cardWidth + cardGap;
         const totalCards = gridContact.querySelectorAll(".product-card").length;
@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (gridClip && leftArrowClip && rightArrowClip) {
         let currentIndex = 0;
-        const cardWidth = 250;
+        const cardWidth = 220;
         const cardGap = 30;
         const slideDistance = cardWidth + cardGap;
         const totalCards = gridClip.querySelectorAll(".product-card").length;
@@ -205,6 +205,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    /* --- Cart.php Shipping & Total Calculator --- */
     const subtotalSpan = document.getElementById("subtotal-price");
     const totalSpan = document.getElementById("total-price");
     const radioDelivery = document.getElementById("radio-delivery");
@@ -216,9 +217,7 @@ document.addEventListener("DOMContentLoaded", function() {
         function updateCartTotal() {
             
             const subtotal = parseFloat(subtotalSpan.dataset.value);
-            
             const deliveryFee = 10.00; 
-            
             let newTotal;
             let finalShippingFee;
 
@@ -233,7 +232,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 shippingRow.style.display = "flex"; 
                 newTotal = subtotal; 
             }
-
             totalSpan.innerText = "RM " + newTotal.toFixed(2);
         }
         
@@ -241,7 +239,7 @@ document.addEventListener("DOMContentLoaded", function() {
         radioPickup.addEventListener("change", updateCartTotal);
         updateCartTotal(); 
     }
-
+    
     const addToCartButtons = document.querySelectorAll('.btn-add-to-cart');
     
     // 2. Loop through each button and add a click listener
@@ -299,4 +297,117 @@ document.addEventListener("DOMContentLoaded", function() {
         }, 2000); // 2000 milliseconds = 2 seconds
     }
     
-}); 
+    const mainTrack = document.querySelector('.main-slider-track');
+    
+    if (mainTrack) {
+        const slides = Array.from(mainTrack.children);
+        const nextButton = document.getElementById('main-arrow-right');
+        const prevButton = document.getElementById('main-arrow-left');
+        const navLinks = document.querySelectorAll('.main-nav-link');
+        
+        // Function to move to a specific slide
+        const moveToSlide = (currentSlide, targetSlide) => {
+            if (!targetSlide) return; // Do nothing if there's no target
+            
+            const slideWidth = targetSlide.getBoundingClientRect().width;
+            const slideIndex = slides.findIndex(slide => slide === targetSlide);
+            
+            mainTrack.style.transform = 'translateX(-' + (slideWidth * slideIndex) + 'px)';
+            currentSlide.classList.remove('is-current-slide');
+            targetSlide.classList.add('is-current-slide');
+        };
+
+        // Function to update the arrows (hide/show them)
+        const updateArrows = (targetIndex) => {
+            if (targetIndex === 0) {
+                prevButton.classList.add('is-hidden');
+                nextButton.classList.remove('is-hidden');
+            } else if (targetIndex === slides.length - 1) {
+                prevButton.classList.remove('is-hidden');
+                nextButton.classList.add('is-hidden');
+            } else {
+                prevButton.classList.remove('is-hidden');
+                nextButton.classList.remove('is-hidden');
+            }
+        };
+
+        if (slides.length > 0) {
+            
+            const slideMap = {
+                '#frames-section': 1,
+                '#contact-section': 2,
+                '#clip-section': 3
+            };
+
+            const currentHash = window.location.hash;
+            let targetIndex = 0; 
+            if (currentHash && slideMap.hasOwnProperty(currentHash)) {
+                targetIndex = slideMap[currentHash];
+            }
+            
+            const targetSlide = slides[targetIndex];
+            const slideWidth = targetSlide.getBoundingClientRect().width;
+            
+            mainTrack.style.transition = 'none'; // Disable animation on load
+            mainTrack.style.transform = 'translateX(-' + (slideWidth * targetIndex) + 'px)';
+            targetSlide.classList.add('is-current-slide');
+            updateArrows(targetIndex);
+            
+            setTimeout(() => {
+                mainTrack.style.transition = 'transform 0.5s ease-in-out'; 
+            }, 50);
+        }
+
+        // When the right arrow is clicked...
+        nextButton.addEventListener('click', e => {
+            const currentSlide = mainTrack.querySelector('.is-current-slide');
+            const nextSlide = currentSlide.nextElementSibling;
+            
+            moveToSlide(currentSlide, nextSlide);
+            
+            const nextIndex = slides.findIndex(slide => slide === nextSlide);
+            updateArrows(nextIndex);
+        });
+
+        // When the left arrow is clicked...
+        prevButton.addEventListener('click', e => {
+            const currentSlide = mainTrack.querySelector('.is-current-slide');
+            const prevSlide = currentSlide.previousElementSibling;
+
+            moveToSlide(currentSlide, prevSlide);
+            
+            const prevIndex = slides.findIndex(slide => slide === prevSlide);
+            updateArrows(prevIndex);
+        });
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault(); 
+                
+                const targetIndex = parseInt(link.dataset.slide, 10);
+                const currentSlide = mainTrack.querySelector('.is-current-slide');
+                const targetSlide = slides[targetIndex];
+                
+                moveToSlide(currentSlide, targetSlide);
+                updateArrows(targetIndex);
+            });
+        });
+
+        window.addEventListener('resize', () => {
+            const currentSlide = mainTrack.querySelector('.is-current-slide');
+            
+            if (currentSlide) { 
+                const slideIndex = slides.findIndex(slide => slide === currentSlide);
+                const slideWidth = currentSlide.getBoundingClientRect().width;
+                
+                mainTrack.style.transition = 'none'; 
+                mainTrack.style.transform = 'translateX(-' + (slideWidth * slideIndex) + 'px)';
+                
+                setTimeout(() => {
+                    mainTrack.style.transition = 'transform 0.5s ease-in-out'; 
+                }, 50);
+            }
+        });
+    }
+
+});
