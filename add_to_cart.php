@@ -1,8 +1,14 @@
 <?php
 session_start();
 
+$response = [
+    'success' => false,
+    'new_cart_count' => 0
+];
+
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-    header("Location: index.php");
+    header('Content-Type: application/json');
+    echo json_encode($response);
     exit();
 }
 
@@ -19,11 +25,12 @@ if (isset($_POST['item_id'])) {
         $_SESSION['cart'][$item_id] = 1;
     }
 
-    header("Location: index.php");
-    exit();
+    $response['success'] = true;
+    $response['new_cart_count'] = array_sum($_SESSION['cart']);
     
-} else {
-    header("Location: index.php");
-    exit();
 }
+
+header('Content-Type: application/json');
+echo json_encode($response);
+exit();
 ?>

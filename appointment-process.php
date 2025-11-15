@@ -36,6 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         die("Error checking customer appointments: " . mysqli_error($conn));
     }
 
+
     $sql_insert_customer = "INSERT INTO customer_appointments (user_id, appointment_date, appointment_time, doctor, reason) VALUES (?, ?, ?, ?, ?)";
     $success_customer = false;
     if ($stmt_insert_customer = mysqli_prepare($conn, $sql_insert_customer)) {
@@ -50,43 +51,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $error_customer = mysqli_error($conn);
         }
 
-    $success_staff = true; 
-    if ($doctor === 'Dr. Liana') {
-        $staff_nric_llana = '940715102384';
-
-
-        $sql_insert_staff = "INSERT INTO staff_appointments (user_id, date, time, doctor, reason) VALUES (?, ?, ?, ?, ?)";
-        
-        if ($stmt_insert_staff = mysqli_prepare($conn, $sql_insert_staff)) {
-
-            mysqli_stmt_bind_param($stmt_insert_staff, "sssss", $staff_nric_llana, $appointment_date, $appointment_time, $doctor, $reason);
-            
-            if (mysqli_stmt_execute($stmt_insert_staff)) {
-                $success_staff = true; 
-            } else {
-                $error_staff = mysqli_stmt_error($stmt_insert_staff);
-                $success_staff = false; 
-            }
-            mysqli_stmt_close($stmt_insert_staff);
-        } else {
-            $error_staff = mysqli_error($conn);
-            $success_staff = false; 
-        }
-    }
-
     mysqli_close($conn);
 
-    // --- Check Success and Redirect ---
-    if ($success_customer && $success_staff) {
+    if ($success_customer) { 
         header("Location: customer-appointment.php");
         exit();
     } else {
         $error_message = "There was an error saving the appointment.";
         if (isset($error_customer)) {
             $error_message .= " Customer error: " . $error_customer;
-        }
-        if (isset($error_staff)) {
-            $error_message .= " Staff error: " . $error_staff;
         }
         die($error_message);
     }

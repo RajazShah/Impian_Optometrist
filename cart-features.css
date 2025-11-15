@@ -1,0 +1,60 @@
+/* --- 1. "Added to Cart" Popup Toast --- */
+.toast-popup {
+    visibility: hidden; /* Hidden by default */
+    min-width: 250px;
+    background-color: #333; /* Dark background */
+    color: #fff;
+    text-align: center;
+    border-radius: 8px;
+    padding: 16px;
+    position: fixed; /* Stays in place on the screen */
+    z-index: 101;
+    left: 50%;
+    bottom: 30px;
+    transform: translateX(-50%); /* Center the popup */
+    font-size: 17px;
+    opacity: 0; /* Start fully transparent */
+    transition: visibility 0s 2s, opacity 0.5s linear, bottom 0.5s ease-out; /* Fade out after 2s */
+}
+
+/* This class is added by JavaScript to show the popup */
+.toast-popup.show {
+    visibility: visible;
+    opacity: 1;
+    bottom: 50px; /* Animate upwards */
+    transition: opacity 0.5s linear, bottom 0.5s ease-out; /* Fade in */
+}
+
+
+/* --- 2. Cart Icon Badge --- */
+
+/* This wrapper holds the cart icon and the badge */
+.cart-icon-wrapper {
+    position: relative; /* This is essential */
+    display: inline-block;
+}
+
+/* The red circle badge */
+.cart-badge {
+    position: absolute;
+    top: -8px;       /* Position it above the icon */
+    right: -10px;    /* Position it to the right of the icon */
+    background-color: #E74C3C; /* A strong red color */
+    color: white;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    font-size: 12px;
+    border-radius: 50%; /* Makes it a perfect circle */
+    
+    /* Centering the number in the circle */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Set a fixed size */
+    width: 22px;
+    height: 22px;
+    
+    /* Add a subtle border */
+    border: 2px solid #fff;
+}

@@ -241,5 +241,62 @@ document.addEventListener("DOMContentLoaded", function() {
         radioPickup.addEventListener("change", updateCartTotal);
         updateCartTotal(); 
     }
+
+    const addToCartButtons = document.querySelectorAll('.btn-add-to-cart');
+    
+    // 2. Loop through each button and add a click listener
+    addToCartButtons.forEach(button => {
+        button.addEventListener('click', function(event) {
+            
+            // Get the item ID from the button's 'data-item-id' attribute
+            const itemId = event.target.dataset.itemId;
+            
+            if (!itemId) return; // Not a valid add to cart button
+            
+            // Create form data to send to PHP
+            const formData = new FormData();
+            formData.append('item_id', itemId);
+
+            // 3. Send the data to add_to_cart.php in the background
+            fetch('add_to_cart.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json()) // Get the JSON response from PHP
+            .then(data => {
+                
+                if (data.success) {
+                    // 4. Update the cart badge
+                    const cartBadge = document.getElementById('cart-badge-count');
+                    if (cartBadge) {
+                        cartBadge.textContent = data.new_cart_count;
+                        cartBadge.style.display = 'flex'; // Show it
+                    }
+
+                    // 5. Show the "Added to Cart" popup
+                    showToastPopup();
+
+                } else {
+                    console.error('Add to cart failed.');
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+            });
+        });
+    });
+
+    // Function to show and hide the popup
+    function showToastPopup() {
+        const toast = document.getElementById('toast-popup');
+        
+        // Add the 'show' class to make it visible
+        toast.classList.add('show');
+
+        // After 2 seconds, remove the 'show' class to fade it out
+        setTimeout(function() {
+            toast.classList.remove('show');
+        }, 2000); // 2000 milliseconds = 2 seconds
+    }
     
 }); 

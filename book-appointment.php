@@ -1,5 +1,9 @@
 <?php
 session_start();
+$cart_count = 0;
+if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
+    $cart_count = array_sum($_SESSION['cart']);
+}
 
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header("Location: index.php");
@@ -17,6 +21,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="header.css"> 
     <link rel="stylesheet" href="book-appointment-style.css"> 
+    <link rel="stylesheet" href="cart-features.css">
 </head>
 <body>
 
