@@ -1,10 +1,10 @@
 :root {
-    --bg-color: #f8f9fa; /* Lighter, standard grey */
+    --bg-color: #121212;
     --card-bg: #ffffff;
     --primary-color: #0056b3; /* A solid, professional blue */
     --primary-hover: #004494;
-    --text-color: #333;
-    --title-color: #1a1a1a;
+    --text-color: white;
+    --title-color: white;
     --danger-color: #dc3545; /* Professional red */
     --danger-hover-bg: #fdf2f3;
     --danger-hover-color: #c82333;
