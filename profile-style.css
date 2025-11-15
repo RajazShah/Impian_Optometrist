@@ -102,3 +102,65 @@
 .order-table td {
     font-size: 16px;
 }
+
+/* Profile Picture Section */
+.profile-picture-section {
+    /* .profile-section class handles the box */
+    text-align: center; 
+}
+
+/* 1. Container to position button relative to image */
+.profile-picture-container {
+    position: relative;
+    width: 150px; /* Match the image width */
+    height: 150px; /* Match the image height */
+    margin: 0 auto 20px auto; /* Center the container and add space below */
+}
+
+/* 2. Image fills the container */
+.profile-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #eee;
+    /* margin-bottom is now on the container */
+}
+
+/* 3. Reposition and style the button as an icon */
+.profile-picture-section label.btn {
+    /* Reset text and size */
+    font-size: 0; /* Hide text */
+    text-indent: -9999px; /* Hide text */
+    overflow: hidden;
+    padding: 0;
+
+    /* New icon shape */
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    
+    /* Positioning */
+    position: absolute;
+    bottom: 5px;  /* Overlap the bottom of the image */
+    right: 5px; /* Place it on the bottom-right */
+    
+    /* Appearance */
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    border: 2px solid #fff; /* White border to separate from image */
+    
+    /* Add a camera icon (SVG) */
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%23333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 55%;
+    
+    /* Use the existing button background color from .btn-secondary */
+    background-color: #eee; 
+}
+
+.profile-picture-section label.btn:hover {
+    /* Use existing hover from .btn-secondary */
+    background-color: #ddd; 
+}

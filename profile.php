@@ -15,7 +15,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || !isset($_
 $user_id = $_SESSION['id'];
 $user = null; 
 
-$sql = "SELECT first_name, last_name, email, phone_number FROM users WHERE id = ?";
+$sql = "SELECT first_name, last_name, email, phone_number, profile_image FROM users WHERE id = ?";
 if ($stmt = mysqli_prepare($conn, $sql)) {
     mysqli_stmt_bind_param($stmt, "i", $user_id);
     mysqli_stmt_execute($stmt);
@@ -73,9 +73,32 @@ mysqli_close($conn);
     </header>
 
     <main class="profile-container">
-        <h1>My Profile</h1>
-
         <div class="profile-layout">
+
+            <section class="profile-section profile-picture-section">
+            <h2>Profile Picture</h2>
+            
+            <form action="upload-profile-picture.php" method="POST" enctype="multipart/form-data">
+                <div class="profile-picture-container">
+                    
+                    <?php
+                    // We'll need to add a 'profile_image' column to your 'users' table
+                    $profile_image_path = 'images/default-profile.png'; // Default
+                    if (!empty($user['profile_image'])) {
+                        $profile_image_path = 'uploads/profiles/' . htmlspecialchars($user['profile_image']);
+                    }
+                    ?>
+                    <img src="<?php echo $profile_image_path; ?>" alt="Profile Picture" class="profile-img" id="profileImagePreview">
+                    
+                    <input type="file" id="profilePictureInput" name="profilePicture" accept="image/*" style="display: none;">
+                    
+                    <label for="profilePictureInput" class="btn btn-secondary">Upload Picture</label>
+                </div>
+                
+                <button type="submit" class="btn btn-secondary">Save Picture</button>
+                
+            </form>
+            </section>
 
             <section class="profile-section account-details">
                 <h2>Account Details</h2>
@@ -132,10 +155,8 @@ mysqli_close($conn);
                     </table>
                 <?php endif; ?>
             </section>
-            
-        </div>
-    </main>
-
-    <script src="script.js"></script> 
+        
+        </div> </main> 
+        <script src="script.js"></script> 
 </body>
 </html>

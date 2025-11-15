@@ -410,4 +410,41 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    const profilePictureInput = document.getElementById("profilePictureInput");
+    const profileImagePreview = document.getElementById("profileImagePreview"); // <-- Fixed ID
+    
+    if (profilePictureInput && profileImagePreview) {
+        profilePictureInput.addEventListener("change", function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    profileImagePreview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get the query parameters from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
+        const success = urlParams.get('upload');
+        
+        if (error) {
+            // If there's an error, show a pop-up
+            alert('Upload Error: ' + error);
+            
+            // Remove the error from the URL so it doesn't pop up again on refresh
+            window.history.replaceState(null, '', window.location.pathname);
+        }
+        
+        if (success === 'success') {
+            // If it was successful, show a success pop-up
+            alert('Profile picture updated successfully!');
+        
+            // Remove the success message from the URL
+            window.history.replaceState(null, '', window.location.pathname);
+        }
+    });
 });
