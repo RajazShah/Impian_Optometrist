@@ -1,5 +1,9 @@
 <?php
 session_start();
+$cart_count = 0;
+if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
+    $cart_count = array_sum($_SESSION['cart']);
+}
 include 'db_connect.php'; 
 
 $sort_option = $_GET['sort'] ?? 'default';
@@ -25,6 +29,7 @@ if ($sort_option === 'price_asc') {
     <link rel="stylesheet" href="all-frames.css">
     <link rel="stylesheet" href="login.css">
     <link rel="stylesheet" href="register.css">
+    <link rel="stylesheet" href="cart-features.css">
 </head>
 <body class="page-background"> 
     

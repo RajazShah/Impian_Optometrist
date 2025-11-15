@@ -1,4 +1,10 @@
-<?php session_start(); ?>
+<?php 
+session_start(); 
+$cart_count = 0;
+if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
+    $cart_count = array_sum($_SESSION['cart']);
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,6 +26,7 @@
     <link rel="stylesheet" href="profile.css">
     <link rel="stylesheet" href="checkout.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="cart-features.css">
 
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
@@ -47,7 +54,17 @@
             ?>
             <div class="user-icons-box">
                 <a href="customer-appointment.php" title="Appointment"><img src="images/appointment-icon.png" alt="Appointment"></a>
-                <a href="cart.php" title="Cart"><img src="images/bag-icon.png" alt="Cart"></a>
+                
+                <div class="cart-icon-wrapper">
+                    <a href="cart.php" title="Cart"><img src="images/bag-icon.png" alt="Cart"></a>
+                    
+                    <?php if ($cart_count > 0): ?>
+                        <div id="cart-badge-count" class="cart-badge"><?php echo $cart_count; ?></div>
+                    <?php else: ?>
+                        <div id="cart-badge-count" class="cart-badge" style="display: none;">0</div>
+                    <?php endif; ?>
+                </div>
+
                 <div class="profile-dropdown">
                     <a href="#" id="user-icon-link" title="Profile"><img src="images/user-icon.png" alt="User Profile"></a>
                     <div class="dropdown-content">
@@ -98,10 +115,7 @@
                             echo '    <p>RM ' . htmlspecialchars(number_format($row['ITEM_PRICE'], 0)) . '</p>';
                             
                             if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
-                                echo '<form action="add_to_cart.php" method="POST" class="cart-form">';
-                                echo '    <input type="hidden" name="item_id" value="' . htmlspecialchars($row['ITEM_ID']) . '">';
-                                echo '    <button type="submit" class="btn-add-to-cart">Add to Cart</button>';
-                                echo '</form>';
+                                echo '<button type="button" class="btn-add-to-cart" data-item-id="' . htmlspecialchars($row['ITEM_ID']) . '">Add to Cart</button>';
                             } else {
                                 echo '<a href="#" class="btn-add-to-cart login-trigger">Login to Add</a>';
                             }
@@ -139,10 +153,7 @@
                             echo '    <h3>' . htmlspecialchars($row['ITEM_BRAND']) . ' ' . htmlspecialchars($row['item_name']) . '</h3>';
                             echo '    <p>RM ' . htmlspecialchars(number_format($row['ITEM_PRICE'], 0)) . '</p>';
                             if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
-                                echo '<form action="add_to_cart.php" method="POST" class="cart-form">';
-                                echo '    <input type="hidden" name="item_id" value="' . htmlspecialchars($row['ITEM_ID']) . '">';
-                                echo '    <button type="submit" class="btn-add-to-cart">Add to Cart</button>';
-                                echo '</form>';
+                                echo '<button type="button" class="btn-add-to-cart" data-item-id="' . htmlspecialchars($row['ITEM_ID']) . '">Add to Cart</button>';
                             } else {
                                 echo '<a href="#" class="btn-add-to-cart login-trigger">Login to Add</a>';
                             }
@@ -178,11 +189,8 @@
                             echo '    <img src="images/' . htmlspecialchars($row['item_image']) . '" alt="' . htmlspecialchars($row['ITEM_BRAND']) . ' ' . htmlspecialchars($row['item_name']) . '">';
                             echo '    <h3>' . htmlspecialchars($row['ITEM_BRAND']) . ' ' . htmlspecialchars($row['item_name']) . '</h3>';
                             echo '    <p>RM ' . htmlspecialchars(number_format($row['ITEM_PRICE'], 0)) . '</p>';
-                            if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
-                                echo '<form action="add_to_cart.php" method="POST" class="cart-form">';
-                                echo '    <input type="hidden" name="item_id" value="' . htmlspecialchars($row['ITEM_ID']) . '">';
-                                echo '    <button type="submit" class="btn-add-to-cart">Add to Cart</button>';
-                                echo '</form>';
+                             if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
+                                echo '<button type="button" class="btn-add-to-cart" data-item-id="' . htmlspecialchars($row['ITEM_ID']) . '">Add to Cart</button>';
                             } else {
                                 echo '<a href="#" class="btn-add-to-cart login-trigger">Login to Add</a>';
                             }
@@ -218,11 +226,8 @@
                             echo '    <img src="images/' . htmlspecialchars($row['item_image']) . '" alt="' . htmlspecialchars($row['ITEM_BRAND']) . ' ' . htmlspecialchars($row['item_name']) . '">';
                             echo '    <h3>' . htmlspecialchars($row['ITEM_BRAND']) . ' ' . htmlspecialchars($row['item_name']) . '</h3>';
                             echo '    <p>RM ' . htmlspecialchars(number_format($row['ITEM_PRICE'], 0)) . '</p>';
-                            if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
-                                echo '<form action="add_to_cart.php" method="POST" class="cart-form">';
-                                echo '    <input type="hidden" name="item_id" value="' . htmlspecialchars($row['ITEM_ID']) . '">';
-                                echo '    <button type="submit" class="btn-add-to-cart">Add to Cart</button>';
-                                echo '</form>';
+                             if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
+                                echo '<button type="button" class="btn-add-to-cart" data-item-id="' . htmlspecialchars($row['ITEM_ID']) . '">Add to Cart</button>';
                             } else {
                                 echo '<a href="#" class="btn-add-to-cart login-trigger">Login to Add</a>';
                             }
@@ -282,6 +287,10 @@
                 </form> 
             </div>
         </div>
+    </div>
+
+    <div id="toast-popup" class="toast-popup">
+        Item added to cart!
     </div>
 
     <script src="script.js"></script>

@@ -80,6 +80,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $_SESSION["email"] = $email;
                         $_SESSION["first_name"] = $first_name;
                         $_SESSION["role"] = "user";
+                        
+                        $user_id = $id;
+                        
+                        $guest_cart = $_SESSION['cart'] ?? [];
+                        
+                        $sql_get_cart = "SELECT item_id, quantity FROM saved_cart WHERE user_id = ?";
+                        $db_cart = [];
+                        if ($stmt_get = mysqli_prepare($conn, $sql_get_cart)) {
+                            mysqli_stmt_bind_param($stmt_get, "i", $user_id);
+                            mysqli_stmt_execute($stmt_get);
+                            $result_cart = mysqli_stmt_get_result($stmt_get);
+                            while ($row = mysqli_fetch_assoc($result_cart)) {
+                                $db_cart[$row['item_id']] = $row['quantity'];
+                            }
+                            mysqli_stmt_close($stmt_get);
+                        }
+
+                        $merged_cart = $guest_cart;
+                        foreach ($db_cart as $item_id => $quantity) {
+                            $merged_cart[$item_id] = ($merged_cart[$item_id] ?? 0) + $quantity;
+                        }
+                        
+                        $_SESSION['cart'] = $merged_cart;
+                        
+                        $sql_delete_cart = "DELETE FROM saved_cart WHERE user_id = ?";
+                        if ($stmt_del = mysqli_prepare($conn, $sql_delete_cart)) {
+                            mysqli_stmt_bind_param($stmt_del, "i", $user_id);
+                            mysqli_stmt_execute($stmt_del);
+                            mysqli_stmt_close($stmt_del);
+                        }
                         mysqli_stmt_close($stmt_user);
                         mysqli_close($conn);
                         header("Location: index.php");

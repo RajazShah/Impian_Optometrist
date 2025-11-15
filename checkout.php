@@ -1,5 +1,9 @@
 <?php
 session_start();
+$cart_count = 0;
+if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
+    $cart_count = array_sum($_SESSION['cart']);
+}
 include 'db_connect.php'; 
 
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
@@ -64,7 +68,9 @@ $total = $subtotal + $shipping;
     
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="header.css">
-    <link rel="stylesheet" href="checkout.css"> </head>
+    <link rel="stylesheet" href="checkout.css"> 
+    <link rel="stylesheet" href="cart-features.css">
+</head>
 <body class="page-background">
 
     <header class="main-header">
