@@ -1,0 +1,161 @@
+/* --- General Page Layout --- */
+.page-background {
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.confirmation-container {
+    text-align: center;
+    max-width: 450px;
+    width: 100%;
+}
+
+h1 {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+/* --- Receipt Styling --- */
+.receipt-container {
+    width: 380px; /* Width of a thermal receipt */
+    background-color: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    margin: 30px auto;
+    font-family: 'Courier New', Courier, monospace; /* Classic receipt font */
+    color: #000;
+}
+
+.receipt-header, .receipt-title, .receipt-footer {
+    text-align: center;
+}
+
+.receipt-header h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.receipt-header p, .receipt-title p, .receipt-footer p {
+    margin: 5px 0;
+}
+
+.receipt-title p {
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.receipt-title p:last-child {
+    font-weight: normal;
+    text-align: left;
+    padding-top: 10px;
+}
+
+.shipping-address-info {
+    text-align: left;
+    margin-bottom: 20px;
+}
+.shipping-address-info p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+.receipt-body {
+    margin: 20px 0;
+}
+
+.items-table, .totals-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.items-table th {
+    text-align: left;
+    border-bottom: 1px dashed #000;
+    padding-bottom: 5px;
+}
+
+.items-table td {
+    padding: 5px 0;
+}
+
+.items-table th:nth-child(2), .items-table td:nth-child(2) {
+    text-align: center;
+    width: 40px;
+}
+.items-table th:nth-child(3), .items-table td:nth-child(3) {
+    text-align: right;
+    width: 80px;
+}
+
+.totals-table td {
+    text-align: right;
+    padding: 3px 0;
+}
+
+.totals-table .total-row td {
+    font-weight: bold;
+    font-size: 18px;
+    border-top: 1px dashed #000;
+    padding-top: 5px;
+}
+
+.btn-print, .btn-back {
+    display: inline-block;
+    padding: 12px 25px;
+    margin: 5px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-print {
+    background-color: #000;
+    color: #fff;
+    border: none;
+}
+.btn-print:hover {
+    background-color: #333;
+}
+
+.btn-back {
+    background-color: #eee;
+    color: #333;
+    border: 1px solid #ddd;
+}
+.btn-back:hover {
+    background-color: #ddd;
+}
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    .receipt-container, .receipt-container * {
+        visibility: visible;
+    }
+
+    .receipt-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        margin: 0;
+        padding: 0;
+        border: none;
+        box-shadow: none;
+        width: 100%; 
+    }
+    
+    .btn-print, .btn-back, h1, .confirmation-container > p {
+        display: none;
+    }
+}
+
