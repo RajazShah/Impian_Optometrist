@@ -77,7 +77,7 @@ try {
     $_SESSION['last_order_id'] = $new_order_id; 
     
     mysqli_close($conn);
-    header("Location: order-success.php");
+    header("Location: order-confirmation.php");
     exit();
 
 } catch (Exception $e) {

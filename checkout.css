@@ -23,14 +23,15 @@
     align-items: flex-start;
 }
 
-/* Column 1: Details/Form */
+/* --- Column 1: Details/Form --- */
 .checkout-details {
-    flex: 2; /* Takes up 2/3 of the space */
+    flex: 2; 
     background: #ffffff;
     border: 1px solid #eef2f9; 
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
     padding: 30px;
+    text-align: center; 
 }
 
 .checkout-details h2 {
@@ -75,26 +76,37 @@
     box-sizing: border-box; 
 }
 
+/* --- Payment Page QR Code --- */
+.qr-code-container {
+    margin: 25px auto;
+    width: 300px;
+}
 
-/* Column 2: Summary */
+.qr-code-container img {
+    width: 100%;
+    border: 1px solid #eee;
+}
+
+/* --- Column 2: Summary (Fixed) --- */
 .order-summary-checkout {
-    flex: 1; /* Takes up 1/3 of the space */
-    background: #ffffff;
-    border: 1px solid #eef2f9;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-    padding: 30px;
+    flex: 1; 
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    min-width: 280px; 
+    height: fit-content; 
     position: sticky;
     top: 20px; 
 }
 
 .order-summary-checkout h2 {
     font-family: 'Times New Roman', Times, serif;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: normal;
-    margin: 0;
+    margin-top: 0;
     margin-bottom: 20px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #eee;
     padding-bottom: 10px;
 }
 
@@ -106,7 +118,7 @@
     margin-bottom: 15px;
 }
 .summary-item span:first-child {
-    max-width: 70%; /* Prevent long names from overlapping */
+    max-width: 70%; 
 }
 
 .summary-row {
@@ -117,19 +129,38 @@
     margin-bottom: 15px;
 }
 
-.summary-total {
+/* Fixed Summary Total */
+.order-summary-checkout .summary-total {
     display: flex;
     justify-content: space-between;
-    font-size: 20px;
+    align-items: center; 
     font-weight: bold;
     color: #1a202c;
     margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid #ddd;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
 }
 
+.order-summary-checkout .summary-total span:first-child {
+    font-family: Arial, sans-serif;
+    font-weight: normal;
+    color: #333;
+    font-size: 16px;
+    white-space: normal;
+    text-align: left;
+}
+
+.order-summary-checkout .summary-total span:last-child {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 20px;
+    color: #000;
+    white-space: nowrap; 
+    padding-left: 10px; 
+}
+
+/* --- Button Styling --- */
+
 .btn-checkout {
-    width: 100%;
     background-color: #000;
     color: #fff;
     border: none;
@@ -138,5 +169,22 @@
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: block; 
+}
+
+.btn-checkout:hover {
+    background-color: #333;
+}
+
+.order-summary-checkout .btn-checkout {
+    width: 100%;
     margin-top: 30px;
+}
+
+.checkout-details .btn-checkout {
+    margin: 20px auto 0 auto; 
+    max-width: 400px; 
+    width: 100%; 
 }

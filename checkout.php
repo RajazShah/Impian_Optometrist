@@ -81,7 +81,7 @@ $total = $subtotal + $shipping;
         
         <div class="checkout-layout">
             
-            <form class="checkout-details" id="checkout-form" action="order-process.php" method="POST">
+            <form class="checkout-details" id="checkout-form" action="payment-step.php" method="POST">
                 <?php if ($shipping_option === 'delivery'): ?>
                     <h2>Shipping Address</h2>
                     
