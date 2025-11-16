@@ -14,7 +14,9 @@ if ($sort_option === 'price_asc') {
     $order_by = "ORDER BY ITEM_PRICE ASC";
 } else if ($sort_option === 'best_selling') {
     $order_by = "ORDER BY sales_count DESC";
-} 
+} else if ($sort_option === 'price_desc') {
+    $order_by = "ORDER BY ITEM_PRICE DESC";
+}
 ?>
 
 <!DOCTYPE html>
