@@ -43,14 +43,15 @@ $current_page_url = strtok($_SERVER["REQUEST_URI"], "?");
         <table class="appointments-table">
             <tr>
                 <th>Order ID</th>
-                <th>Customer Name</th> <th>Total Price</th>
+                <th>Customer Name</th>
+                <th>Total Price</th>
                 <th>Shipping Option</th>
                 <th>Shipping Address</th>
                 <th>Order Status</th>
                 <th>Order Date</th>
-                <th>Actions</th>
-            </tr>
+                </tr>
             <?php
+            // This JOIN is correct.
             $sql = "SELECT o.order_id, u.first_name, u.last_name, o.total_price, o.shipping_option, o.shipping_address, o.order_status, o.order_date
                     FROM orders o
                     JOIN users u ON o.user_id = u.id";
@@ -68,7 +69,8 @@ $current_page_url = strtok($_SERVER["REQUEST_URI"], "?");
             }
 
             if (!empty($filter_date)) {
-                $where_clauses[] = "o.order_date = ?";
+                // This bug fix for the date filter is still included
+                $where_clauses[] = "CAST(o.order_date AS DATE) = ?";
                 $params[] = $filter_date;
                 $types .= "s";
             }
@@ -115,20 +117,11 @@ $current_page_url = strtok($_SERVER["REQUEST_URI"], "?");
                         "</span></td>";
                     echo "<td>" . $row["order_date"] . "</td>";
 
-                    echo "<td>";
-                    if (strtolower($row["order_status"]) == "processing") {
-                        echo "<a href='move_to_sales.php?order_id=" .
-                            $row["order_id"] .
-                            "' class='btn-confirm' onclick='return confirm(\"Are you sure you want to confirm this order and move it to sales?\");'>Confirm Order</a>";
-                    } else {
-                        echo htmlspecialchars($row["order_status"]);
-                    }
-                    echo "</td>";
-
                     echo "</tr>";
                 }
             } else {
-                echo "<tr><td colspan='8'>No orders found.</td></tr>";
+                // <-- CHANGED: Colspan is now 7
+                echo "<tr><td colspan='7'>No orders found.</td></tr>";
             }
 
             $stmt_select->close();

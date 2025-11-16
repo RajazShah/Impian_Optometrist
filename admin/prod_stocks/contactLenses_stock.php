@@ -83,7 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $item_price = $_POST["item_price_new"];
             $item_qty = $_POST["item_qty_new"];
             $item_status = $_POST["item_status_new"];
-            $category_id = "CAT003";
+            $category_id = "CAT005";
 
             $stmt = $conn->prepare("INSERT INTO item (ITEM_ID, ITEM_NAME, ITEM_BRAND, ITEM_PRICE, ITEM_QTY, ITEM_STATUS, CATEGORY_ID, ITEM_IMAGE)
                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
@@ -160,14 +160,14 @@ $current_page_url = strtok($_SERVER["REQUEST_URI"], "?");
 <head>
     <meta charset="UTF-R">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Frames Stock View</title>
+    <title>Contact Lenses Stock View</title>
     <link rel="stylesheet" href="product_stocks.css">
 </head>
 <body>
 
 <div class="stock-container">
     <div class="container-header">
-        <h1>Frames Stock View</h1>
+        <h1>Contact Lenses Stock View</h1>
         <div class="header-buttons">
             <a href="../stock.html" class="btn-back">&larr; Back to Stock View</a>
             <button id="showCreateFormBtn" class="btn-create">+ Create New Product</button>
@@ -225,7 +225,7 @@ $current_page_url = strtok($_SERVER["REQUEST_URI"], "?");
     </div>
     <div class="product-grid">
         <?php
-        $sql = "SELECT * FROM item WHERE CATEGORY_ID = 'CAT003'";
+        $sql = "SELECT * FROM item WHERE CATEGORY_ID = 'CAT005'";
         $params = [];
         $types = "";
         if (!empty($search_query)) {
