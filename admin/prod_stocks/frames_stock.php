@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_FILES["item_image_new"]["error"] == 0
         ) {
             $upload_dir = "../../images/";
-            $upload_dir_database = "/Impian_Optometrist/images/";
+            $upload_dir_database = "images/"; // This is the relative path to store in DB
             $image_name = basename($_FILES["item_image_new"]["name"]);
             $file_extension = strtolower(
                 pathinfo($image_name, PATHINFO_EXTENSION),
@@ -63,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             $new_file_name = $item_id . "." . $file_extension;
             $target_path = $upload_dir . $new_file_name;
-            $target_path_database = $upload_dir_database . $new_file_name;
+            $target_path_database = $upload_dir_database . $new_file_name; // This is "images/F001.jpg"
 
             if (
                 !move_uploaded_file(
@@ -86,7 +86,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $category_id = "CAT001";
 
             $stmt = $conn->prepare("INSERT INTO item (ITEM_ID, ITEM_NAME, ITEM_BRAND, ITEM_PRICE, ITEM_QTY, ITEM_STATUS, CATEGORY_ID, ITEM_IMAGE)
-                                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->bind_param(
                 "sssdisss",
                 $item_id,
@@ -137,8 +137,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         $stmt_update = $conn->prepare("UPDATE item
-                                       SET ITEM_PRICE = ?, ITEM_QTY = ?, ITEM_STATUS = ?
-                                       WHERE ITEM_ID = ?");
+                                        SET ITEM_PRICE = ?, ITEM_QTY = ?, ITEM_STATUS = ?
+                                        WHERE ITEM_ID = ?");
         $stmt_update->bind_param("diss", $newPrice, $qty, $newStatus, $id);
 
         if ($stmt_update->execute()) {
@@ -229,7 +229,7 @@ $current_page_url = strtok($_SERVER["REQUEST_URI"], "?");
         $params = [];
         $types = "";
         if (!empty($search_query)) {
-            $sql .= " AND (ITEM_ID LIKE ? OR ITEM_NAME LIKE ?)";
+            $sql .= " AND (ITEM_ID LIKE ? OR item_name LIKE ?)"; // <-- FIX: Use item_name
             $search_term = "%" . $search_query . "%";
             array_push($params, $search_term, $search_term);
             $types .= "ss";
@@ -250,15 +250,20 @@ $current_page_url = strtok($_SERVER["REQUEST_URI"], "?");
                 echo "<div class='product-card'>";
 
                 if (!empty($row["ITEM_IMAGE"])) {
-                    echo "<img src='" .
+                    // --- FIX 1 ---
+                    // Your path in the DB is "images/F001.jpg"
+                    // We must go UP two folders, then DOWN into that path.
+                    echo "<img src='../../" .
                         htmlspecialchars($row["ITEM_IMAGE"]) .
                         "' alt='" .
-                        htmlspecialchars($row["item_name"]) .
+                        htmlspecialchars($row["item_name"]) . // <-- FIX 2: Use item_name
                         "' class='product-image'>";
                 } else {
                     echo "<div class='product-image-placeholder'>No Image</div>";
                 }
 
+                // --- FIX 3 ---
+                // Use item_name here as well
                 echo "<h3>" .
                     $row["ITEM_ID"] .
                     " - " .
@@ -282,35 +287,30 @@ $current_page_url = strtok($_SERVER["REQUEST_URI"], "?");
                         <input type='number' name='new_price' value='{$row["ITEM_PRICE"]}' required>
                       </p>";
 
-                // --- START: MODIFIED QUANTITY BUTTONS ---
                 echo "<p>Quantity: <span>{$row["ITEM_QTY"]}</span>
-                                              <span class='quantity-controls'>
-                                                  <button type='submit' name='action' value='minus'>-</button>
-                                                  <button type='submit' name='action' value='plus'>+</button>
-                                              </span>
-                                            </p>";
-                // --- END: MODIFIED QUANTITY BUTTONS ---
+                                        <span class='quantity-controls'>
+                                            <button type='submit' name='action' value='minus'>-</button>
+                                            <button type='submit' name='action' value='plus'>+</button>
+                                        </span>
+                                    </p>";
 
-                // --- START: MODIFIED STATUS SELECT ---
-                // Add a class to the select based on its current status
                 $status_class =
                     $row["ITEM_STATUS"] == "Available"
                         ? "status-available"
                         : "status-unavailable";
 
                 echo "<p>Status:
-                                              <select name='new_status' class='status-select " .
+                                            <select name='new_status' class='status-select " .
                     $status_class .
                     "' onchange='this.className=\"status-select \" + (this.value === \"Available\" ? \"status-available\" : \"status-unavailable\")'>
-                                                  <option value='Available' " .
+                                                <option value='Available' " .
                     ($row["ITEM_STATUS"] == "Available" ? "selected" : "") .
                     ">Available</option>
-                                                  <option value='Unavailable' " .
+                                                <option value='Unavailable' " .
                     ($row["ITEM_STATUS"] == "Unavailable" ? "selected" : "") .
                     ">Unavailable</option>
-                                              </select>
-                                            </p>";
-                // --- END: MODIFIED STATUS SELECT ---
+                                            </select>
+                                        </p>";
 
                 echo "<input type='hidden' name='item_id' value='{$row["ITEM_ID"]}'>";
 
@@ -342,6 +342,8 @@ $current_page_url = strtok($_SERVER["REQUEST_URI"], "?");
 <script>
     document.getElementById('showCreateFormBtn').addEventListener('click', function() {
         var form = document.getElementById('createFormContainer');
+        // --- FIX 4 ---
+        // Removed the extra dot from form..style
         if (form.style.display === 'none') {
             form.style.display = 'block';
             this.textContent = 'Cancel';
