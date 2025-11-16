@@ -242,36 +242,30 @@ document.addEventListener("DOMContentLoaded", function() {
     
     const addToCartButtons = document.querySelectorAll('.btn-add-to-cart');
     
-    // 2. Loop through each button and add a click listener
     addToCartButtons.forEach(button => {
         button.addEventListener('click', function(event) {
             
-            // Get the item ID from the button's 'data-item-id' attribute
             const itemId = event.target.dataset.itemId;
             
-            if (!itemId) return; // Not a valid add to cart button
+            if (!itemId) return; 
             
-            // Create form data to send to PHP
             const formData = new FormData();
             formData.append('item_id', itemId);
 
-            // 3. Send the data to add_to_cart.php in the background
             fetch('add_to_cart.php', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json()) // Get the JSON response from PHP
+            .then(response => response.json()) 
             .then(data => {
                 
                 if (data.success) {
-                    // 4. Update the cart badge
                     const cartBadge = document.getElementById('cart-badge-count');
                     if (cartBadge) {
                         cartBadge.textContent = data.new_cart_count;
-                        cartBadge.style.display = 'flex'; // Show it
+                        cartBadge.style.display = 'flex'; 
                     }
 
-                    // 5. Show the "Added to Cart" popup
                     showToastPopup();
 
                 } else {
@@ -284,17 +278,14 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    // Function to show and hide the popup
     function showToastPopup() {
         const toast = document.getElementById('toast-popup');
         
-        // Add the 'show' class to make it visible
         toast.classList.add('show');
 
-        // After 2 seconds, remove the 'show' class to fade it out
         setTimeout(function() {
             toast.classList.remove('show');
-        }, 2000); // 2000 milliseconds = 2 seconds
+        }, 2000); 
     }
     
     const mainTrack = document.querySelector('.main-slider-track');
@@ -305,9 +296,8 @@ document.addEventListener("DOMContentLoaded", function() {
         const prevButton = document.getElementById('main-arrow-left');
         const navLinks = document.querySelectorAll('.main-nav-link');
         
-        // Function to move to a specific slide
         const moveToSlide = (currentSlide, targetSlide) => {
-            if (!targetSlide) return; // Do nothing if there's no target
+            if (!targetSlide) return; 
             
             const slideWidth = targetSlide.getBoundingClientRect().width;
             const slideIndex = slides.findIndex(slide => slide === targetSlide);
@@ -317,7 +307,6 @@ document.addEventListener("DOMContentLoaded", function() {
             targetSlide.classList.add('is-current-slide');
         };
 
-        // Function to update the arrows (hide/show them)
         const updateArrows = (targetIndex) => {
             if (targetIndex === 0) {
                 prevButton.classList.add('is-hidden');
@@ -358,7 +347,6 @@ document.addEventListener("DOMContentLoaded", function() {
             }, 50);
         }
 
-        // When the right arrow is clicked...
         nextButton.addEventListener('click', e => {
             const currentSlide = mainTrack.querySelector('.is-current-slide');
             const nextSlide = currentSlide.nextElementSibling;
@@ -369,7 +357,6 @@ document.addEventListener("DOMContentLoaded", function() {
             updateArrows(nextIndex);
         });
 
-        // When the left arrow is clicked...
         prevButton.addEventListener('click', e => {
             const currentSlide = mainTrack.querySelector('.is-current-slide');
             const prevSlide = currentSlide.previousElementSibling;
@@ -411,7 +398,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     const profilePictureInput = document.getElementById("profilePictureInput");
-    const profileImagePreview = document.getElementById("profileImagePreview"); // <-- Fixed ID
+    const profileImagePreview = document.getElementById("profileImagePreview"); 
     
     if (profilePictureInput && profileImagePreview) {
         profilePictureInput.addEventListener("change", function(event) {
@@ -425,26 +412,21 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     }
-    document.addEventListener('DOMContentLoaded', function() {
-        // Get the query parameters from the URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const error = urlParams.get('error');
-        const success = urlParams.get('upload');
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const error = urlParams.get('error');
+    const success = urlParams.get('upload');
+    
+    if (error) {
+        alert('Upload Error: ' + error);
         
-        if (error) {
-            // If there's an error, show a pop-up
-            alert('Upload Error: ' + error);
-            
-            // Remove the error from the URL so it doesn't pop up again on refresh
-            window.history.replaceState(null, '', window.location.pathname);
-        }
-        
-        if (success === 'success') {
-            // If it was successful, show a success pop-up
-            alert('Profile picture updated successfully!');
-        
-            // Remove the success message from the URL
-            window.history.replaceState(null, '', window.location.pathname);
-        }
-    });
-});
+        window.history.replaceState(null, '', window.location.pathname);
+    }
+    
+    if (success === 'success') {
+        alert('Profile picture updated successfully!');
+    
+        window.history.replaceState(null, '', window.location.pathname);
+    }
+
+}); 

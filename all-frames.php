@@ -55,7 +55,15 @@ if ($sort_option === 'price_asc') {
             ?>
             <div class="user-icons-box">
                 <a href="customer-appointment.php" title="Appointment"><img src="images/appointment-icon.png" alt="Appointment"></a>
-                <a href="cart.php" title="Cart"><img src="images/bag-icon.png" alt="Cart"></a>
+                
+                <div class="cart-icon-wrapper">
+                    <a href="cart.php" title="Cart"><img src="images/bag-icon.png" alt="Cart"></a>
+                    <?php if ($cart_count > 0): ?>
+                        <div id="cart-badge-count" class="cart-badge"><?php echo $cart_count; ?></div>
+                    <?php else: ?>
+                        <div id="cart-badge-count" class="cart-badge" style="display: none;">0</div>
+                    <?php endif; ?>
+                </div>
                 <div class="profile-dropdown">
                     <a href="#" id="user-icon-link" title="Profile"><img src="images/user-icon.png" alt="User Profile"></a>
                     <div class="dropdown-content">
@@ -108,10 +116,7 @@ if ($sort_option === 'price_asc') {
                     echo '    <h3>' . htmlspecialchars($row['ITEM_BRAND']) . ' ' . htmlspecialchars($row['item_name']) . '</h3>';
                     echo '    <p>RM ' . htmlspecialchars(number_format($row['ITEM_PRICE'], 0)) . '</p>';
                     if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
-                        echo '<form action="add_to_cart.php" method="POST" class="cart-form">';
-                        echo '    <input type="hidden" name="item_id" value="' . htmlspecialchars($row['ITEM_ID']) . '">';
-                        echo '    <button type="submit" class="btn-add-to-cart">Add to Cart</button>';
-                        echo '</form>';
+                        echo '<button type="button" class="btn-add-to-cart" data-item-id="' . htmlspecialchars($row['ITEM_ID']) . '">Add to Cart</button>';
                     } else {
                         echo '<a href="#" class="btn-add-to-cart login-trigger">Login to Add</a>';
                     }
@@ -126,6 +131,9 @@ if ($sort_option === 'price_asc') {
         </div>
     </main>
 
+    <div id="toast-popup" class="toast-popup">
+        Item added to cart!
+    </div>
     <div id="login-modal" class="modal-overlay">
         <div class="login-container">
             <div class="auth-toggle">

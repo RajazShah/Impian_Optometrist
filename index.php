@@ -219,8 +219,6 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
                                             echo '</div>';
                                         }
                                     } else { echo '<p>No clip-ons found.</p>'; }
-                                    
-                                    // Close the connection once at the end
                                     $conn->close(); 
                                     ?>
                                 </div>

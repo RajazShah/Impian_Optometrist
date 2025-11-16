@@ -17,13 +17,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
 
-    if(strlen($first_name) < 7 || strlen($first_name) > 40){
-        echo "<script>alert('First name must be between 7 and 40 characters.'); window.history.back();</script>";
+    if(strlen($first_name) < 3 || strlen($first_name) > 40){
+        echo "<script>alert('First name must be between 3 and 40 characters.'); window.history.back();</script>";
         exit();
     }
 
-    if(strlen($last_name) < 7 || strlen($last_name) > 40){
-        echo "<script>alert('Last name must be between 7 and 40 characters.'); window.history.back();</script>";
+    if(strlen($last_name) < 3 || strlen($last_name) > 40){
+        echo "<script>alert('Last name must be between 3 and 40 characters.'); window.history.back();</script>";
         exit();
     }
 

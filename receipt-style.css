@@ -8,16 +8,18 @@
     padding: 40px;
 }
 
-.confirmation-container {
+.confirmation-container > p {
     text-align: center;
     max-width: 450px;
     width: 100%;
+    color: #fff;
 }
 
 h1 {
     font-family: 'Times New Roman', Times, serif;
     font-size: 32px;
     margin-bottom: 10px;
+    color: #fff;
 }
 
 /* --- Receipt Styling --- */

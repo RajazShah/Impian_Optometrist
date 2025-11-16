@@ -70,6 +70,7 @@ unset($_SESSION['shipping_option']); // Also clear this
     <title>Order Confirmation - Impian Optometrist</title>
     
     <link rel="stylesheet" href="receipt-style.css"> 
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="page-background">
 
@@ -85,9 +86,9 @@ unset($_SESSION['shipping_option']); // Also clear this
             </div>
 
             <div class="receipt-title">
-                <p>***********************************</p>
+                <p>********************************</p>
                 <p>SALES RECEIPT</p>
-                <p>***********************************</p>
+                <p>********************************</p>
                 <p>Invoice #: <?php echo $last_order_id; ?></p> 
             </div>
 

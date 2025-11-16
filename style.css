@@ -1,4 +1,8 @@
 /* Basic Reset and Global Styles */
+body {
+    background-color: #f4cec2;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -22,7 +26,7 @@ html {
 }
 
 body.page-background {
-    background-color: #f7faff; /* A very light blue/grey */
+    background-color: #f4cec2; /* Change this */
 }
 
 #frames-section,
@@ -68,4 +72,8 @@ body.page-background {
 .main-card-container {
     background-color: #EDE8D0;
     box-shadow: none; 
+}
+
+body.cart-page {
+    background-color: #fff;
 }

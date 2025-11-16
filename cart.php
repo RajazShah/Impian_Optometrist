@@ -65,7 +65,7 @@ $total = $subtotal + $shipping;
     <link rel="stylesheet" href="cart-style.css">
     <link rel="stylesheet" href="checkout.css">
 </head>
-<body class="page-background">
+<body class="cart-page">
     <header class="main-header">
         <div class="logo-search-container"> 
             <h1>IMPIAN OPTOMETRIST</h1>

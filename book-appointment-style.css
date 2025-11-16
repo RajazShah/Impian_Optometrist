@@ -19,7 +19,6 @@
 /* --- Appointment Booking Form Styling --- */
 .appointment-container {
     padding: 40px 20px;
-    background-color: #f4f4f4; 
     min-height: calc(100vh - 80px); 
     display: flex;
     justify-content: center;

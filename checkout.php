@@ -70,6 +70,15 @@ $total = $subtotal + $shipping;
     <link rel="stylesheet" href="header.css">
     <link rel="stylesheet" href="checkout.css"> 
     <link rel="stylesheet" href="cart-features.css">
+    <style>
+        .main-header {
+            background-color: #f4cec2;
+            border-bottom: none; 
+        }
+        .user-actions {
+            border-color: #f4cec2;
+        }
+    </style>
 </head>
 <body class="page-background">
 
