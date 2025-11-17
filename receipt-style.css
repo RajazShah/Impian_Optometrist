@@ -12,14 +12,14 @@
     text-align: center;
     max-width: 450px;
     width: 100%;
-    color: #fff;
+    color: #000000;
 }
 
 h1 {
     font-family: 'Times New Roman', Times, serif;
     font-size: 32px;
     margin-bottom: 10px;
-    color: #fff;
+    color: #000000;
 }
 
 /* --- Receipt Styling --- */

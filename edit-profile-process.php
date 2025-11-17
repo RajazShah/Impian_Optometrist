@@ -15,8 +15,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user_id = $_SESSION['id'];
 
 
-    if (strlen($first_name) < 7 || strlen($first_name) > 40 || strlen($last_name) < 7 || strlen($last_name) > 40) {
-        echo "<script>alert('First and Last Name must each be between 7 and 40 characters.'); window.history.back();</script>";
+    if (strlen($first_name) < 3 || strlen($first_name) > 40 || strlen($last_name) < 3 || strlen($last_name) > 40) {
+        echo "<script>alert('First and Last Name must each be between 3 and 40 characters.'); window.history.back();</script>";
         exit();
     }
     

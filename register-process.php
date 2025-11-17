@@ -38,8 +38,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
-    if (strlen($password) < 5 || strlen($password) > 15) {
-        echo "<script>alert('Password must be between 5 and 15 characters.'); window.history.back();</script>";
+    if (strlen($password) < 3 || strlen($password) > 15) {
+        echo "<script>alert('Password must be between 3 and 15 characters.'); window.history.back();</script>";
         exit();
     }
 

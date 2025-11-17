@@ -86,18 +86,18 @@ if (!$user) {
                         <input type="text" id="first_name" name="first_name" 
                                value="<?php echo htmlspecialchars($user['first_name']); ?>" 
                                required 
-                               minlength="7" 
+                               minlength="3" 
                                maxlength="40" 
-                               title="Must be between 7 and 40 characters">
+                               title="Must be between 3 and 40 characters">
                     </div>
                     <div class="input-group">
                         <label for="last_name">Last Name</label>
                         <input type="text" id="last_name" name="last_name" 
                                value="<?php echo htmlspecialchars($user['last_name']); ?>" 
                                required 
-                               minlength="7" 
+                               minlength="3" 
                                maxlength="40" 
-                               title="Must be between 7 and 40 characters">
+                               title="Must be between 3 and 40 characters">
                     </div>
                 </div>
 

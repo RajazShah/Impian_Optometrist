@@ -162,7 +162,6 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
                 <!-- SLIDE 3: CONTACT LENSE -->
                 <section class="main-slider-page" data-title="CONTACT LENSE">
                     <h2>CONTACT LENSE <a href="all-contact-lenses.php" class="btn-see-all">See All</a></h2>
-                    <!-- Your old Contact Lense slider goes here -->
                     <div id="contact-section" class="contact-container">
                         <div class="slider-wrapper">
                             <a href="#" id="contact-arrow-left" class="arrow left-arrow"><img src="images/back-button.png" alt="Previous"></a>
@@ -196,7 +195,6 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
                 <!-- SLIDE 4: CLIP-ON -->
                 <section class="main-slider-page" data-title="CLIP-ON">
                     <h2>CLIP-ON <a href="all-clip-ons.php" class="btn-see-all">See All</a></h2>
-                    <!-- Your old Clip-On slider goes here -->
                     <div id="clip-section" class="clip-container">
                         <div class="slider-wrapper">
                             <a href="#" id="clip-arrow-left" class="arrow left-arrow"><img src="images/back-button.png" alt="Previous"></a>
@@ -228,8 +226,8 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
                     </div>
                 </section>
 
-            </div> <!-- end .main-slider-track -->
-        </div> <!-- end .main-card-container -->
+            </div> 
+        </div> 
         
         <button id="main-arrow-right" class="main-slider-arrow">&rarr;</button>
 
@@ -252,8 +250,8 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
             <div id="register-form" style="display: none;">
                 <form action="register-process.php" method="POST">
                     <div class="form-row">
-                        <div class="input-group"><input type="text" name="first_name" placeholder="First Name" required minlength="7" maxlength="40" title="Must be between 7 and 40 characters"></div>
-                        <div class="input-group"><input type="text" name="last_name" placeholder="Last Name" required minlength="7" maxlength="40" title="Must be between 7 and 40 characters"></div>
+                        <div class="input-group"><input type="text" name="first_name" placeholder="First Name" required minlength="3" maxlength="40" title="Must be between 3 and 40 characters"></div>
+                        <div class="input-group"><input type="text" name="last_name" placeholder="Last Name" required minlength="3" maxlength="40" title="Must be between 3 and 40 characters"></div>
                     </div>
                     <div class="input-group"><input type="email" name="email" placeholder="Email" required></div>
                     <div class="input-group">
@@ -276,18 +274,18 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
                                name="password" 
                                placeholder="Password" 
                                required 
-                               minlength="5" 
+                               minlength="3" 
                                maxlength="15" 
-                               title="Must be between 5 and 15 characters">
+                               title="Must be between 3 and 15 characters">
                     </div>
                     <div class="input-group">
                         <input type="password" 
                                name="confirm_password" 
                                placeholder="Confirm Password" 
                                required 
-                               minlength="5" 
+                               minlength="3" 
                                maxlength="15" 
-                               title="Must be between 5 and 15 characters">
+                               title="Must be between 3 and 15 characters">
                     </div>
                     <button type="submit" class="btn-signin">CREATE ACCOUNT NOW</button>
                 </form> 
