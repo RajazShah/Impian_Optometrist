@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_FILES["item_image_new"]["error"] == 0
         ) {
             $upload_dir = "../../images/";
-            $upload_dir_database = "/Impian_Optometrist/images/";
+            $upload_dir_database = "images/";
             $image_name = basename($_FILES["item_image_new"]["name"]);
             $file_extension = strtolower(
                 pathinfo($image_name, PATHINFO_EXTENSION),
@@ -41,9 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $prefix = "CO";
 
             $stmt_get_last_id = $conn->prepare(
-                "SELECT ITEM_ID FROM item WHERE ITEM_ID LIKE ?
-                 ORDER BY CAST(SUBSTRING(ITEM_ID, 2) AS UNSIGNED) DESC
-                 LIMIT 1",
+                "SELECT ITEM_ID FROM item WHERE ITEM_ID LIKE ? ORDER BY CAST(SUBSTRING(ITEM_ID, 2) AS UNSIGNED) DESC LIMIT 1",
             );
             $like_prefix = $prefix . "%";
             $stmt_get_last_id->bind_param("s", $like_prefix);
@@ -85,8 +83,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $item_status = $_POST["item_status_new"];
             $category_id = "CAT003";
 
-            $stmt = $conn->prepare("INSERT INTO item (ITEM_ID, ITEM_NAME, ITEM_BRAND, ITEM_PRICE, ITEM_QTY, ITEM_STATUS, CATEGORY_ID, ITEM_IMAGE)
-                                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $conn->prepare(
+                "INSERT INTO item (ITEM_ID, ITEM_NAME, ITEM_BRAND, ITEM_PRICE, ITEM_QTY, ITEM_STATUS, CATEGORY_ID, ITEM_IMAGE) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            );
             $stmt->bind_param(
                 "sssdisss",
                 $item_id,
@@ -136,9 +135,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $qty--;
         }
 
-        $stmt_update = $conn->prepare("UPDATE item
-                                       SET ITEM_PRICE = ?, ITEM_QTY = ?, ITEM_STATUS = ?
-                                       WHERE ITEM_ID = ?");
+        $stmt_update = $conn->prepare(
+            "UPDATE item SET ITEM_PRICE = ?, ITEM_QTY = ?, ITEM_STATUS = ? WHERE ITEM_ID = ?",
+        );
         $stmt_update->bind_param("diss", $newPrice, $qty, $newStatus, $id);
 
         if ($stmt_update->execute()) {
@@ -229,7 +228,7 @@ $current_page_url = strtok($_SERVER["REQUEST_URI"], "?");
         $params = [];
         $types = "";
         if (!empty($search_query)) {
-            $sql .= " AND (ITEM_ID LIKE ? OR ITEM_NAME LIKE ?)";
+            $sql .= " AND (ITEM_ID LIKE ? OR item_name LIKE ?)";
             $search_term = "%" . $search_query . "%";
             array_push($params, $search_term, $search_term);
             $types .= "ss";
@@ -247,11 +246,29 @@ $current_page_url = strtok($_SERVER["REQUEST_URI"], "?");
 
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
+                $base_folder = "../../images/";
+                $img_src = "";
+
+                if (!empty($row["item_image"])) {
+                    $img_src = "../../" . $row["item_image"];
+                }
+
+                if (empty($img_src) || !file_exists($img_src)) {
+                    $auto_path_jpg = $base_folder . $row["ITEM_ID"] . ".jpg";
+                    $auto_path_png = $base_folder . $row["ITEM_ID"] . ".png";
+
+                    if (file_exists($auto_path_jpg)) {
+                        $img_src = $auto_path_jpg;
+                    } elseif (file_exists($auto_path_png)) {
+                        $img_src = $auto_path_png;
+                    }
+                }
+
                 echo "<div class='product-card'>";
 
-                if (!empty($row["ITEM_IMAGE"])) {
+                if (!empty($img_src) && file_exists($img_src)) {
                     echo "<img src='" .
-                        htmlspecialchars($row["ITEM_IMAGE"]) .
+                        htmlspecialchars($img_src) .
                         "' alt='" .
                         htmlspecialchars($row["item_name"]) .
                         "' class='product-image'>";
@@ -278,39 +295,32 @@ $current_page_url = strtok($_SERVER["REQUEST_URI"], "?");
                     ) .
                     "'>";
 
-                echo "<p>Price: RM
-                        <input type='number' name='new_price' value='{$row["ITEM_PRICE"]}' required>
+                echo "<p>Price: RM <input type='number' name='new_price' value='{$row["ITEM_PRICE"]}' required></p>";
+
+                echo "<p>Quantity: <span>{$row["ITEM_QTY"]}</span>
+                        <span class='quantity-controls'>
+                            <button type='submit' name='action' value='minus'>-</button>
+                            <button type='submit' name='action' value='plus'>+</button>
+                        </span>
                       </p>";
 
-                // --- START: MODIFIED QUANTITY BUTTONS ---
-                echo "<p>Quantity: <span>{$row["ITEM_QTY"]}</span>
-                                                    <span class='quantity-controls'>
-                                                        <button type='submit' name='action' value='minus'>-</button>
-                                                        <button type='submit' name='action' value='plus'>+</button>
-                                                    </span>
-                                                  </p>";
-                // --- END: MODIFIED QUANTITY BUTTONS ---
-
-                // --- START: MODIFIED STATUS SELECT ---
-                // Add a class to the select based on its current status
                 $status_class =
                     $row["ITEM_STATUS"] == "Available"
                         ? "status-available"
                         : "status-unavailable";
 
                 echo "<p>Status:
-                                                    <select name='new_status' class='status-select " .
+                        <select name='new_status' class='status-select " .
                     $status_class .
                     "' onchange='this.className=\"status-select \" + (this.value === \"Available\" ? \"status-available\" : \"status-unavailable\")'>
-                                                        <option value='Available' " .
+                            <option value='Available' " .
                     ($row["ITEM_STATUS"] == "Available" ? "selected" : "") .
                     ">Available</option>
-                                                        <option value='Unavailable' " .
+                            <option value='Unavailable' " .
                     ($row["ITEM_STATUS"] == "Unavailable" ? "selected" : "") .
                     ">Unavailable</option>
-                                                    </select>
-                                                  </p>";
-                // --- END: MODIFIED STATUS SELECT ---
+                        </select>
+                      </p>";
 
                 echo "<input type='hidden' name='item_id' value='{$row["ITEM_ID"]}'>";
 
