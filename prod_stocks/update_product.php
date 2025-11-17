@@ -1,34 +1,30 @@
 <?php
-    include '../../db_connect.php';
+// update_product.php
+include '../db_connect.php'; 
 
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = $_POST['id'];
     $newPrice = $_POST['price'];
-    $qtyChange = (int)$_POST['qtyChange'];
+    $newQty = (int)$_POST['qty'];
     $status = $_POST['status'];
 
-    // Get current quantity
-    $sql = "SELECT ITEM_QTY FROM item WHERE ITEM_ID='$id'";
-    $result = $conn->query($sql);
-    $row = $result->fetch_assoc();
-    $currentQty = $row['ITEM_QTY'];
+    if ($newQty <= 0) {
+        $newQty = 0;
+        $status = "Unavailable";
+    }
 
-    // Calculate new quantity
-    $newQty = $currentQty + $qtyChange;
-    if ($newQty < 0) $newQty = 0;
-    if ($newQty == 0) $status = "Unavailable"; // auto-set when out of stock
+    $stmt = $conn->prepare("UPDATE item SET ITEM_PRICE=?, ITEM_QTY=?, ITEM_STATUS=? WHERE ITEM_ID=?");
+    $stmt->bind_param("diss", $newPrice, $newQty, $status, $id);
 
-    // Update database
-    $update = "UPDATE item 
-                SET ITEM_PRICE='$newPrice', ITEM_QTY='$newQty', ITEM_STATUS='$status' 
-                WHERE ITEM_ID='$id'";
-    $conn->query($update);
+    if ($stmt->execute()) {
+        echo json_encode(["success" => true, "message" => "Updated successfully"]);
+    } else {
+        echo json_encode(["success" => false, "message" => "Database error"]);
+    }
 
-    // Return updated info as JSON
-    echo json_encode([
-        "newPrice" => $newPrice,
-        "newQty" => $newQty,
-        "newStatus" => $status
-    ]);
-
+    $stmt->close();
     $conn->close();
+}
 ?>
