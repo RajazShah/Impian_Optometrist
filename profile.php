@@ -82,8 +82,7 @@ mysqli_close($conn);
                 <div class="profile-picture-container">
                     
                     <?php
-                    // We'll need to add a 'profile_image' column to your 'users' table
-                    $profile_image_path = 'images/default-profile.png'; // Default
+                    $profile_image_path = 'images/default_profile_pic.jpg'; // Default
                     if (!empty($user['profile_image'])) {
                         $profile_image_path = 'uploads/profiles/' . htmlspecialchars($user['profile_image']);
                     }
