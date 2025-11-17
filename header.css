@@ -28,25 +28,36 @@
 }
 
 .search-box {
-    padding: 8px 15px;
-    border: 1.5px solid #ccc; 
-    border-radius: 5px;    
+    /* Spacing */
+    padding: 10px 20px 10px 45px; /* Extra left padding to make room for the icon */
+    width: 250px; /* Make it slightly wider */
+    
+    /* Border & Shape */
+    border: 1px solid #e0e0e0; 
+    border-radius: 50px; 
+    
     font-size: 14px;        
-    width: 200px;           
     background-color: #f9f9f9; 
+    color: #333;
     outline: none;           
-    transition: border-color 0.3s ease; 
-    -webkit-appearance: none; 
-    appearance: none;
+    
+    transition: all 0.3s ease; 
+    
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23888' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 18px center; 
 }
 
 .search-box:focus {
-    border-color: #aaa; 
     background-color: #fff; 
+    border-color: #000; 
+    width: 280px; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
 }
 
 .search-box::placeholder {
-    color: #999;
+    color: #888;
+    font-style: italic;
 }
 
 /* Navigation Links */

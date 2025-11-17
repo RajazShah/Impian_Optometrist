@@ -243,7 +243,6 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
                 <form action="login-process.php" method="POST">
                     <div class="input-group"><input type="email" name="email" placeholder="Email" required></div>
                     <div class="input-group"><input type="password" name="password" placeholder="Password" required></div>
-                    <a href="#" class="forgot-password">Forget Your Password?</a>
                     <button type="submit" class="btn-signin">SIGN IN</button>
                 </form>
             </div>
