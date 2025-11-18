@@ -8,7 +8,7 @@ body {
         "Helvetica Neue",
         Arial,
         sans-serif;
-    background-color: #121212;
+    background-color: #f7faff;
     margin: 0;
     padding: 20px;
     display: flex;
@@ -35,11 +35,9 @@ h2 {
     color: #1a202c;
     padding: 24px 28px;
     margin: 0;
-    /* CHANGED: Softened the heavy border */
     border-bottom: 1px solid #eef2f9;
 }
 
-/* --- SEARCH BAR STYLES --- */
 .search-container {
     padding: 20px 28px;
     border-bottom: 1px solid #eef2f9;
@@ -77,15 +75,14 @@ h2 {
     box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
 }
 
-/* CHANGED: This is now the primary "Search" button style */
 .search-container button {
     display: inline-block;
     text-decoration: none;
     font-family: "Inter", sans-serif;
     font-size: 0.9rem;
     font-weight: 600;
-    color: #ffffff; /* White text */
-    background-color: #4299e1; /* Blue background */
+    color: #ffffff;
+    background-color: #4299e1;
     border: 1px solid #4299e1;
     padding: 10px 16px;
     border-radius: 8px;
@@ -98,16 +95,15 @@ h2 {
     border-color: #3182ce;
 }
 
-/* CHANGED: This is now the secondary "Clear" button style */
 .search-container a {
     display: inline-block;
     text-decoration: none;
     font-family: "Inter", sans-serif;
     font-size: 0.9rem;
     font-weight: 600;
-    color: #4a5568; /* Gray text */
-    background-color: #ffffff; /* White background */
-    border: 1px solid #eef2f9; /* Light border */
+    color: #4a5568;
+    background-color: #ffffff;
+    border: 1px solid #eef2f9;
     padding: 10px 16px;
     border-radius: 8px;
     transition: all 0.2s ease-in-out;
@@ -119,7 +115,17 @@ h2 {
     border-color: #dbe1eb;
     color: #2d3748;
 }
-/* --- END OF SEARCH STYLES --- */
+
+.btn-add-new {
+    background-color: #10b981 !important;
+    border-color: #10b981 !important;
+    margin-left: auto;
+}
+
+.btn-add-new:hover {
+    background-color: #059669 !important;
+    border-color: #059669 !important;
+}
 
 .table-responsive {
     overflow-x: auto;
@@ -160,7 +166,6 @@ h2 {
 
 .appointments-table tbody tr:hover {
     background-color: #f7faff;
-    /* REMOVED: cursor: pointer; */
 }
 .appointments-table tbody tr:last-child td {
     border-bottom: none;
@@ -190,7 +195,7 @@ h2 {
     padding: 10px 16px;
     border-radius: 8px;
     transition: all 0.2s ease-in-out;
-    margin: 20px 28px; /* Added spacing */
+    margin: 20px 28px;
 }
 
 .btn-back:hover {
@@ -201,13 +206,10 @@ h2 {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
 }
 
-/* * * --- RE-STYLED ACTION BUTTONS ---
- * */
-
 .btn-resign,
 .btn-rehire {
     padding: 6px 12px;
-    border-radius: 9999px; /* Pill shape */
+    border-radius: 9999px;
     text-decoration: none;
     font-size: 0.8rem;
     font-weight: 600;
@@ -216,16 +218,97 @@ h2 {
 }
 
 .btn-resign {
-    background-color: #fef2f2; /* Light red */
-    color: #b91c1c; /* Dark red */
+    background-color: #fef2f2;
+    color: #b91c1c;
 }
 
 .btn-rehire {
-    background-color: #f0fdf4; /* Light green */
-    color: #15803d; /* Dark green */
+    background-color: #f0fdf4;
+    color: #15803d;
 }
 
 .btn-resign:hover,
 .btn-rehire:hover {
     opacity: 0.8;
+}
+
+/* --- Create Staff Form Styles --- */
+.create-form-container {
+    padding: 24px 28px;
+    background-color: #fdfdff;
+    border-bottom: 1px solid #eef2f9;
+}
+
+.create-form-container h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.25rem;
+    color: #1a202c;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 20px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #4a5568;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-family: "Inter", sans-serif;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="password"]:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+}
+
+.form-note {
+    font-size: 0.85rem;
+    color: #718096;
+    margin-top: -5px;
+    margin-bottom: 20px;
+    grid-column: 1 / -1;
+}
+
+.btn-submit-create {
+    background-color: #4299e1;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+}
+
+.btn-submit-create:hover {
+    background-color: #3182ce;
 }
