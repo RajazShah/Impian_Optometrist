@@ -15,7 +15,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_FILES["item_image_new"]["error"] == 0
         ) {
             $upload_dir = "../../images/";
-            $upload_dir_database = "images/";
             $image_name = basename($_FILES["item_image_new"]["name"]);
             $file_extension = strtolower(
                 pathinfo($image_name, PATHINFO_EXTENSION),
@@ -61,7 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             $new_file_name = $item_id . "." . $file_extension;
             $target_path = $upload_dir . $new_file_name;
-            $target_path_database = $upload_dir_database . $new_file_name;
+            $target_path_database = $new_file_name;
 
             if (
                 !move_uploaded_file(
