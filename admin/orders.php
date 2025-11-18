@@ -176,9 +176,12 @@ $current_page_url = strtok($_SERVER["REQUEST_URI"], "?");
                             $status_lower === "processing" ? "selected" : "";
                         $selected_completed =
                             $status_lower === "completed" ? "selected" : "";
+                        $selected_cancelled =
+                            $status_lower === "cancelled" ? "selected" : "";
 
                         echo "<option value='Processing' $selected_processing>Processing</option>";
                         echo "<option value='Completed' $selected_completed>Completed</option>";
+                        echo "<option value='Cancelled' $selected_cancelled>Cancelled</option>";
 
                         echo "</select>";
                         echo "</form>";
