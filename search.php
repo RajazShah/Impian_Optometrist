@@ -23,6 +23,38 @@
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     
     <style>
+        .search-header {
+            text-align: center;
+            padding: 40px 0 30px; /* Adds breathing room */
+            position: relative;
+        }
+
+        .search-header h2 {
+            font-family: 'Times New Roman', Times, serif; /* Matches your product titles */
+            font-size: 38px; /* Larger and more prominent */
+            font-weight: normal; /* Elegant look */
+            color: #222;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+
+        /* Style the specific search term differently */
+        .search-header .query-highlight {
+            font-style: italic;
+            font-weight: bold;
+            color: #000;
+            border-bottom: 2px solid #000; /* Underlines just the word */
+        }
+
+        /* Optional: A small decorative divider line below the whole title */
+        .search-header::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background-color: #333;
+            margin: 20px auto 0; /* Centers the line */
+        }
         .search-results-container {
             max-width: 1200px;
             margin: 40px auto;
@@ -142,7 +174,9 @@
         
         $search_term = "%" . $search_query . "%";
         
-        echo '<h2>Search Results for "' . htmlspecialchars($search_query) . '"</h2>';
+        echo '<div class="search-header">';
+        echo '    <h2>Search Results for <span class="query-highlight">"' . htmlspecialchars($search_query) . '"</span></h2>';
+        echo '</div>';
 
         $sql_search = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image 
                        FROM item 
