@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function() {
         };
     }
 
-    /* --- Best Selling Slider Logic (NEW) --- */
+    /* --- Best Selling Slider Logic --- */
     const gridBest = document.getElementById("best-grid");
     const leftArrowBest = document.getElementById("best-arrow-left");
     const rightArrowBest = document.getElementById("best-arrow-right");
@@ -126,28 +126,18 @@ document.addEventListener("DOMContentLoaded", function() {
     var registerForm = document.getElementById("register-form");
     var userIcon = document.getElementById("user-icon-link");
 
-    // This handles the "Login to Add" buttons on product cards
+    // Handles "Login to Add" buttons
     var loginTriggers = document.getElementsByClassName("login-trigger");
     for (var i = 0; i < loginTriggers.length; i++) {
         loginTriggers[i].onclick = function(event) {
             event.preventDefault();
-            modal.style.display = "flex";
-            loginForm.style.display = "block";
-            registerForm.style.display = "none";
-            loginToggle.classList.add("active");
-            registerToggle.classList.remove("active");
-        }
-    }
-    var userIcon = document.getElementById("user-icon-link");
-    var loginTriggers = document.getElementsByClassName("login-trigger");
-    for (var i = 0; i < loginTriggers.length; i++) {
-        loginTriggers[i].onclick = function(event) {
-            event.preventDefault(); 
-            modal.style.display = "flex";
-            loginForm.style.display = "block";
-            registerForm.style.display = "none";
-            loginToggle.classList.add("active");
-            registerToggle.classList.remove("active");
+            if(modal) {
+                modal.style.display = "flex";
+                if(loginForm) loginForm.style.display = "block";
+                if(registerForm) registerForm.style.display = "none";
+                if(loginToggle) loginToggle.classList.add("active");
+                if(registerToggle) registerToggle.classList.remove("active");
+            }
         }
     }
 
@@ -212,10 +202,9 @@ document.addEventListener("DOMContentLoaded", function() {
     const radioPickup = document.getElementById("radio-pickup");
     const shippingRow = document.getElementById("shipping-row");
     const shippingFeeSpan = document.getElementById("shipping-fee");
+
     if (subtotalSpan && radioDelivery && radioPickup) {
-        
         function updateCartTotal() {
-            
             const subtotal = parseFloat(subtotalSpan.dataset.value);
             const deliveryFee = 10.00; 
             let newTotal;
@@ -240,13 +229,12 @@ document.addEventListener("DOMContentLoaded", function() {
         updateCartTotal(); 
     }
     
+    /* --- Add To Cart Logic --- */
     const addToCartButtons = document.querySelectorAll('.btn-add-to-cart');
     
     addToCartButtons.forEach(button => {
         button.addEventListener('click', function(event) {
-            
             const itemId = event.target.dataset.itemId;
-            
             if (!itemId) return; 
             
             const formData = new FormData();
@@ -258,16 +246,13 @@ document.addEventListener("DOMContentLoaded", function() {
             })
             .then(response => response.json()) 
             .then(data => {
-                
                 if (data.success) {
                     const cartBadge = document.getElementById('cart-badge-count');
                     if (cartBadge) {
                         cartBadge.textContent = data.new_cart_count;
                         cartBadge.style.display = 'flex'; 
                     }
-
                     showToastPopup();
-
                 } else {
                     console.error('Add to cart failed.');
                 }
@@ -280,14 +265,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function showToastPopup() {
         const toast = document.getElementById('toast-popup');
-        
-        toast.classList.add('show');
-
-        setTimeout(function() {
-            toast.classList.remove('show');
-        }, 2000); 
+        if(toast) {
+            toast.classList.add('show');
+            setTimeout(function() {
+                toast.classList.remove('show');
+            }, 2000); 
+        }
     }
     
+    /* --- Main Slider Logic --- */
     const mainTrack = document.querySelector('.main-slider-track');
     
     if (mainTrack) {
@@ -321,7 +307,6 @@ document.addEventListener("DOMContentLoaded", function() {
         };
 
         if (slides.length > 0) {
-            
             const slideMap = {
                 '#frames-section': 1,
                 '#contact-section': 2,
@@ -337,7 +322,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const targetSlide = slides[targetIndex];
             const slideWidth = targetSlide.getBoundingClientRect().width;
             
-            mainTrack.style.transition = 'none'; // Disable animation on load
+            mainTrack.style.transition = 'none'; 
             mainTrack.style.transform = 'translateX(-' + (slideWidth * targetIndex) + 'px)';
             targetSlide.classList.add('is-current-slide');
             updateArrows(targetIndex);
@@ -350,9 +335,7 @@ document.addEventListener("DOMContentLoaded", function() {
         nextButton.addEventListener('click', e => {
             const currentSlide = mainTrack.querySelector('.is-current-slide');
             const nextSlide = currentSlide.nextElementSibling;
-            
             moveToSlide(currentSlide, nextSlide);
-            
             const nextIndex = slides.findIndex(slide => slide === nextSlide);
             updateArrows(nextIndex);
         });
@@ -360,9 +343,7 @@ document.addEventListener("DOMContentLoaded", function() {
         prevButton.addEventListener('click', e => {
             const currentSlide = mainTrack.querySelector('.is-current-slide');
             const prevSlide = currentSlide.previousElementSibling;
-
             moveToSlide(currentSlide, prevSlide);
-            
             const prevIndex = slides.findIndex(slide => slide === prevSlide);
             updateArrows(prevIndex);
         });
@@ -377,19 +358,22 @@ document.addEventListener("DOMContentLoaded", function() {
                 
                 moveToSlide(currentSlide, targetSlide);
                 updateArrows(targetIndex);
+                
+                // Scroll to hero section smoothly
+                const heroSection = document.querySelector('.hero-section');
+                if (heroSection) {
+                    heroSection.scrollIntoView({ behavior: 'smooth' });
+                }
             });
         });
 
         window.addEventListener('resize', () => {
             const currentSlide = mainTrack.querySelector('.is-current-slide');
-            
             if (currentSlide) { 
                 const slideIndex = slides.findIndex(slide => slide === currentSlide);
                 const slideWidth = currentSlide.getBoundingClientRect().width;
-                
                 mainTrack.style.transition = 'none'; 
                 mainTrack.style.transform = 'translateX(-' + (slideWidth * slideIndex) + 'px)';
-                
                 setTimeout(() => {
                     mainTrack.style.transition = 'transform 0.5s ease-in-out'; 
                 }, 50);
@@ -397,6 +381,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    /* --- Profile Picture Preview --- */
     const profilePictureInput = document.getElementById("profilePictureInput");
     const profileImagePreview = document.getElementById("profileImagePreview"); 
     
@@ -413,20 +398,61 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    /* --- URL Parameter Alerts (Upload/Error) --- */
     const urlParams = new URLSearchParams(window.location.search);
     const error = urlParams.get('error');
     const success = urlParams.get('upload');
     
     if (error) {
         alert('Upload Error: ' + error);
-        
         window.history.replaceState(null, '', window.location.pathname);
     }
-    
     if (success === 'success') {
         alert('Profile picture updated successfully!');
-    
         window.history.replaceState(null, '', window.location.pathname);
     }
 
-}); 
+    /* --- NEW: FORM VALIDATION LOGIC --- */
+    
+    // 1. Appointment Form Validation
+    const appointmentForm = document.querySelector('form[action="appointment-process.php"]');
+    if (appointmentForm) {
+        appointmentForm.addEventListener('submit', function(event) {
+            // Check all required inputs in this specific form
+            const requiredInputs = appointmentForm.querySelectorAll('input[required], select[required]');
+            let isEmpty = false;
+
+            requiredInputs.forEach(function(input) {
+                if (!input.value.trim()) {
+                    isEmpty = true;
+                }
+            });
+
+            if (isEmpty) {
+                event.preventDefault(); // Stop the form from submitting
+                alert("Please fill in all required fields before booking.");
+            }
+        });
+    }
+
+    // 2. Registration Form Validation (Generic for any form with class 'register-form' or action)
+    const registerFormEl = document.querySelector('form[action="register-process.php"]');
+    if (registerFormEl) {
+        registerFormEl.addEventListener('submit', function(event) {
+            const requiredInputs = registerFormEl.querySelectorAll('input[required], select[required]');
+            let isEmpty = false;
+
+            requiredInputs.forEach(function(input) {
+                if (!input.value.trim()) {
+                    isEmpty = true;
+                }
+            });
+
+            if (isEmpty) {
+                event.preventDefault(); 
+                alert("Please fill in all required fields to register.");
+            }
+        });
+    }
+
+});
