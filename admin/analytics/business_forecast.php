@@ -21,7 +21,6 @@ $period = new DatePeriod($startDate, new DateInterval("P1D"), $endDate);
 $interval = $startDate->diff($endDate);
 $historicalDays = max(1, $interval->days);
 
-// --- Fetch Data ---
 $stmt = $conn->prepare("
         SELECT DATE(order_date) as full_date, SUM(total_price) as daily_revenue
         FROM orders
@@ -37,7 +36,6 @@ while ($row = $result->fetch_assoc()) {
     $dbData[$row["full_date"]] = (float) $row["daily_revenue"];
 }
 
-// --- Process Data for Chart & Forecast ---
 $revenue_rows = [];
 $x = [];
 $y = [];
@@ -63,7 +61,6 @@ foreach ($period as $key => $date) {
 
 $avgDailyRevenue = $n > 0 ? $totalRevenue_Historical / $n : 0;
 
-// --- Linear Regression Calculation ---
 $sumX = array_sum($x);
 $sumY = array_sum($y);
 $sumXX = 0;
@@ -84,7 +81,6 @@ if ($n > 1 && $n * $sumXX - $sumX * $sumX != 0) {
     $intercept = $n > 0 ? $sumY / $n : 0;
 }
 
-// --- Stabilized Forecast Loop ---
 $projected30DayRevenue = 0;
 for ($i = 1; $i <= 30; $i++) {
     $futureX = $n + $i;
@@ -94,7 +90,6 @@ for ($i = 1; $i <= 30; $i++) {
     $projected30DayRevenue += $finalVal;
 }
 
-// --- KPI Calculations ---
 $stmt = $conn->prepare(
     "SELECT COUNT(order_id) AS totalSales FROM orders WHERE DATE(order_date) BETWEEN ? AND ?",
 );
@@ -106,7 +101,6 @@ $totalSales_Historical = $resSales["totalSales"] ?? 0;
 $avgDailySales = $n > 0 ? $totalSales_Historical / $n : 0;
 $projected30DaySales = $avgDailySales * 30;
 
-// --- Chart Data ---
 $revenueChartData = [
     "labels" => array_column($revenue_rows, "date_label"),
     "data" => array_column($revenue_rows, "daily_revenue"),
@@ -267,7 +261,6 @@ $forecastChartData = [
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
-            // --- Chart Setup ---
             const chartConfig = {
                 font: { family: "'Inter', sans-serif" },
                 plugins: { legend: { labels: { font: { size: 13 }, boxWidth: 15 } } },
@@ -336,15 +329,41 @@ $forecastChartData = [
             ); ?>;
             const rawTableData = <?php echo json_encode($revenue_rows); ?>;
 
+            const forecastSummary = [
+                ["Report Type", "Business Forecast Report"],
+                ["Historical Period", "<?php echo $dateFrom .
+                    " to " .
+                    $dateTo; ?>"],
+                ["Generated On", "<?php echo date("Y-m-d H:i:s"); ?>"],
+                [],
+                ["FORECAST METRICS", ""],
+                ["Historical Avg Daily Revenue", "RM <?php echo number_format(
+                    $avgDailyRevenue,
+                    2,
+                ); ?>"],
+                ["Historical Avg Daily Sales", "<?php echo number_format(
+                    $avgDailySales,
+                    1,
+                ); ?> units"],
+                ["Projected 30-Day Revenue", "RM <?php echo number_format(
+                    $projected30DayRevenue,
+                    2,
+                ); ?>"],
+                ["Projected 30-Day Sales", "<?php echo round(
+                    $projected30DaySales,
+                ); ?> units"],
+                ["Trend Slope (Growth Factor)", "<?php echo number_format(
+                    $slope,
+                    4,
+                ); ?>"],
+                []
+            ];
+
             createRevenueChart(initialRevenueData.labels, initialRevenueData.data);
             createForecastChart(initialForecastData.labels, initialForecastData.data);
 
-
-            // --- Pagination & Limit Logic (Strict 6 items) ---
             const itemsPerPage = 6;
             let currentPage = 1;
-
-            // Reverse logic: Newest dates first
             const displayData = [...rawTableData].reverse();
             const totalItems = displayData.length;
             const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -355,9 +374,7 @@ $forecastChartData = [
             const pageInfo = document.getElementById('page-info');
 
             function renderTable(page) {
-                // Clear existing rows
                 tableBody.innerHTML = '';
-
                 if (totalItems === 0) {
                     tableBody.innerHTML = '<tr><td colspan="2" style="text-align:center; padding:20px;">No historical data found.</td></tr>';
                     pageInfo.textContent = 'Showing 0 results';
@@ -366,58 +383,45 @@ $forecastChartData = [
                     return;
                 }
 
-                // Slice data for current page
                 const start = (page - 1) * itemsPerPage;
                 const end = start + itemsPerPage;
                 const paginatedItems = displayData.slice(start, end);
 
-                // Render 6 rows (max)
                 paginatedItems.forEach(row => {
                     const tr = document.createElement('tr');
                     const revenueFormatted = parseFloat(row.daily_revenue).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-
-                    tr.innerHTML = `
-                        <td>${row.date_label}</td>
-                        <td>${revenueFormatted}</td>
-                    `;
+                    tr.innerHTML = `<td>${row.date_label}</td><td>${revenueFormatted}</td>`;
                     tableBody.appendChild(tr);
                 });
 
-                // Update "Showing 1-6 of X" text
                 const showStart = start + 1;
                 const showEnd = Math.min(end, totalItems);
                 pageInfo.textContent = `Showing ${showStart}-${showEnd} of ${totalItems} results`;
-
-                // Handle Button States
                 btnPrev.disabled = page === 1;
                 btnNext.disabled = page === totalPages;
             }
 
-            // Button Event Listeners
             btnPrev.addEventListener('click', () => {
-                if (currentPage > 1) {
-                    currentPage--;
-                    renderTable(currentPage);
-                }
+                if (currentPage > 1) { currentPage--; renderTable(currentPage); }
             });
-
             btnNext.addEventListener('click', () => {
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    renderTable(currentPage);
-                }
+                if (currentPage < totalPages) { currentPage++; renderTable(currentPage); }
             });
-
-            // Initialize Table
             renderTable(currentPage);
 
+            function exportToCSV(tableData, summaryData, filename) {
+                let csvContent = "";
 
-            // --- Export Logic ---
-            function exportToCSV(data, filename) {
+                summaryData.forEach(row => {
+                    const rowString = row.map(field => `"${String(field).replace(/"/g, '""')}"`).join(",");
+                    csvContent += rowString + "\n";
+                });
+
+                csvContent += "DAILY DATA BREAKDOWN\n";
                 const headers = ["Date", "Daily Revenue (RM)"];
-                let csvContent = headers.join(",") + "\n";
+                csvContent += headers.join(",") + "\n";
 
-                data.forEach(row => {
+                tableData.forEach(row => {
                     const date = `"${row.date_label.replace(/"/g, '""')}"`;
                     const revenue = row.daily_revenue;
                     csvContent += [date, revenue].join(",") + "\n";
@@ -435,8 +439,9 @@ $forecastChartData = [
             document.getElementById('export-btn').addEventListener('click', () => {
                 const dateFrom = "<?php echo htmlspecialchars($dateFrom); ?>";
                 const dateTo = "<?php echo htmlspecialchars($dateTo); ?>";
-                const filename = `forecast_data_${dateFrom}_to_${dateTo}.csv`;
-                exportToCSV(displayData, filename);
+                const filename = `forecast_report_${dateFrom}_to_${dateTo}.csv`;
+
+                exportToCSV(displayData, forecastSummary, filename);
             });
         });
     </script>
