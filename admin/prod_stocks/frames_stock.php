@@ -158,14 +158,14 @@ $current_page_url = strtok($_SERVER["REQUEST_URI"], "?");
 <head>
     <meta charset="UTF-R">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Frames Stock View</title>
+    <title>Frame Stock View</title>
     <link rel="stylesheet" href="product_stocks.css">
 </head>
 <body>
 
 <div class="stock-container">
     <div class="container-header">
-        <h1>Frames Stock View</h1>
+        <h1>Frame Stock View</h1>
         <div class="header-buttons">
             <a href="../stock.html" class="btn-back">&larr; Back to Stock View</a>
             <button id="showCreateFormBtn" class="btn-create">+ Create New Product</button>
@@ -294,7 +294,7 @@ $current_page_url = strtok($_SERVER["REQUEST_URI"], "?");
                     ) .
                     "'>";
 
-                echo "<p>Price: RM <input type='number' name='new_price' value='{$row["ITEM_PRICE"]}' required></p>";
+                echo "<p>Price: RM <input type='number' name='new_price' value='{$row["ITEM_PRICE"]}' step='0.01' required></p>";
 
                 echo "<p>Quantity: <span>{$row["ITEM_QTY"]}</span>
                         <span class='quantity-controls'>

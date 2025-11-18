@@ -294,7 +294,7 @@ $current_page_url = strtok($_SERVER["REQUEST_URI"], "?");
                     ) .
                     "'>";
 
-                echo "<p>Price: RM <input type='number' name='new_price' value='{$row["ITEM_PRICE"]}' required></p>";
+                echo "<p>Price: RM <input type='number' name='new_price' value='{$row["ITEM_PRICE"]}' step='0.01' required></p>";
 
                 echo "<p>Quantity: <span>{$row["ITEM_QTY"]}</span>
                         <span class='quantity-controls'>
