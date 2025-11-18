@@ -55,20 +55,36 @@ try {
     $sql_items_insert = "INSERT INTO order_items (order_id, product_id, quantity, price_per_item) VALUES (?, ?, ?, ?)";
     $stmt_items_insert = mysqli_prepare($conn, $sql_items_insert);
     
-    $sql_update_sales = "UPDATE item SET sales_count = sales_count + ? WHERE ITEM_ID = ?";
-    $stmt_update_sales = mysqli_prepare($conn, $sql_update_sales);
+    // Prepare statement to deduct stock and update sales count
+    $sql_update_stock = "UPDATE item 
+                         SET sales_count = sales_count + ?, 
+                             ITEM_QTY = ITEM_QTY - ? 
+                         WHERE ITEM_ID = ?";
+    $stmt_update_stock = mysqli_prepare($conn, $sql_update_stock);
+
+    // Prepare statement to mark item as Unavailable if Qty hits 0
+    $sql_check_status = "UPDATE item SET ITEM_STATUS = 'Unavailable' WHERE ITEM_ID = ? AND ITEM_QTY <= 0";
+    $stmt_check_status = mysqli_prepare($conn, $sql_check_status);
 
     foreach ($cart as $item_id => $quantity) {
         $price = $item_prices[$item_id];
         
+        // 1. Insert into order_items table
         mysqli_stmt_bind_param($stmt_items_insert, "isid", $new_order_id, $item_id, $quantity, $price);
         mysqli_stmt_execute($stmt_items_insert);
         
-        mysqli_stmt_bind_param($stmt_update_sales, "is", $quantity, $item_id);
-        mysqli_stmt_execute($stmt_update_sales);
+        // 2. Decrease Stock (ITEM_QTY) and Increase Sales (sales_count)
+        mysqli_stmt_bind_param($stmt_update_stock, "isi", $quantity, $quantity, $item_id);
+        mysqli_stmt_execute($stmt_update_stock);
+
+        // 3. If stock reached 0, update status to Unavailable
+        mysqli_stmt_bind_param($stmt_check_status, "s", $item_id);
+        mysqli_stmt_execute($stmt_check_status);
     }
+    
     mysqli_stmt_close($stmt_items_insert);
-    mysqli_stmt_close($stmt_update_sales); 
+    mysqli_stmt_close($stmt_update_stock);
+    mysqli_stmt_close($stmt_check_status);
     
     mysqli_commit($conn);
     

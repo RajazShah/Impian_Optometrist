@@ -24,23 +24,46 @@ if ($stmt = mysqli_prepare($conn, $sql)) {
     mysqli_stmt_close($stmt);
 }
 
+// --- PAGINATION LOGIC ---
+$items_per_page = 5;
+// Get current page from URL, default to 1 if not set
+$page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
+if ($page < 1) $page = 1;
+
+// Calculate the offset for the SQL query
+$offset = ($page - 1) * $items_per_page;
+
+// 1. Get total number of orders to calculate total pages
+$total_orders = 0;
+$sql_count = "SELECT COUNT(*) as total FROM orders WHERE user_id = ?";
+if ($stmt_count = mysqli_prepare($conn, $sql_count)) {
+    mysqli_stmt_bind_param($stmt_count, "i", $user_id);
+    mysqli_stmt_execute($stmt_count);
+    $result_count = mysqli_stmt_get_result($stmt_count);
+    $row_count = mysqli_fetch_assoc($result_count);
+    $total_orders = $row_count['total'];
+    mysqli_stmt_close($stmt_count);
+}
+$total_pages = ceil($total_orders / $items_per_page);
+
+// 2. Get the specific 5 orders for this page
 $orders = []; 
 $sql_orders = "SELECT order_id, order_date, total_price, order_status 
                FROM orders 
                WHERE user_id = ? 
-               ORDER BY order_date DESC"; 
+               ORDER BY order_date DESC 
+               LIMIT ? OFFSET ?"; 
 
 if ($stmt_orders = mysqli_prepare($conn, $sql_orders)) {
-    mysqli_stmt_bind_param($stmt_orders, "i", $user_id);
+    // "iii" means three integers: user_id, limit, and offset
+    mysqli_stmt_bind_param($stmt_orders, "iii", $user_id, $items_per_page, $offset);
     
     mysqli_stmt_execute($stmt_orders);
-
     $result_orders = mysqli_stmt_get_result($stmt_orders);
     
     while ($order = mysqli_fetch_assoc($result_orders)) {
         $orders[] = $order;
     }
-    
     mysqli_stmt_close($stmt_orders);
 }
 
@@ -152,6 +175,15 @@ mysqli_close($conn);
                             <?php endforeach; ?>
                         </tbody>
                     </table>
+                    <div class="pagination" style="margin-top: 20px; display: flex; gap: 10px;">
+                        <?php if ($page > 1): ?>
+                            <a href="profile.php?page=<?php echo $page - 1; ?>" class="btn btn-secondary">&laquo; Previous</a>
+                        <?php endif; ?>
+
+                        <?php if ($page < $total_pages): ?>
+                            <a href="profile.php?page=<?php echo $page + 1; ?>" class="btn btn-secondary">Next &raquo;</a>
+                        <?php endif; ?>
+                    </div>
                 <?php endif; ?>
             </section>
         

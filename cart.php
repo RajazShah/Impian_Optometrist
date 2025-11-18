@@ -66,6 +66,15 @@ $total = $subtotal + $shipping;
     <link rel="stylesheet" href="checkout.css">
 </head>
 <body class="cart-page">
+    <?php if (isset($_GET['error'])): ?>
+        <script>
+            // This creates a standard browser popup alert
+            alert("<?php echo htmlspecialchars($_GET['error']); ?>");
+            
+            // Optional: Clean the URL after showing the alert so it doesn't show again on refresh
+            window.history.replaceState(null, null, window.location.pathname);
+        </script>
+    <?php endif; ?>
     <header class="main-header">
         <div class="logo-search-container"> 
             <h1>IMPIAN OPTOMETRIST</h1>

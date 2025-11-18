@@ -14,15 +14,28 @@ $item_ids = array_keys($cart);
 $placeholders = implode(',', array_fill(0, count($item_ids), '?'));
 $types = str_repeat('s', count($item_ids));
 
-$sql_items = "SELECT ITEM_ID, ITEM_PRICE FROM item WHERE ITEM_ID IN ($placeholders)";
+$sql_items = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, ITEM_QTY FROM item WHERE ITEM_ID IN ($placeholders)";
 $stmt_items = mysqli_prepare($conn, $sql_items);
 mysqli_stmt_bind_param($stmt_items, $types, ...$item_ids);
 mysqli_stmt_execute($stmt_items);
 $result_items = mysqli_stmt_get_result($stmt_items);
 
 $subtotal = 0;
+
 while ($row = mysqli_fetch_assoc($result_items)) {
-    $subtotal += $row['ITEM_PRICE'] * $cart[$row['ITEM_ID']];
+    $id = $row['ITEM_ID'];
+    $requested_qty = $cart[$id];
+    $available_stock = $row['ITEM_QTY'];
+
+    if ($available_stock < $requested_qty) {
+        $item_name = $row['ITEM_BRAND'] . " " . $row['item_name'];
+
+        $error_msg = urlencode("Only $available_stock left for $item_name. Please lower quantity.");
+        header("Location: cart.php?error=" . $error_msg);
+        exit();
+    }
+
+    $subtotal += $row['ITEM_PRICE'] * $requested_qty;
 }
 mysqli_stmt_close($stmt_items);
 mysqli_close($conn);
