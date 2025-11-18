@@ -176,23 +176,25 @@ mysqli_close($conn);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Confirmation - Impian Optometrist</title>
     
+
     <link rel="stylesheet" href="receipt-style.css"> 
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="page-background">
 
     <div class="confirmation-container">
-        <h1>Thank You For Your Order!</h1>
-        <p>Your order (ID: #<?php echo $last_order_id; ?>) has been confirmed.</p>
+        <h1 style="text-align: center; width: 100%; display: block; margin-left: auto; margin-right: auto;">Thank You For Your Order!</h1>
+        <p style="text-align: center; width: 100%; display: block;">Your order (ID: #<?php echo $last_order_id; ?>) has been confirmed.</p>
 
         <?php if ($email_success): ?>
-            <p class="email-success">A confirmation receipt has been sent to <strong><?php echo htmlspecialchars(
-                $customer_email,
-            ); ?></strong>.</p>
+            <p class="email-success" style="text-align: center;">A confirmation receipt has been sent to <strong><?php echo htmlspecialchars($customer_email); ?>
+        </strong>.</p>
         <?php else: ?>
-            <p class="email-error">We've confirmed your order, but could not send a confirmation email. Please print this page for your records.</p>
-            <?php endif; ?>
-        <div class="receipt-container">
+            <p class="email-error" style="text-align: center;">We've confirmed your order, but could not send a confirmation email...</p>
+        <?php endif; ?>
+            
+            <div class="receipt-container"> 
+            
             <div class="receipt-header">
                 <h2>IMPIAN OPTOMETRIST</h2>
                 <p>6, Jalan Suadamai 1/2, Tun Hussein Onn</p>
@@ -267,13 +269,13 @@ mysqli_close($conn);
                 <p>***********************************</p>
                 <p>Thank You!</p>
             </div>
-        </div>
 
-        <button id="print-button" class="btn-print">Print Receipt</button>
-        <a href="index.php" class="btn-back">Back to Home</a>
-    </div>
-
-    <script>
+            <div class="button-wrapper">
+                <button id="print-button" class="btn-print">Print Receipt</button>
+                <a href="index.php" class="btn-back">Back to Home</a>
+            </div>
+            
+        </div> </div> <script>
         document.getElementById('print-button').addEventListener('click', function() {
             window.print();
         });

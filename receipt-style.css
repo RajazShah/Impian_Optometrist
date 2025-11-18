@@ -1,163 +1,185 @@
 /* --- General Page Layout --- */
 .page-background {
-    background-color: #f4f4f4;
+    background-color: #f4cec2 !important; 
     font-family: Arial, sans-serif;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 40px;
+    padding: 40px 0;
 }
 
-.confirmation-container > p {
-    text-align: center;
-    max-width: 450px;
+/* --- Main Container --- */
+.confirmation-container {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;    
+    justify-content: center;
     width: 100%;
-    color: #000000;
-}
-
-h1 {
-    font-family: 'Times New Roman', Times, serif;
-    font-size: 32px;
-    margin-bottom: 10px;
-    color: #000000;
-}
-
-/* --- Receipt Styling --- */
-.receipt-container {
-    width: 380px; /* Width of a thermal receipt */
-    background-color: #fff;
-    border: 1px solid #ddd;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    padding: 25px;
-    margin: 30px auto;
-    font-family: 'Courier New', Courier, monospace; /* Classic receipt font */
-    color: #000;
-}
-
-.receipt-header, .receipt-title, .receipt-footer {
+    max-width: 600px;
+    margin: 0 auto;
     text-align: center;
 }
 
-.receipt-header h2 {
-    margin: 0;
-    font-size: 20px;
+/* --- Headings & Text --- */
+.confirmation-container h1 {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 36px;
+    margin-bottom: 15px;
+    color: #000;
+    font-weight: bold;
+    text-align: center; /* Ensure text is centered */
 }
 
-.receipt-header p, .receipt-title p, .receipt-footer p {
-    margin: 5px 0;
+.confirmation-container p {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 5px;
+    line-height: 1.5;
+    text-align: center; /* Ensure text is centered */
+}
+
+.email-success, .email-error {
+    margin-bottom: 25px !important;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* --- The White Receipt Box --- */
+.receipt-container {
+    background-color: #fff; 
+    width: 400px;           
+    padding: 40px;
+    margin: 30px auto;      
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+    border-radius: 5px;     
+    text-align: center;     
+}
+
+/* Receipt Internals */
+.receipt-header h2 {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    font-size: 22px;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+.receipt-header p {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    margin: 2px 0;
+}
+
+.receipt-title {
+    margin: 20px 0;
+    border-top: 1px dashed #000;
+    border-bottom: 1px dashed #000;
+    padding: 10px 0;
 }
 
 .receipt-title p {
+    font-family: 'Courier New', Courier, monospace;
     font-weight: bold;
-    letter-spacing: 1px;
+    margin: 5px 0;
 }
 
-.receipt-title p:last-child {
-    font-weight: normal;
-    text-align: left;
-    padding-top: 10px;
-}
-
-.shipping-address-info {
-    text-align: left;
-    margin-bottom: 20px;
-}
-.shipping-address-info p {
-    margin: 0;
-    line-height: 1.5;
-}
-
-.receipt-body {
-    margin: 20px 0;
-}
-
+/* Tables inside receipt */
 .items-table, .totals-table {
     width: 100%;
     border-collapse: collapse;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
 }
 
 .items-table th {
-    text-align: left;
     border-bottom: 1px dashed #000;
-    padding-bottom: 5px;
+    padding: 5px 0;
+    text-align: left;
 }
 
 .items-table td {
-    padding: 5px 0;
+    padding: 8px 0;
+    vertical-align: top;
 }
 
+/* Align columns */
 .items-table th:nth-child(2), .items-table td:nth-child(2) {
-    text-align: center;
-    width: 40px;
+    text-align: center; 
 }
 .items-table th:nth-child(3), .items-table td:nth-child(3) {
     text-align: right;
-    width: 80px;
 }
 
 .totals-table td {
     text-align: right;
-    padding: 3px 0;
+    padding: 4px 0;
 }
 
 .totals-table .total-row td {
-    font-weight: bold;
-    font-size: 18px;
     border-top: 1px dashed #000;
-    padding-top: 5px;
+    padding-top: 10px;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* --- Buttons Area (Centered with Flexbox) --- */
+.button-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; 
+    margin-top: 25px;
+    width: 100%;
 }
 
 .btn-print, .btn-back {
-    display: inline-block;
-    padding: 12px 25px;
-    margin: 5px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    
+    width: 145px; 
+    height: 40px;
+    
     border-radius: 30px;
-    text-decoration: none;
     font-weight: bold;
+    font-size: 13px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    border: none;
+    text-decoration: none;
+    text-align: center;
 }
 
 .btn-print {
     background-color: #000;
     color: #fff;
-    border: none;
-}
-.btn-print:hover {
-    background-color: #333;
 }
 
 .btn-back {
     background-color: #eee;
     color: #333;
-    border: 1px solid #ddd;
-}
-.btn-back:hover {
-    background-color: #ddd;
 }
 
+.btn-print:hover { background-color: #333; }
+.btn-back:hover { background-color: #ddd; }
+
+/* --- Print Mode --- */
 @media print {
     body * {
         visibility: hidden;
     }
-
     .receipt-container, .receipt-container * {
         visibility: visible;
     }
-
     .receipt-container {
         position: absolute;
         left: 0;
         top: 0;
-        margin: 0;
-        padding: 0;
-        border: none;
+        width: 100%;
         box-shadow: none;
-        width: 100%; 
+        border: none;
     }
-    
     .btn-print, .btn-back, h1, .confirmation-container > p {
-        display: none;
+        display: none !important;
     }
 }
-
