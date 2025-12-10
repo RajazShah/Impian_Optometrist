@@ -13,6 +13,12 @@ function format_rm($value)
     return "RM " . number_format($value, 2);
 }
 
+// --- PAGINATION SETUP ---
+$limit = 10;
+$currentPage = $_GET["page"] ?? 1;
+$currentPage = max(1, (int) $currentPage); // Ensure page is at least 1 and an integer
+$offset = ($currentPage - 1) * $limit;
+
 $dateFrom = $_GET["from"] ?? date("Y-m-01");
 $dateTo = $_GET["to"] ?? date("Y-m-d");
 
@@ -82,6 +88,7 @@ $productsChartData = [
     "data" => array_column($product_rows, "units_sold"),
 ];
 
+// --- ORDER TABLE QUERY WITH PAGINATION LOGIC ---
 $stmt = $conn->prepare("
     SELECT
         o.order_id,
@@ -93,9 +100,9 @@ $stmt = $conn->prepare("
     JOIN users u ON o.user_id = u.id
     WHERE DATE(o.order_date) BETWEEN ? AND ?
     ORDER BY o.order_date DESC
-    LIMIT 10
+    LIMIT ?, ?
 ");
-$stmt->bind_param("ss", $dateFrom, $dateTo);
+$stmt->bind_param("ssii", $dateFrom, $dateTo, $offset, $limit); // Note: 'ii' for $offset and $limit
 $stmt->execute();
 $result = $stmt->get_result();
 $tableRows = $result->fetch_all(MYSQLI_ASSOC);
@@ -107,8 +114,11 @@ $stmt->bind_param("ss", $dateFrom, $dateTo);
 $stmt->execute();
 $result = $stmt->get_result();
 $total_records = $result->fetch_assoc()["total"] ?? 0;
-$paginationInfo =
-    "Showing " . count($tableRows) . " of {$total_records} results";
+
+$totalPages = ceil($total_records / $limit);
+$startRecord = $offset + 1;
+$endRecord = $offset + count($tableRows);
+$paginationInfo = "Showing {$startRecord} to {$endRecord} of {$total_records} results";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -246,8 +256,13 @@ $paginationInfo =
                     $paginationInfo,
                 ); ?></span>
                 <div class="pagination-controls">
-                    <button id="prev-page" disabled>&laquo; Previous</button>
-                    <button id="next-page">Next &raquo;</button>
+                    <button id="prev-page" <?php echo $currentPage <= 1
+                        ? "disabled"
+                        : ""; ?>>&laquo; Previous</button>
+                    <button id="next-page" <?php echo $currentPage >=
+                    $totalPages
+                        ? "disabled"
+                        : ""; ?>>Next &raquo;</button>
                 </div>
             </div>
         </div>
@@ -339,12 +354,33 @@ $paginationInfo =
                 $productsChartData,
             ); ?>;
 
-            const tableData = <?php echo json_encode($tableRows); ?>;
             const dateFrom = "<?php echo htmlspecialchars($dateFrom); ?>";
             const dateTo = "<?php echo htmlspecialchars($dateTo); ?>";
+            const currentPage = <?php echo $currentPage; ?>;
+            const totalPages = <?php echo $totalPages; ?>;
 
             createRevenueChart(initialRevenueData.labels, initialRevenueData.data);
             createProductsChart(initialProductsData.labels, initialProductsData.data);
+
+            function buildUrl(page) {
+                const url = new URL(window.location.href);
+                url.searchParams.set('from', dateFrom);
+                url.searchParams.set('to', dateTo);
+                url.searchParams.set('page', page);
+                return url.toString();
+            }
+
+            document.getElementById('next-page').addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    window.location.href = buildUrl(currentPage + 1);
+                }
+            });
+
+            document.getElementById('prev-page').addEventListener('click', () => {
+                if (currentPage > 1) {
+                    window.location.href = buildUrl(currentPage - 1);
+                }
+            });
 
             function escapeCSV(field) {
                 if (field === null || field === undefined) {
@@ -395,13 +431,17 @@ $paginationInfo =
                 document.body.removeChild(link);
             }
 
+            // Note: The CSV export logic below exports only the currently visible 10 rows.
+            // For a complete export, this button would need a dedicated PHP script call.
+            const tableData = <?php echo json_encode($tableRows); ?>;
+
             document.getElementById('export-btn').addEventListener('click', () => {
                 const filename = `sales_report_${dateFrom}_to_${dateTo}.csv`;
                 exportToCSV(tableData, filename);
             });
 
         });
-    </sCRIPT>
+    </script>
 
 </body>
 </html>
