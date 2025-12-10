@@ -15,7 +15,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || !isset($_
 $user_id = $_SESSION['id'];
 $user = null; 
 
-$sql = "SELECT first_name, last_name, email, phone_number, profile_image FROM users WHERE id = ?";
+$sql = "SELECT first_name, last_name, email, phone_number, profile_image, eye_power_left, eye_power_right FROM users WHERE id = ?";
 if ($stmt = mysqli_prepare($conn, $sql)) {
     mysqli_stmt_bind_param($stmt, "i", $user_id);
     mysqli_stmt_execute($stmt);
@@ -140,6 +140,14 @@ mysqli_close($conn);
                     <div class="detail-row">
                         <span class="detail-label">Phone:</span>
                         <span class="detail-value"><?php echo htmlspecialchars($user['phone_number'] ? $user['phone_number'] : 'Not Provided'); ?></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Left Eye (OS):</span>
+                        <span class="detail-value"><?php echo htmlspecialchars(!empty($user['eye_power_left']) ? $user['eye_power_left'] : 'N/A'); ?></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Right Eye (OD):</span>
+                        <span class="detail-value"><?php echo htmlspecialchars(!empty($user['eye_power_right']) ? $user['eye_power_right'] : 'N/A'); ?></span>
                     </div>
                     <div class="action-buttons">
                         <a href="edit-profile.php" class="btn btn-secondary">Edit Profile</a>

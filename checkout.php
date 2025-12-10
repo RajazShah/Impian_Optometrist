@@ -92,20 +92,90 @@ $total = $subtotal + $shipping;
             
             <form class="checkout-details" id="checkout-form" action="payment-step.php" method="POST">
                 <?php if ($shipping_option === 'delivery'): ?>
-                    <h2>Shipping Address</h2>
-                    
-                    <div class="form-row">
-                        <div class="input-group"><label for="first_name">First Name</label><input type="text" id="first_name" name="first_name" required></div>
-                        <div class="input-group"><label for="last_name">Last Name</label><input type="text" id="last_name" name="last_name" required></div>
-                    </div>
-                    <div class="input-group"><label for="address">Address</label><input type="text" id="address" name="address" required></div>
-                    <div class="input-group"><label for="city">City</label><input type="text" id="city" name="city" required></div>
-                    <div class="form-row">
-                        <div class="input-group"><label for="state">State</label><input type="text" id="state" name="state" required></div>
-                        <div class="input-group"><label for="postcode">Postcode</label><input type="text" id="postcode" name="postcode" required></div>
-                    </div>
-                    
-                <?php else: ?>
+                        <h2>Shipping Address</h2>
+                        
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="first_name">First Name</label>
+                                <input 
+                                    type="text" 
+                                    id="first_name" 
+                                    name="first_name" 
+                                    required 
+                                    minlength="3" 
+                                    maxlength="40"
+                                    **pattern="^[A-Za-z\s'-]+$"**
+                                    title="Only letters, spaces, hyphens, and apostrophes are allowed."
+                                >
+                            </div>
+                            <div class="input-group">
+                                <label for="last_name">Last Name</label>
+                                <input 
+                                    type="text" 
+                                    id="last_name" 
+                                    name="last_name" 
+                                    required 
+                                    minlength="3" 
+                                    maxlength="40"
+                                    **pattern="^[A-Za-z\s'-]+$"**
+                                    title="Only letters, spaces, hyphens, and apostrophes are allowed."
+                                >
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="address">Address</label>
+                            <input 
+                                type="text" 
+                                id="address" 
+                                name="address" 
+                                required 
+                                minlength="20" 
+                                maxlength="100"
+                                **/** *No change here, as addresses typically require numbers and symbols.*
+                            >
+                        </div>
+                        <div class="input-group">
+                            <label for="city">City</label>
+                            <input 
+                                type="text" 
+                                id="city" 
+                                name="city" 
+                                required 
+                                minlength="4" 
+                                maxlength="20"
+                                **pattern="^[A-Za-z\s'-]+$"**
+                                title="Only letters, spaces, hyphens, and apostrophes are allowed."
+                            >
+                        </div>
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="state">State</label>
+                                <input 
+                                    type="text" 
+                                    id="state" 
+                                    name="state" 
+                                    required 
+                                    minlength="3" 
+                                    maxlength="20"
+                                    **pattern="^[A-Za-z\s'-]+$"**
+                                    title="Only letters, spaces, hyphens, and apostrophes are allowed."
+                                >
+                            </div>
+                            <div class="input-group">
+                                <label for="postcode">Postcode</label>
+                                <input 
+                                    type="text" 
+                                    id="postcode" 
+                                    name="postcode" 
+                                    required 
+                                    pattern="^\d{5}$" 
+                                    maxlength="5" 
+                                    title="Postcode must be exactly 5 digits"
+                                >
+                            </div>
+                        </div>
+                        
+                    <?php else: ?>
                     <h2>Pickup Details</h2>
                     <p>You've selected in-store pickup.</p>
                     <p><strong>Address:</strong><br>

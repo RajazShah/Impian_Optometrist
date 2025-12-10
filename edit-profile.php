@@ -10,7 +10,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 $user_id = $_SESSION['id'];
 $user = null;
 
-$sql = "SELECT first_name, last_name, email, phone_number FROM users WHERE id = ?";
+$sql = "SELECT first_name, last_name, email, phone_number, eye_power_left, eye_power_right FROM users WHERE id = ?";
 if ($stmt = mysqli_prepare($conn, $sql)) {
     mysqli_stmt_bind_param($stmt, "i", $user_id);
     mysqli_stmt_execute($stmt);
@@ -114,6 +114,21 @@ if (!$user) {
                                value="<?php echo htmlspecialchars($user['phone_number']); ?>"
                                pattern="^(\+|0)[0-9\s-]{9,}"
                                title="Please enter a valid number (e.g., +60 10-840 6912 or 010-840 6912)">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="eye_power_left">Left Eye Power (OS)</label>
+                        <input type="text" id="eye_power_left" name="eye_power_left" 
+                               value="<?php echo htmlspecialchars($user['eye_power_left'] ?? ''); ?>" 
+                               placeholder="e.g. -2.00">
+                    </div>
+                    <div class="input-group">
+                        <label for="eye_power_right">Right Eye Power (OD)</label>
+                        <input type="text" id="eye_power_right" name="eye_power_right" 
+                               value="<?php echo htmlspecialchars($user['eye_power_right'] ?? ''); ?>" 
+                               placeholder="e.g. -2.50">
                     </div>
                 </div>
 

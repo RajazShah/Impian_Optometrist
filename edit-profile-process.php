@@ -13,6 +13,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $phone_number = $_POST['phone_number'];
     $user_id = $_SESSION['id'];
+    $eye_power_left = $_POST['eye_power_left'] ?? '';
+    $eye_power_right = $_POST['eye_power_right'] ?? '';
 
 
     if (strlen($first_name) < 3 || strlen($first_name) > 40 || strlen($last_name) < 3 || strlen($last_name) > 40) {
@@ -46,10 +48,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         mysqli_stmt_close($stmt_check);
     }
 
-    $sql_update = "UPDATE users SET first_name = ?, last_name = ?, email = ?, phone_number = ? WHERE id = ?";
+    $sql_update = "UPDATE users SET first_name = ?, last_name = ?, email = ?, phone_number = ?, eye_power_left = ?, eye_power_right = ? WHERE id = ?";
     
     if ($stmt_update = mysqli_prepare($conn, $sql_update)) {
-        mysqli_stmt_bind_param($stmt_update, "ssssi", $first_name, $last_name, $email, $phone_number, $user_id);
+        // 3. BIND PARAMETERS (Note: 'ssssssi' -> 6 strings, 1 integer)
+        mysqli_stmt_bind_param($stmt_update, "ssssssi", $first_name, $last_name, $email, $phone_number, $eye_power_left, $eye_power_right, $user_id);
         
         if (mysqli_stmt_execute($stmt_update)) {
             $_SESSION['first_name'] = $first_name;

@@ -2,6 +2,68 @@
 session_start();
 include 'db_connect.php'; 
 
+// --- 1. SERVER-SIDE VALIDATION ---
+$errors = [];
+$shipping_option = $_SESSION['shipping_option'] ?? 'delivery';
+
+if ($shipping_option === 'delivery') {
+    $first_name = trim($_POST['first_name'] ?? '');
+    $last_name = trim($_POST['last_name'] ?? '');
+    $address = trim($_POST['address'] ?? '');
+    $city = trim($_POST['city'] ?? '');
+    $state = trim($_POST['state'] ?? '');
+    $postcode = trim($_POST['postcode'] ?? '');
+
+    // Regex for names/cities/states: Only letters, spaces, hyphens, and apostrophes
+    $name_place_pattern = "/^[A-Za-z\s'-]+$/";
+
+    // First Name (3-40 chars, no numbers)
+    if (strlen($first_name) < 3 || strlen($first_name) > 40) {
+        $errors['first_name'] = "First Name must be between 3 and 40 characters.";
+    } elseif (!preg_match($name_place_pattern, $first_name)) {
+        $errors['first_name'] = "First Name must only contain letters.";
+    }
+
+    // Last Name (3-40 chars, no numbers)
+    if (strlen($last_name) < 3 || strlen($last_name) > 40) {
+        $errors['last_name'] = "Last Name must be between 3 and 40 characters.";
+    } elseif (!preg_match($name_place_pattern, $last_name)) {
+        $errors['last_name'] = "Last Name must only contain letters.";
+    }
+
+    // Address (20-100 chars - numbers allowed)
+    if (strlen($address) < 20 || strlen($address) > 100) {
+        $errors['address'] = "Address must be between 20 and 100 characters.";
+    }
+
+    // City (4-20 chars, no numbers)
+    if (strlen($city) < 4 || strlen($city) > 20) {
+        $errors['city'] = "City must be between 4 and 20 characters.";
+    } elseif (!preg_match($name_place_pattern, $city)) {
+        $errors['city'] = "City must only contain letters.";
+    }
+    
+    // State (3-20 chars, no numbers)
+    if (strlen($state) < 3 || strlen($state) > 20) {
+        $errors['state'] = "State must be between 3 and 20 characters.";
+    } elseif (!preg_match($name_place_pattern, $state)) {
+        $errors['state'] = "State must only contain letters.";
+    }
+
+    // Postcode (exactly 5 digits)
+    if (!preg_match("/^\d{5}$/", $postcode)) {
+        $errors['postcode'] = "Postcode must be exactly 5 digits.";
+    }
+
+    // REDIRECTION ON ERROR
+    if (!empty($errors)) {
+        $_SESSION['errors'] = $errors;
+        $_SESSION['form_data'] = $_POST; // Keep existing data
+        header("Location: checkout.php");
+        exit();
+    }
+}
+
 // --- Security & Cart Check ---
 if (!isset($_SESSION['loggedin']) || !isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
     header("Location: index.php");
