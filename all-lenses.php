@@ -90,11 +90,11 @@ if ($sort_option === 'price_asc') {
 
         <div class="all-frames-grid">
             <?php
-            // *** IMPORTANT: Make sure 'CAT006' matches your LENSES category ID in the database ***
             $sql = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image 
                     FROM item 
-                    WHERE CATEGORY_ID = 'CAT006' AND item_name IS NOT NULL AND ITEM_STATUS = 'Available'
-                    $order_by"; 
+                    WHERE CATEGORY_ID = 'CAT002' 
+                    AND ITEM_STATUS = 'Available'
+                    $order_by";
             
             $result = $conn->query($sql);
 

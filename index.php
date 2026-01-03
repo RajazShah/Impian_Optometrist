@@ -74,34 +74,27 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
 
     <main class="hero-section">
 
-        <!-- These are the NEW main arrows -->
         <button id="main-arrow-left" class="main-slider-arrow is-hidden">&larr;</button>
 
-        <!-- This is the main white card -->
         <div class="main-card-container">
             
-            <!-- This track holds all the slides -->
             <div class="main-slider-track">
                 
-                <!-- SLIDE 1: BEST SELLERS -->
                 <section class="main-slider-page" data-title="BEST SELLERS">
                     <h2>BEST SELLERS</h2>
-                    <!-- Your old Best Sellers slider goes here -->
                     <div id="best-selling-section" class="best-selling-container">
                         <div class="slider-wrapper">
                             <a href="#" id="best-arrow-left" class="arrow left-arrow"><img src="images/back-button.png" alt="Previous"></a>
                             <div class="product-grid-window">
                                 <div id="best-grid" class="product-grid">
                                     <?php 
-                                    // *** 3. CRITICAL FIX ***
-                                    // Connect to the database ONCE, right here.
+                                    // Connect to database ONCE here
                                     include 'db_connect.php'; 
                                     
                                     if (!$conn) {
                                         die("Database connection failed: " . mysqli_connect_error());
                                     }
-                                    ?>
-                                    <?php
+
                                     $sql_best = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image FROM item WHERE item_name IS NOT NULL AND sales_count > 0 AND ITEM_STATUS = 'Available' ORDER BY sales_count DESC LIMIT 5";
                                     $result_best = $conn->query($sql_best);
                                     if ($result_best && $result_best->num_rows > 0) {
@@ -126,54 +119,30 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
                     </div>
                 </section>
 
-                <!-- SLIDE 2: LENSES -->
-                <section class="main-slider-page" data-title="LENSES">
-                    <h2>LENSES <a href="all-lenses.php" class="btn-see-all">See All</a></h2>
-                    <div id="lenses-section" class="frames-container"> 
-                        <div class="slider-wrapper">
-                            <a href="#" id="lenses-arrow-left" class="arrow left-arrow"><img src="images/back-button.png" alt="Previous"></a>
-                            <div class="product-grid-window">
-                                <div id="lenses-grid" class="product-grid">
-                                    <?php
-                                    // *** CHECK DATABASE: Ensure 'CAT006' is the correct ID for LENSES ***
-                                    $sql_lenses = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image FROM item WHERE CATEGORY_ID = 'CAT006' AND ITEM_STATUS = 'Available' ORDER BY sales_count DESC LIMIT 5";
-                                    $result_lenses = $conn->query($sql_lenses);
-                                    if ($result_lenses && $result_lenses->num_rows > 0) {
-                                        while ($row = $result_lenses->fetch_assoc()) {
-                                            echo '<div class="product-card">';
-                                            echo '    <img src="images/' . htmlspecialchars($row['item_image']) . '" alt="' . htmlspecialchars($row['ITEM_BRAND']) . '">';
-                                            echo '    <h3>' . htmlspecialchars($row['ITEM_BRAND']) . ' ' . htmlspecialchars($row['item_name']) . '</h3>';
-                                            echo '    <p>RM ' . htmlspecialchars(number_format($row['ITEM_PRICE'], 0)) . '</p>';
-                                            echo '    <button type="button" class="btn-add-to-cart" data-item-id="' . htmlspecialchars($row['ITEM_ID']) . '">Add to Cart</button>';
-                                            echo '</div>';
-                                        }
-                                    } else { echo '<p>No lenses found.</p>'; }
-                                    ?>
-                                </div>
-                            </div>
-                            <a href="#" id="lenses-arrow-right" class="arrow right-arrow"><img src="images/next-button.png" alt="Next"></a>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- SLIDE 3: FRAMES -->
                 <section class="main-slider-page" data-title="FRAMES">
                     <h2>FRAMES <a href="all-frames.php" class="btn-see-all">See All</a></h2>
-                    <!-- Your old Frames slider goes here -->
                     <div id="frames-section" class="frames-container">
-                         <div class="slider-wrapper">
+                        <div class="slider-wrapper">
                             <a href="#" id="frame-arrow-left" class="arrow left-arrow"><img src="images/back-button.png" alt="Previous"></a>
                             <div class="product-grid-window">
                                 <div id="frame-grid" class="product-grid">
                                     <?php
-                                    $sql_frames = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image FROM item WHERE CATEGORY_ID = 'CAT001' AND item_name IS NOT NULL AND ITEM_STATUS = 'Available' ORDER BY sales_count DESC, ITEM_BRAND ASC"; 
+                                    $sql_frames = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image 
+                                                   FROM item 
+                                                   WHERE CATEGORY_ID = 'CAT001' 
+                                                   AND item_name IS NOT NULL 
+                                                   AND ITEM_STATUS = 'Available' 
+                                                   ORDER BY sales_count DESC, ITEM_BRAND ASC"; 
+                                    
                                     $result_frames = $conn->query($sql_frames);
+                                    
                                     if ($result_frames && $result_frames->num_rows > 0) {
                                         while ($row = $result_frames->fetch_assoc()) {
                                             echo '<div class="product-card">';
-                                            echo '    <img src="images/' . htmlspecialchars($row['item_image']) . '" alt="' . htmlspecialchars($row['ITEM_BRAND']) . ' ' . htmlspecialchars($row['item_name']) . '">';
+                                            echo '    <img src="images/' . htmlspecialchars($row['item_image']) . '" alt="' . htmlspecialchars($row['ITEM_BRAND']) . '">';
                                             echo '    <h3>' . htmlspecialchars($row['ITEM_BRAND']) . ' ' . htmlspecialchars($row['item_name']) . '</h3>';
                                             echo '    <p>RM ' . htmlspecialchars(number_format($row['ITEM_PRICE'], 0)) . '</p>';
+                                            
                                             if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
                                                 echo '<button type="button" class="btn-add-to-cart" data-item-id="' . htmlspecialchars($row['ITEM_ID']) . '">Add to Cart</button>';
                                             } else {
@@ -192,31 +161,29 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
 
                 <section class="main-slider-page" data-title="LENSES">
                     <h2>LENSES <a href="all-lenses.php" class="btn-see-all">See All</a></h2>
-                    <div id="lenses-section" class="lenses-container">
+                    <div id="lenses-section" class="frames-container"> 
                         <div class="slider-wrapper">
-                            <a href="#" id="lenses-arrow-left" class="arrow left-arrow">
-                                <img src="images/back-button.png" alt="Previous">
-                            </a>
+                            <a href="#" id="lenses-arrow-left" class="arrow left-arrow"><img src="images/back-button.png" alt="Previous"></a>
                             <div class="product-grid-window">
                                 <div id="lenses-grid" class="product-grid">
                                     <?php
-                                    // Note: Ensure CATEGORY_ID matches your database value for Lenses (e.g., 'CAT006')
                                     $sql_lenses = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image 
                                                    FROM item 
-                                                   WHERE CATEGORY_ID = 'CAT006' 
-                                                   AND item_name IS NOT NULL 
+                                                   WHERE CATEGORY_ID = 'CAT002' 
                                                    AND ITEM_STATUS = 'Available' 
-                                                   ORDER BY sales_count DESC, ITEM_BRAND ASC"; 
+                                                   ORDER BY sales_count DESC LIMIT 5";
 
                                     $result_lenses = $conn->query($sql_lenses);
 
                                     if ($result_lenses && $result_lenses->num_rows > 0) {
                                         while ($row = $result_lenses->fetch_assoc()) {
-                                            echo '<div class="product-card">';
-                                            echo '    <img src="images/' . htmlspecialchars($row['item_image']) . '" alt="' . htmlspecialchars($row['ITEM_BRAND']) . ' ' . htmlspecialchars($row['item_name']) . '">';
-                                            echo '    <h3>' . htmlspecialchars($row['ITEM_BRAND']) . ' ' . htmlspecialchars($row['item_name']) . '</h3>';
-                                            echo '    <p>RM ' . htmlspecialchars(number_format($row['ITEM_PRICE'], 0)) . '</p>';
+                                            $displayName = !empty($row['item_name']) ? $row['item_name'] : '';
 
+                                            echo '<div class="product-card">';
+                                            echo '    <img src="images/' . htmlspecialchars($row['item_image']) . '" alt="' . htmlspecialchars($row['ITEM_BRAND']) . '">';
+                                            echo '    <h3>' . htmlspecialchars($row['ITEM_BRAND']) . ' ' . htmlspecialchars($displayName) . '</h3>';
+                                            echo '    <p>RM ' . htmlspecialchars(number_format($row['ITEM_PRICE'], 0)) . '</p>';
+                                            
                                             if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
                                                 echo '<button type="button" class="btn-add-to-cart" data-item-id="' . htmlspecialchars($row['ITEM_ID']) . '">Add to Cart</button>';
                                             } else {
@@ -229,15 +196,12 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
                                     }
                                     ?>
                                 </div>
-                            </div> 
-                            <a href="#" id="lenses-arrow-right" class="arrow right-arrow">
-                                <img src="images/next-button.png" alt="Next">
-                            </a>
+                            </div>
+                            <a href="#" id="lenses-arrow-right" class="arrow right-arrow"><img src="images/next-button.png" alt="Next"></a>
                         </div>
                     </div>
                 </section>
 
-                <!-- SLIDE 4: CLIP-ON -->
                 <section class="main-slider-page" data-title="CLIP-ON">
                     <h2>CLIP-ON <a href="all-clip-ons.php" class="btn-see-all">See All</a></h2>
                     <div id="clip-section" class="clip-container">
@@ -262,6 +226,7 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
                                             echo '</div>';
                                         }
                                     } else { echo '<p>No clip-ons found.</p>'; }
+                                    ?>
                                 </div>
                             </div> 
                             <a href="#" id="clip-arrow-right" class="arrow right-arrow"><img src="images/next-button.png" alt="Next"></a>
@@ -269,7 +234,6 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
                     </div>
                 </section>
 
-                <!-- SLIDE 5: CONTACT LENSE -->
                 <section class="main-slider-page" data-title="CONTACT LENSE">
                     <h2>CONTACT LENSE <a href="all-contact-lenses.php" class="btn-see-all">See All</a></h2>
                     <div id="contact-section" class="contact-container">
@@ -296,19 +260,18 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
                                     } else { echo '<p>No contact lenses found.</p>'; }
                                     ?>
                                 </div>
-                                $conn->close(); 
-                                    ?>
                             </div> 
                             <a href="#" id="contact-arrow-right" class="arrow right-arrow"><img src="images/next-button.png" alt="Next"></a>
                         </div>
                     </div>
                 </section>
 
+                <?php 
+                // Close the database connection at the end of all queries
+                if(isset($conn)) { $conn->close(); } 
+                ?>
                 
-            </div> 
-        </div> 
-        
-        <button id="main-arrow-right" class="main-slider-arrow">&rarr;</button>
+            </div> </div> <button id="main-arrow-right" class="main-slider-arrow">&rarr;</button>
 
     </main>
     
@@ -370,6 +333,7 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
             </div>
         </div>
     </div>
+    
     <div id="toast-popup" class="toast-popup">
         Item added to cart!
     </div>
