@@ -39,6 +39,7 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
         <nav class="main-nav">
             <ul>
                 <li><a href="#" class="main-nav-link" data-slide="1">Frames</a></li>
+                <li><a href="#" class="main-nav-ling data-slide="4">Lenses</a></li>
                 <li><a href="#" class="main-nav-link" data-slide="2">Contact Lense</a></li>
                 <li><a href="#" class="main-nav-link" data-slide="3">Clip On</a></li>
             </ul>
