@@ -1,31 +1,32 @@
 // Wait for the HTML document to be fully loaded before running any script
 document.addEventListener("DOMContentLoaded", function() {
 
-    /* --- Frames Slider Logic --- */
-    const gridFrames = document.getElementById("frame-grid");
-    const leftArrowFrames = document.getElementById("frame-arrow-left");
-    const rightArrowFrames = document.getElementById("frame-arrow-right");
+    /* --- Lenses Slider Logic --- */
+    const gridLenses = document.getElementById("lenses-grid");
+    const leftArrowLenses = document.getElementById("lenses-arrow-left");
+    const rightArrowLenses = document.getElementById("lenses-arrow-right");
 
-    if (gridFrames && leftArrowFrames && rightArrowFrames) {
+    if (gridLenses && leftArrowLenses && rightArrowLenses) {
         let currentIndex = 0;
-        const cardWidth = 220;
-        const cardGap = 30;
+        const cardWidth = 220; // Matches your CSS
+        const cardGap = 30;    // Matches your CSS
         const slideDistance = cardWidth + cardGap;
-        const totalCards = gridFrames.querySelectorAll(".product-card").length;
+        const totalCards = gridLenses.querySelectorAll(".product-card").length;
         const visibleCards = 3;
 
-        rightArrowFrames.onclick = function(event) {
+        rightArrowLenses.onclick = function(event) {
             event.preventDefault();
             if (currentIndex < totalCards - visibleCards) {
                 currentIndex++;
-                gridFrames.style.transform = `translateX(-${currentIndex * slideDistance}px)`;
+                gridLenses.style.transform = `translateX(-${currentIndex * slideDistance}px)`;
             }
         };
-        leftArrowFrames.onclick = function(event) {
+
+        leftArrowLenses.onclick = function(event) {
             event.preventDefault();
             if (currentIndex > 0) {
                 currentIndex--;
-                gridFrames.style.transform = `translateX(-${currentIndex * slideDistance}px)`;
+                gridLenses.style.transform = `translateX(-${currentIndex * slideDistance}px)`;
             }
         };
     }

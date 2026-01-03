@@ -82,9 +82,10 @@ $total = $subtotal + $shipping;
         </div>
         <nav class="main-nav">
             <ul>
-                <li><a href="index.php#frames-section">Frames</a></li>
-                <li><a href="index.php#contact-section">Contact Lense</a></li>
-                <li><a href="index.php#clip-section">Clip On</a></li>
+                <li><a href="index.php#frames-section">FRAMES</a></li>
+                <li><a href="index.php#lenses-section">LENSES</a></li>
+                <li><a href="index.php#clip-section">CLIP-ON</a></li>
+                <li><a href="index.php#contact-section">CONTACT LENSE</a></li>
             </ul>
         </nav>
         <div class="user-actions">

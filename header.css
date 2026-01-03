@@ -68,10 +68,19 @@
 }
 
 .main-nav a {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 22px;
-    font-weight: bolder;
+    font-family: 'Times New Roman', Times, serif; /* Matches the new design */
+    font-size: 16px;
+    font-weight: normal;
+    text-transform: uppercase; /* Makes FRAMES, LENSES, etc. */
+    letter-spacing: 1px;
+    color: #000;
+    text-decoration: none;
     padding-bottom: 5px;
+    transition: all 0.3s ease;
+}
+
+.main-nav a:hover {
+    border-bottom: 1px solid #000; /* Simple underline effect */
 }
 
 .user-actions {

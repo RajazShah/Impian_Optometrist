@@ -38,10 +38,10 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
         </div>
         <nav class="main-nav">
             <ul>
-                <li><a href="#" class="main-nav-link" data-slide="1">Frames</a></li>
-                <li><a href="#" class="main-nav-ling data-slide="4">Lenses</a></li>
-                <li><a href="#" class="main-nav-link" data-slide="2">Contact Lense</a></li>
-                <li><a href="#" class="main-nav-link" data-slide="3">Clip On</a></li>
+                <li><a href="#" class="main-nav-link" data-slide="1">FRAMES</a></li>
+                <li><a href="#" class="main-nav-link" data-slide="2">LENSES</a></li> 
+                <li><a href="#" class="main-nav-link" data-slide="3">CLIP-ON</a></li>
+                <li><a href="#" class="main-nav-link" data-slide="4">CONTACT LENSE</a></li>
             </ul>
         </nav>
         <div class="user-actions">
@@ -126,7 +126,37 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
                     </div>
                 </section>
 
-                <!-- SLIDE 2: FRAMES -->
+                <!-- SLIDE 2: LENSES -->
+                <section class="main-slider-page" data-title="LENSES">
+                    <h2>LENSES <a href="all-lenses.php" class="btn-see-all">See All</a></h2>
+                    <div id="lenses-section" class="frames-container"> 
+                        <div class="slider-wrapper">
+                            <a href="#" id="lenses-arrow-left" class="arrow left-arrow"><img src="images/back-button.png" alt="Previous"></a>
+                            <div class="product-grid-window">
+                                <div id="lenses-grid" class="product-grid">
+                                    <?php
+                                    // *** CHECK DATABASE: Ensure 'CAT006' is the correct ID for LENSES ***
+                                    $sql_lenses = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image FROM item WHERE CATEGORY_ID = 'CAT006' AND ITEM_STATUS = 'Available' ORDER BY sales_count DESC LIMIT 5";
+                                    $result_lenses = $conn->query($sql_lenses);
+                                    if ($result_lenses && $result_lenses->num_rows > 0) {
+                                        while ($row = $result_lenses->fetch_assoc()) {
+                                            echo '<div class="product-card">';
+                                            echo '    <img src="images/' . htmlspecialchars($row['item_image']) . '" alt="' . htmlspecialchars($row['ITEM_BRAND']) . '">';
+                                            echo '    <h3>' . htmlspecialchars($row['ITEM_BRAND']) . ' ' . htmlspecialchars($row['item_name']) . '</h3>';
+                                            echo '    <p>RM ' . htmlspecialchars(number_format($row['ITEM_PRICE'], 0)) . '</p>';
+                                            echo '    <button type="button" class="btn-add-to-cart" data-item-id="' . htmlspecialchars($row['ITEM_ID']) . '">Add to Cart</button>';
+                                            echo '</div>';
+                                        }
+                                    } else { echo '<p>No lenses found.</p>'; }
+                                    ?>
+                                </div>
+                            </div>
+                            <a href="#" id="lenses-arrow-right" class="arrow right-arrow"><img src="images/next-button.png" alt="Next"></a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SLIDE 3: FRAMES -->
                 <section class="main-slider-page" data-title="FRAMES">
                     <h2>FRAMES <a href="all-frames.php" class="btn-see-all">See All</a></h2>
                     <!-- Your old Frames slider goes here -->
@@ -160,23 +190,33 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
                     </div>
                 </section>
 
-                <!-- SLIDE 3: CONTACT LENSE -->
-                <section class="main-slider-page" data-title="CONTACT LENSE">
-                    <h2>CONTACT LENSE <a href="all-contact-lenses.php" class="btn-see-all">See All</a></h2>
-                    <div id="contact-section" class="contact-container">
+                <section class="main-slider-page" data-title="LENSES">
+                    <h2>LENSES <a href="all-lenses.php" class="btn-see-all">See All</a></h2>
+                    <div id="lenses-section" class="lenses-container">
                         <div class="slider-wrapper">
-                            <a href="#" id="contact-arrow-left" class="arrow left-arrow"><img src="images/back-button.png" alt="Previous"></a>
+                            <a href="#" id="lenses-arrow-left" class="arrow left-arrow">
+                                <img src="images/back-button.png" alt="Previous">
+                            </a>
                             <div class="product-grid-window">
-                                <div id="contact-grid" class="product-grid">
+                                <div id="lenses-grid" class="product-grid">
                                     <?php
-                                    $sql_contacts = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image FROM item WHERE CATEGORY_ID = 'CAT005' AND item_name IS NOT NULL AND ITEM_STATUS = 'Available' ORDER BY sales_count DESC, ITEM_BRAND ASC";
-                                    $result_contacts = $conn->query($sql_contacts);
-                                    if ($result_contacts && $result_contacts->num_rows > 0) {
-                                        while ($row = $result_contacts->fetch_assoc()) {
+                                    // Note: Ensure CATEGORY_ID matches your database value for Lenses (e.g., 'CAT006')
+                                    $sql_lenses = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image 
+                                                   FROM item 
+                                                   WHERE CATEGORY_ID = 'CAT006' 
+                                                   AND item_name IS NOT NULL 
+                                                   AND ITEM_STATUS = 'Available' 
+                                                   ORDER BY sales_count DESC, ITEM_BRAND ASC"; 
+
+                                    $result_lenses = $conn->query($sql_lenses);
+
+                                    if ($result_lenses && $result_lenses->num_rows > 0) {
+                                        while ($row = $result_lenses->fetch_assoc()) {
                                             echo '<div class="product-card">';
                                             echo '    <img src="images/' . htmlspecialchars($row['item_image']) . '" alt="' . htmlspecialchars($row['ITEM_BRAND']) . ' ' . htmlspecialchars($row['item_name']) . '">';
                                             echo '    <h3>' . htmlspecialchars($row['ITEM_BRAND']) . ' ' . htmlspecialchars($row['item_name']) . '</h3>';
                                             echo '    <p>RM ' . htmlspecialchars(number_format($row['ITEM_PRICE'], 0)) . '</p>';
+
                                             if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
                                                 echo '<button type="button" class="btn-add-to-cart" data-item-id="' . htmlspecialchars($row['ITEM_ID']) . '">Add to Cart</button>';
                                             } else {
@@ -184,11 +224,15 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
                                             }
                                             echo '</div>';
                                         }
-                                    } else { echo '<p>No contact lenses found.</p>'; }
+                                    } else { 
+                                        echo '<p>No lenses found.</p>'; 
+                                    }
                                     ?>
                                 </div>
                             </div> 
-                            <a href="#" id="contact-arrow-right" class="arrow right-arrow"><img src="images/next-button.png" alt="Next"></a>
+                            <a href="#" id="lenses-arrow-right" class="arrow right-arrow">
+                                <img src="images/next-button.png" alt="Next">
+                            </a>
                         </div>
                     </div>
                 </section>
@@ -218,8 +262,6 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
                                             echo '</div>';
                                         }
                                     } else { echo '<p>No clip-ons found.</p>'; }
-                                    $conn->close(); 
-                                    ?>
                                 </div>
                             </div> 
                             <a href="#" id="clip-arrow-right" class="arrow right-arrow"><img src="images/next-button.png" alt="Next"></a>
@@ -227,6 +269,42 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
                     </div>
                 </section>
 
+                <!-- SLIDE 5: CONTACT LENSE -->
+                <section class="main-slider-page" data-title="CONTACT LENSE">
+                    <h2>CONTACT LENSE <a href="all-contact-lenses.php" class="btn-see-all">See All</a></h2>
+                    <div id="contact-section" class="contact-container">
+                        <div class="slider-wrapper">
+                            <a href="#" id="contact-arrow-left" class="arrow left-arrow"><img src="images/back-button.png" alt="Previous"></a>
+                            <div class="product-grid-window">
+                                <div id="contact-grid" class="product-grid">
+                                    <?php
+                                    $sql_contacts = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image FROM item WHERE CATEGORY_ID = 'CAT005' AND item_name IS NOT NULL AND ITEM_STATUS = 'Available' ORDER BY sales_count DESC, ITEM_BRAND ASC";
+                                    $result_contacts = $conn->query($sql_contacts);
+                                    if ($result_contacts && $result_contacts->num_rows > 0) {
+                                        while ($row = $result_contacts->fetch_assoc()) {
+                                            echo '<div class="product-card">';
+                                            echo '    <img src="images/' . htmlspecialchars($row['item_image']) . '" alt="' . htmlspecialchars($row['ITEM_BRAND']) . ' ' . htmlspecialchars($row['item_name']) . '">';
+                                            echo '    <h3>' . htmlspecialchars($row['ITEM_BRAND']) . ' ' . htmlspecialchars($row['item_name']) . '</h3>';
+                                            echo '    <p>RM ' . htmlspecialchars(number_format($row['ITEM_PRICE'], 0)) . '</p>';
+                                            if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
+                                                echo '<button type="button" class="btn-add-to-cart" data-item-id="' . htmlspecialchars($row['ITEM_ID']) . '">Add to Cart</button>';
+                                            } else {
+                                                echo '<a href="#" class="btn-add-to-cart login-trigger">Login to Add</a>';
+                                            }
+                                            echo '</div>';
+                                        }
+                                    } else { echo '<p>No contact lenses found.</p>'; }
+                                    ?>
+                                </div>
+                                $conn->close(); 
+                                    ?>
+                            </div> 
+                            <a href="#" id="contact-arrow-right" class="arrow right-arrow"><img src="images/next-button.png" alt="Next"></a>
+                        </div>
+                    </div>
+                </section>
+
+                
             </div> 
         </div> 
         

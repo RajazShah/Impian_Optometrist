@@ -18,17 +18,12 @@ $sql = "SELECT appointment_id, appointment_date, appointment_time, doctor, statu
         ORDER BY appointment_date DESC";
 
 if ($stmt = mysqli_prepare($conn, $sql)) {
-    
     mysqli_stmt_bind_param($stmt, "i", $user_id);
-    
     mysqli_stmt_execute($stmt);
-    
     $result = mysqli_stmt_get_result($stmt);
-    
     while ($row = mysqli_fetch_assoc($result)) {
         $appointments[] = $row;
     }
-    
     mysqli_stmt_close($stmt);
 }
 
@@ -42,7 +37,8 @@ mysqli_close($conn);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Appointments - Impian Optometrist</title>
     
-    <link rel="stylesheet" href="style.css">     <link rel="stylesheet" href="appointment-style.css"> 
+    <link rel="stylesheet" href="style.css">     
+    <link rel="stylesheet" href="appointment-style.css"> 
 </head>
 <body class="appointment-page-body">
 
@@ -65,36 +61,22 @@ mysqli_close($conn);
                 </tr>
             </thead>
             <tbody>
-                <?php 
-                if (empty($appointments)): 
-                ?>
+                <?php if (empty($appointments)): ?>
                     <tr>
                         <td colspan="5" style="text-align: center; color: #777;">You have no appointments.</td>
                     </tr>
-                <?php 
-                else: 
-                ?>
-                    <?php 
-                    foreach ($appointments as $appt): 
-                    ?>
+                <?php else: ?>
+                    <?php foreach ($appointments as $appt): ?>
                     <tr>
-                        <td><?php 
-                            echo htmlspecialchars(date('jS F Y', strtotime($appt['appointment_date']))); 
-                        ?></td>
+                        <td><?php echo htmlspecialchars(date('jS F Y', strtotime($appt['appointment_date']))); ?></td>
                         
-                        <td><?php 
-                            echo htmlspecialchars(date('g A.M.', strtotime($appt['appointment_time']))); 
-                        ?></td>
+                        <td><?php echo htmlspecialchars(date('h:i A', strtotime($appt['appointment_time']))); ?></td>
                         
-                        <td><?php 
-                            echo htmlspecialchars($appt['doctor']); 
-                        ?></td>
+                        <td><?php echo htmlspecialchars($appt['doctor']); ?></td>
                         
                         <td>
                             <span class="status-badge status-<?php echo strtolower(htmlspecialchars($appt['status'])); ?>">
-                                <?php 
-                                echo htmlspecialchars($appt['status']); 
-                                ?>
+                                <?php echo htmlspecialchars($appt['status']); ?>
                             </span>
                         </td>
                         
@@ -107,13 +89,9 @@ mysqli_close($conn);
                                 </a>
                             <?php endif; ?>
                         </td>
-                        </tr>
-                    <?php 
-                    endforeach; 
-                    ?>
-                <?php 
-                endif; 
-                ?>
+                    </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
                  
             </tbody>
         </table>
@@ -121,5 +99,6 @@ mysqli_close($conn);
         <div class="book-new-wrapper">
              <a href="book-appointment.php" class="btn-book-new">Book New Appointment</a>
         </div>
-    </div> </body>
+    </div> 
+</body>
 </html>

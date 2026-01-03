@@ -91,7 +91,14 @@ mysqli_close($conn);
                 <input type="search" name="search_query" placeholder="Search items..." class="search-box">
             </form>
     </div>
-        <nav class="main-nav"><ul><li><a href="index.php#frames-section">Frames</a></li><li><a href="index.php#contact-section">Contact Lense</a></li><li><a href="index.php#clip-section">Clip On</a></li></ul></nav>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="index.php#frames-section">FRAMES</a></li>
+                <li><a href="index.php#lenses-section">LENSES</a></li>
+                <li><a href="index.php#clip-section">CLIP-ON</a></li>
+                <li><a href="index.php#contact-section">CONTACT LENSE</a></li>
+            </ul>
+        </nav>
         <div class="user-actions"><?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) { ?><div class="user-icons-box"><a href="customer-appointment.php" title="Appointment"><img src="images/appointment-icon.png" alt="Appointment"></a><a href="cart.php" title="Cart"><img src="images/bag-icon.png" alt="Cart"></a><div class="profile-dropdown"><a href="#" id="user-icon-link" title="Profile"><img src="images/user-icon.png" alt="User Profile"></a><div class="dropdown-content"><a href="profile.php">My Profile</a><a href="logout.php">Sign Out</a></div></div></div><?php } else { ?><a href="#" id="login-link" class="login-signup-link">Login / Sign Up</a><?php } ?></div>
     </header>
 
