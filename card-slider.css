@@ -24,8 +24,10 @@
 /* This is each "page" of the slider (Best Sellers, Frames...) */
 .main-slider-page {
     width: 100%;
+    min-width: 100%;       
     flex-shrink: 0;
     box-sizing: border-box;
+    overflow: hidden;     
 }
 
 /* This styles the title (e.g., "BEST SELLERS") on each slide */

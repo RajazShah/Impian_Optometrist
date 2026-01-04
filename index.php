@@ -15,6 +15,7 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
     <link rel="stylesheet" href="header.css">
     <link rel="stylesheet" href="best-selling.css"> 
     <link rel="stylesheet" href="frames.css">
+    <link rel="stylesheet" href="lenses.css">
     <link rel="stylesheet" href="hero.css">
     <link rel="stylesheet" href="contact.css">
     <link rel="stylesheet" href="clip.css">
@@ -161,7 +162,7 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
 
                 <section class="main-slider-page" data-title="LENSES">
                     <h2>LENSES <a href="all-lenses.php" class="btn-see-all">See All</a></h2>
-                    <div id="lenses-section" class="frames-container"> 
+                    <div id="lenses-section" class="lenses-container"> 
                         <div class="slider-wrapper">
                             <a href="#" id="lenses-arrow-left" class="arrow left-arrow"><img src="images/back-button.png" alt="Previous"></a>
                             <div class="product-grid-window">

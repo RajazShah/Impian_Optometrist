@@ -1,15 +1,44 @@
 // Wait for the HTML document to be fully loaded before running any script
 document.addEventListener("DOMContentLoaded", function() {
 
-    /* --- Lenses Slider Logic --- */
+    /* --- 1. FRAMES SLIDER LOGIC (This was missing!) --- */
+    const gridFrames = document.getElementById("frame-grid");
+    const leftArrowFrames = document.getElementById("frame-arrow-left");
+    const rightArrowFrames = document.getElementById("frame-arrow-right");
+
+    if (gridFrames && leftArrowFrames && rightArrowFrames) {
+        let currentIndex = 0;
+        const cardWidth = 220; // Matches CSS
+        const cardGap = 30;    // Matches CSS
+        const slideDistance = cardWidth + cardGap;
+        const totalCards = gridFrames.querySelectorAll(".product-card").length;
+        const visibleCards = 3;
+
+        rightArrowFrames.onclick = function(event) {
+            event.preventDefault();
+            if (currentIndex < totalCards - visibleCards) {
+                currentIndex++;
+                gridFrames.style.transform = `translateX(-${currentIndex * slideDistance}px)`;
+            }
+        };
+        leftArrowFrames.onclick = function(event) {
+            event.preventDefault();
+            if (currentIndex > 0) {
+                currentIndex--;
+                gridFrames.style.transform = `translateX(-${currentIndex * slideDistance}px)`;
+            }
+        };
+    }
+
+    /* --- 2. LENSES SLIDER LOGIC --- */
     const gridLenses = document.getElementById("lenses-grid");
     const leftArrowLenses = document.getElementById("lenses-arrow-left");
     const rightArrowLenses = document.getElementById("lenses-arrow-right");
 
     if (gridLenses && leftArrowLenses && rightArrowLenses) {
         let currentIndex = 0;
-        const cardWidth = 220; // Matches your CSS
-        const cardGap = 30;    // Matches your CSS
+        const cardWidth = 220;
+        const cardGap = 30;    
         const slideDistance = cardWidth + cardGap;
         const totalCards = gridLenses.querySelectorAll(".product-card").length;
         const visibleCards = 3;
@@ -31,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function() {
         };
     }
 
-    /* --- Best Selling Slider Logic --- */
+    /* --- 3. BEST SELLING SLIDER LOGIC --- */
     const gridBest = document.getElementById("best-grid");
     const leftArrowBest = document.getElementById("best-arrow-left");
     const rightArrowBest = document.getElementById("best-arrow-right");
@@ -60,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function() {
         };
     }
 
-    /* --- Contact Lense Slider Logic --- */
+    /* --- 4. CONTACT LENSE SLIDER LOGIC --- */
     const gridContact = document.getElementById("contact-grid");
     const leftArrowContact = document.getElementById("contact-arrow-left");
     const rightArrowContact = document.getElementById("contact-arrow-right");
@@ -89,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function() {
         };
     }
 
-    /* --- Clip On Slider Logic --- */
+    /* --- 5. CLIP ON SLIDER LOGIC --- */
     const gridClip = document.getElementById("clip-grid");
     const leftArrowClip = document.getElementById("clip-arrow-left");
     const rightArrowClip = document.getElementById("clip-arrow-right");
@@ -235,6 +264,9 @@ document.addEventListener("DOMContentLoaded", function() {
     
     addToCartButtons.forEach(button => {
         button.addEventListener('click', function(event) {
+            // Only proceed if it is NOT a login-trigger link
+            if (this.classList.contains('login-trigger')) return;
+
             const itemId = event.target.dataset.itemId;
             if (!itemId) return; 
             
@@ -310,8 +342,9 @@ document.addEventListener("DOMContentLoaded", function() {
         if (slides.length > 0) {
             const slideMap = {
                 '#frames-section': 1,
-                '#contact-section': 2,
-                '#clip-section': 3
+                '#lenses-section': 2, // Added Lenses to map
+                '#clip-section': 3,
+                '#contact-section': 4 // Adjusted Index
             };
 
             const currentHash = window.location.hash;
@@ -413,13 +446,12 @@ document.addEventListener("DOMContentLoaded", function() {
         window.history.replaceState(null, '', window.location.pathname);
     }
 
-    /* --- NEW: FORM VALIDATION LOGIC --- */
+    /* --- FORM VALIDATION LOGIC --- */
     
     // 1. Appointment Form Validation
     const appointmentForm = document.querySelector('form[action="appointment-process.php"]');
     if (appointmentForm) {
         appointmentForm.addEventListener('submit', function(event) {
-            // Check all required inputs in this specific form
             const requiredInputs = appointmentForm.querySelectorAll('input[required], select[required]');
             let isEmpty = false;
 
@@ -430,13 +462,13 @@ document.addEventListener("DOMContentLoaded", function() {
             });
 
             if (isEmpty) {
-                event.preventDefault(); // Stop the form from submitting
+                event.preventDefault(); 
                 alert("Please fill in all required fields before booking.");
             }
         });
     }
 
-    // 2. Registration Form Validation (Generic for any form with class 'register-form' or action)
+    // 2. Registration Form Validation
     const registerFormEl = document.querySelector('form[action="register-process.php"]');
     if (registerFormEl) {
         registerFormEl.addEventListener('submit', function(event) {

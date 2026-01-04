@@ -26,10 +26,11 @@ html {
 }
 
 body.page-background {
-    background-color: #f4cec2; /* Change this */
+    background-color: #f4cec2; 
 }
 
 #frames-section,
+#lenses-section,
 #contact-section,
 #clip-section {
     display: block !important;  
@@ -76,4 +77,11 @@ body.page-background {
 
 body.cart-page {
     background-color: #fff;
+}
+
+.slider-wrapper .arrow img {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    vertical-align: middle;
 }

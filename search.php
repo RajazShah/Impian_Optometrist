@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="header.css">
     <link rel="stylesheet" href="hero.css">
     <link rel="stylesheet" href="frames.css">
+    <link rel="stylesheet" href="lenses.css">
     <link rel="stylesheet" href="contact.css">
     <link rel="stylesheet" href="clip.css">
     <link rel="stylesheet" href="login.css">
@@ -140,6 +141,7 @@
         <nav class="main-nav">
             <ul>
                 <li><a href="index.php#frames-section">Frames</a></li>
+                <li><a href="index.php#lenses-section">Lenses</a></li>
                 <li><a href="index.php#contact-section">Contact Lense</a></li>
                 <li><a href="index.php#clip-section">Clip On</a></li>
             </ul>
