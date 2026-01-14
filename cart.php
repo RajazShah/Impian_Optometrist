@@ -14,6 +14,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 $cart_items = [];
 $subtotal = 0;
 $shipping = 0.00; 
+
+// Track appointment requirement
 $requires_appointment = false;
 $appointment_reason = "";
 $has_frames = false;
@@ -23,53 +25,57 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
     
     $item_ids = array_keys($_SESSION['cart']);
 
-    $placeholders = implode(',', array_fill(0, count($item_ids), '?'));
-    $types = str_repeat('s', count($item_ids));
+    // Handle empty cart gracefully
+    if (!empty($item_ids)) {
+        $placeholders = implode(',', array_fill(0, count($item_ids), '?'));
+        $types = str_repeat('s', count($item_ids));
 
-    $sql = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image, CATEGORY_ID 
-            FROM item 
-            WHERE ITEM_ID IN ($placeholders)";
+        $sql = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image, CATEGORY_ID 
+                FROM item 
+                WHERE ITEM_ID IN ($placeholders)";
+                
+        if ($stmt = mysqli_prepare($conn, $sql)) {
+            mysqli_stmt_bind_param($stmt, $types, ...$item_ids);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
             
-    if ($stmt = mysqli_prepare($conn, $sql)) {
-        mysqli_stmt_bind_param($stmt, $types, ...$item_ids);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
-        
-        while ($row = mysqli_fetch_assoc($result)) {
-            $item_id = $row['ITEM_ID'];
-            $quantity = $_SESSION['cart'][$item_id]; 
-            $line_total = $row['ITEM_PRICE'] * $quantity;
-            $subtotal += $line_total;
-            if ($row['CATEGORY_ID'] === 'CAT001') {
-                $has_frames = true;
+            while ($row = mysqli_fetch_assoc($result)) {
+                $item_id = $row['ITEM_ID'];
+                $quantity = $_SESSION['cart'][$item_id]; 
+                $line_total = $row['ITEM_PRICE'] * $quantity;
+                $subtotal += $line_total;
+                
+                // Check Categories
+                if ($row['CATEGORY_ID'] === 'CAT001') {
+                    $has_frames = true;
+                }
+                // We still detect lenses, but they won't trigger the appointment anymore
+                if ($row['CATEGORY_ID'] === 'CAT002') {
+                    $has_lenses = true;
+                }
+
+                $cart_items[] = [
+                    'id' => $item_id,
+                    'image' => $row['item_image'],
+                    'name' => $row['ITEM_BRAND'] . ' ' . $row['item_name'],
+                    'price' => $row['ITEM_PRICE'],
+                    'quantity' => $quantity,
+                    'line_total' => $line_total
+                ];
             }
-            if ($row['CATEGORY_ID'] === 'CAT002') {
-                $has_lenses = true;
-            }
-            $cart_items[] = [
-                'id' => $item_id,
-                'image' => $row['item_image'],
-                'name' => $row['ITEM_BRAND'] . ' ' . $row['item_name'],
-                'price' => $row['ITEM_PRICE'],
-                'quantity' => $quantity,
-                'line_total' => $line_total
-            ];
+            mysqli_stmt_close($stmt);
         }
-        mysqli_stmt_close($stmt);
     }
 }
 mysqli_close($conn);
 
-if ($has_frames && $has_lenses) {
-    $requires_appointment = true;
-    $appointment_reason = "Frame and Lens check";
-} elseif ($has_frames) {
+// --- UPDATED LOGIC: Only Frames trigger the appointment ---
+if ($has_frames) {
     $requires_appointment = true;
     $appointment_reason = "Frame check";
-} elseif ($has_lenses) {
-    $requires_appointment = true;
-    $appointment_reason = "Lens check";
 }
+// Note: We removed the check for $has_lenses, so lenses alone are now free to checkout.
+// ----------------------------------------------------------
 
 $total = $subtotal + $shipping;
 ?>
@@ -89,13 +95,11 @@ $total = $subtotal + $shipping;
 <body class="cart-page">
     <?php if (isset($_GET['error'])): ?>
         <script>
-            // This creates a standard browser popup alert
             alert("<?php echo htmlspecialchars($_GET['error']); ?>");
-            
-            // Optional: Clean the URL after showing the alert so it doesn't show again on refresh
             window.history.replaceState(null, null, window.location.pathname);
         </script>
     <?php endif; ?>
+    
     <header class="main-header">
         <div class="logo-search-container"> 
             <h1>IMPIAN OPTOMETRIST</h1>
@@ -110,9 +114,7 @@ $total = $subtotal + $shipping;
             </ul>
         </nav>
         <div class="user-actions">
-            <?php
-            if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
-            ?>
+            <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) { ?>
             <div class="user-icons-box">
                 <a href="customer-appointment.php" title="Appointment"><img src="images/appointment-icon.png" alt="Appointment"></a>
                 <a href="cart.php" title="Cart"><img src="images/bag-icon.png" alt="Cart"></a>
@@ -135,7 +137,6 @@ $total = $subtotal + $shipping;
         <h1>Your Shopping Cart</h1>
 
         <div class="cart-layout">
-            
             <div class="cart-items">
                 <table>
                     <thead>
@@ -157,16 +158,13 @@ $total = $subtotal + $shipping;
                                 <td><img src="images/<?php echo htmlspecialchars($item['image']); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>"></td>
                                 <td>
                                     <strong><?php echo htmlspecialchars($item['name']); ?></strong>
-
                                     <a href="remove_from_cart.php?id=<?php echo htmlspecialchars($item['id']); ?>" 
                                        class="remove-item" 
                                        onclick="return confirm('Are you sure you want to remove this item?');">
                                        Remove
                                     </a>
-                            
                                 </td>
                                 <td>RM <?php echo number_format($item['price'], 2); ?></td>
-
                                 <td>
                                     <form action="update_cart.php" method="POST" class="quantity-form">
                                         <input type="hidden" name="item_id" value="<?php echo htmlspecialchars($item['id']); ?>">
@@ -174,7 +172,6 @@ $total = $subtotal + $shipping;
                                         <button type="submit" class="btn-update">Update</button>
                                     </form>
                                 </td>
-                            
                                 <td>RM <?php echo number_format($item['line_total'], 2); ?></td>
                             </tr>
                             <?php endforeach; ?>
@@ -189,7 +186,7 @@ $total = $subtotal + $shipping;
                 <div class="shipping-options">
                     <div class="shipping-option">
                         <input type="radio" name="shipping_option" id="radio-delivery" value="delivery">
-                        <label for="radio-delivery">Delivery</label>
+                        <label for="radio-delivery">Delivery (RM 10.00)</label>
                     </div>
                     <div class="shipping-option">
                         <input type="radio" name="shipping_option" id="radio-pickup" value="pickup" checked>
@@ -218,27 +215,77 @@ $total = $subtotal + $shipping;
                     </span>
                 </div>
 
-                <?php if (empty($cart_items)): ?>
-                    <button type="button" class="btn-checkout" 
-                            style="background-color: #ccc; cursor: not-allowed;"
-                            onclick="alert('Your cart is empty.');">
-                        Proceed to Checkout
-                    </button>
-                <?php elseif ($requires_appointment): ?>
-                    <div style="background-color: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin-bottom: 10px; font-size: 14px;">
-                        <strong>Note:</strong> Your cart contains frames/lenses. An appointment is required before checkout.
-                    </div>
-                    <a href="book-appointment.php?cart_reason=<?php echo urlencode($appointment_reason); ?>" class="btn-checkout" style="text-align: center; text-decoration: none; display: block;">
-                        Book Appointment to Continue
-                    </a>
-                <?php else: ?>
-                    <button type="submit" class="btn-checkout">Proceed to Checkout</button>
-                <?php endif; ?>
+                <div class="checkout-actions">
+                    <?php if (empty($cart_items)): ?>
+                        <button type="button" class="btn-checkout" 
+                                style="background-color: #ccc; cursor: not-allowed;"
+                                onclick="alert('Your cart is empty.');">
+                            Proceed to Checkout
+                        </button>
+                    <?php else: ?>
+                        
+                        <?php if ($requires_appointment): ?>
+                            <div id="appointment-section" style="display: none;">
+                                <div style="background-color: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin-bottom: 10px; font-size: 14px;">
+                                    <strong>Note:</strong> Delivery for frames requires an appointment.
+                                </div>
+                                <a href="book-appointment.php?cart_reason=<?php echo urlencode($appointment_reason); ?>" 
+                                   class="btn-checkout" 
+                                   style="text-align: center; text-decoration: none; display: block; background-color: #000;">
+                                    Book Appointment to Continue
+                                </a>
+                            </div>
+                        <?php endif; ?>
+
+                        <button type="submit" id="btn-proceed" class="btn-checkout">Proceed to Checkout</button>
+
+                    <?php endif; ?>
+                </div>
+
             </form>
 
         </div>
     </main>
     
     <script src="script.js"></script> 
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get PHP status
+            const requiresAppt = <?php echo $requires_appointment ? 'true' : 'false'; ?>;
+            
+            const radioDelivery = document.getElementById('radio-delivery');
+            const radioPickup = document.getElementById('radio-pickup');
+            
+            const apptSection = document.getElementById('appointment-section');
+            const btnProceed = document.getElementById('btn-proceed');
+
+            function updateButtons() {
+                // If cart has no Frames (requiresAppt is false), always allow checkout
+                if (!requiresAppt) {
+                    if(apptSection) apptSection.style.display = 'none';
+                    if(btnProceed) btnProceed.style.display = 'block';
+                    return;
+                }
+
+                // If cart HAS Frames:
+                if (radioDelivery.checked) {
+                    // Delivery = Show Appointment Button
+                    if(apptSection) apptSection.style.display = 'block';
+                    if(btnProceed) btnProceed.style.display = 'none';
+                } else {
+                    // Pickup = Show Proceed Button
+                    if(apptSection) apptSection.style.display = 'none';
+                    if(btnProceed) btnProceed.style.display = 'block';
+                }
+            }
+
+            if (radioDelivery && radioPickup) {
+                radioDelivery.addEventListener('change', updateButtons);
+                radioPickup.addEventListener('change', updateButtons);
+                updateButtons();
+            }
+        });
+    </script>
 </body>
 </html>
