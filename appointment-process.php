@@ -23,6 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $appointment_time = $_POST['appointment_time'];
     $doctor = $_POST['doctor'];
     $reason = $_POST['notes'];
+    $is_cart_flow = isset($_POST['is_cart_flow']) ? $_POST['is_cart_flow'] : "0";
 
     // --- START: NEW VALIDATION RULE ---
     // Check if any required field is empty
@@ -72,9 +73,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     mysqli_close($conn);
 
     if ($success_customer) { 
-        // Redirect to the customer appointment dashboard
+    // --- NEW LOGIC ---
+    if ($is_cart_flow == "1") {
+        // If they came from cart, go to checkout
+        header("Location: checkout.php");
+    } else {
+        // Normal flow
         header("Location: customer-appointment.php");
-        exit();
+    }
+    exit();
     } else {
         $error_message = "There was an error saving the appointment.";
         if (isset($error_customer)) {

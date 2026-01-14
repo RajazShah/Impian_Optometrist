@@ -14,6 +14,10 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 $cart_items = [];
 $subtotal = 0;
 $shipping = 0.00; 
+$requires_appointment = false;
+$appointment_reason = "";
+$has_frames = false;
+$has_lenses = false;
 
 if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
     
@@ -22,7 +26,7 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
     $placeholders = implode(',', array_fill(0, count($item_ids), '?'));
     $types = str_repeat('s', count($item_ids));
 
-    $sql = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image 
+    $sql = "SELECT ITEM_ID, ITEM_BRAND, item_name, ITEM_PRICE, item_image, CATEGORY_ID 
             FROM item 
             WHERE ITEM_ID IN ($placeholders)";
             
@@ -36,6 +40,12 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
             $quantity = $_SESSION['cart'][$item_id]; 
             $line_total = $row['ITEM_PRICE'] * $quantity;
             $subtotal += $line_total;
+            if ($row['CATEGORY_ID'] === 'CAT001') {
+                $has_frames = true;
+            }
+            if ($row['CATEGORY_ID'] === 'CAT002') {
+                $has_lenses = true;
+            }
             $cart_items[] = [
                 'id' => $item_id,
                 'image' => $row['item_image'],
@@ -49,6 +59,17 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
     }
 }
 mysqli_close($conn);
+
+if ($has_frames && $has_lenses) {
+    $requires_appointment = true;
+    $appointment_reason = "Frame and Lens check";
+} elseif ($has_frames) {
+    $requires_appointment = true;
+    $appointment_reason = "Frame check";
+} elseif ($has_lenses) {
+    $requires_appointment = true;
+    $appointment_reason = "Lens check";
+}
 
 $total = $subtotal + $shipping;
 ?>
@@ -199,14 +220,20 @@ $total = $subtotal + $shipping;
 
                 <?php if (empty($cart_items)): ?>
                     <button type="button" class="btn-checkout" 
-                            onclick="alert('Your cart is empty. Please add items before checking out.');" 
-                            style="background-color: #ccc; cursor: not-allowed;">
+                            style="background-color: #ccc; cursor: not-allowed;"
+                            onclick="alert('Your cart is empty.');">
                         Proceed to Checkout
                     </button>
+                <?php elseif ($requires_appointment): ?>
+                    <div style="background-color: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin-bottom: 10px; font-size: 14px;">
+                        <strong>Note:</strong> Your cart contains frames/lenses. An appointment is required before checkout.
+                    </div>
+                    <a href="book-appointment.php?cart_reason=<?php echo urlencode($appointment_reason); ?>" class="btn-checkout" style="text-align: center; text-decoration: none; display: block;">
+                        Book Appointment to Continue
+                    </a>
                 <?php else: ?>
                     <button type="submit" class="btn-checkout">Proceed to Checkout</button>
                 <?php endif; ?>
-
             </form>
 
         </div>

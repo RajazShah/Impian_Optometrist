@@ -9,6 +9,16 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header("Location: index.php");
     exit();
 }
+
+// --- LOGIC: Check for Cart Redirect ---
+$auto_reason = "";
+$is_cart_flow = "0"; // Default to normal flow
+
+if (isset($_GET['cart_reason'])) {
+    $auto_reason = $_GET['cart_reason'];
+    $is_cart_flow = "1"; // Set flag if coming from cart
+}
+// --------------------------------------
 ?>
 
 <!DOCTYPE html>
@@ -21,7 +31,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     <link rel="stylesheet" href="header.css"> 
     <link rel="stylesheet" href="book-appointment-style.css"> 
     <link rel="stylesheet" href="cart-features.css">
-    <link rel="stylesheet" href="style.css"> </head>
+    <link rel="stylesheet" href="style.css"> 
+</head>
 <body>
 
     <header class="main-header">
@@ -71,10 +82,19 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         <a href="customer-appointment.php" class="back-link">&larr; Back to Appointments</a>
         <div class="appointment-box">
             <h1>Book an Appointment</h1>
-            <p>Please fill in the form below to schedule your appointment.</p>
+            
+            <?php if ($is_cart_flow == "1"): ?>
+                <p style="color: #2c5282; background-color: #ebf8ff; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
+                    Please schedule your appointment for a <strong><?php echo htmlspecialchars($auto_reason); ?></strong> before proceeding to checkout.
+                </p>
+            <?php else: ?>
+                <p>Please fill in the form below to schedule your appointment.</p>
+            <?php endif; ?>
             
             <form action="appointment-process.php" method="POST">
                 
+                <input type="hidden" name="is_cart_flow" value="<?php echo $is_cart_flow; ?>">
+
                 <div class="form-row">
                     <div class="input-group">
                         <label for="first_name">First Name</label>
@@ -125,11 +145,16 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                 </div>
 
                 <div class="input-group">
-                    <label for="notes">Reason for Visit (Optional)</label>
-                    <textarea id="notes" name="notes" rows="4" placeholder="E.g., Annual check-up, blurry vision..."></textarea>
+                    <label for="notes">Reason for Visit</label>
+                    <textarea id="notes" name="notes" rows="4" 
+                        placeholder="E.g., Annual check-up, blurry vision..."
+                        <?php echo ($is_cart_flow == "1") ? 'readonly' : ''; ?>
+                    ><?php echo htmlspecialchars($auto_reason); ?></textarea>
                 </div>
 
-                <button type="submit" class="btn-submit">Book Appointment</button>
+                <button type="submit" class="btn-submit">
+                    <?php echo ($is_cart_flow == "1") ? 'Book & Continue to Checkout' : 'Book Appointment'; ?>
+                </button>
 
             </form>
         </div>

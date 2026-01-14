@@ -11,15 +11,17 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     exit();
 }
 
+// Handle Shipping Option Logic
 if (isset($_POST['shipping_option'])) {
     $_SESSION['shipping_option'] = $_POST['shipping_option'];
 } else {
+    // If user came from Appointment Page, POST is empty. 
+    // We check if a session exists, otherwise default to Delivery.
     if (!isset($_SESSION['shipping_option'])) {
         $_SESSION['shipping_option'] = 'delivery';
     }
 }
 $shipping_option = $_SESSION['shipping_option'];
-
 
 $cart_items = [];
 $subtotal = 0;
@@ -83,7 +85,15 @@ $total = $subtotal + $shipping;
 <body class="page-background">
 
     <header class="main-header">
-        </header>
+        <div class="logo-search-container"> 
+            <h1>IMPIAN OPTOMETRIST</h1>
+        </div>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="index.php">Home</a></li>
+            </ul>
+        </nav>
+    </header>
 
     <main class="checkout-container">
         <h1>Checkout</h1>
@@ -104,7 +114,7 @@ $total = $subtotal + $shipping;
                                     required 
                                     minlength="3" 
                                     maxlength="40"
-                                    **pattern="^[A-Za-z\s'-]+$"**
+                                    pattern="^[A-Za-z\s'-]+$"
                                     title="Only letters, spaces, hyphens, and apostrophes are allowed."
                                 >
                             </div>
@@ -117,7 +127,7 @@ $total = $subtotal + $shipping;
                                     required 
                                     minlength="3" 
                                     maxlength="40"
-                                    **pattern="^[A-Za-z\s'-]+$"**
+                                    pattern="^[A-Za-z\s'-]+$"
                                     title="Only letters, spaces, hyphens, and apostrophes are allowed."
                                 >
                             </div>
@@ -131,7 +141,6 @@ $total = $subtotal + $shipping;
                                 required 
                                 minlength="20" 
                                 maxlength="100"
-                                **/** *No change here, as addresses typically require numbers and symbols.*
                             >
                         </div>
                         <div class="input-group">
@@ -143,7 +152,7 @@ $total = $subtotal + $shipping;
                                 required 
                                 minlength="4" 
                                 maxlength="20"
-                                **pattern="^[A-Za-z\s'-]+$"**
+                                pattern="^[A-Za-z\s'-]+$"
                                 title="Only letters, spaces, hyphens, and apostrophes are allowed."
                             >
                         </div>
@@ -157,7 +166,7 @@ $total = $subtotal + $shipping;
                                     required 
                                     minlength="3" 
                                     maxlength="20"
-                                    **pattern="^[A-Za-z\s'-]+$"**
+                                    pattern="^[A-Za-z\s'-]+$"
                                     title="Only letters, spaces, hyphens, and apostrophes are allowed."
                                 >
                             </div>
