@@ -49,7 +49,6 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
                 if ($row['CATEGORY_ID'] === 'CAT001') {
                     $has_frames = true;
                 }
-                // We still detect lenses, but they won't trigger the appointment anymore
                 if ($row['CATEGORY_ID'] === 'CAT002') {
                     $has_lenses = true;
                 }
@@ -69,13 +68,18 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
 }
 mysqli_close($conn);
 
-// --- UPDATED LOGIC: Only Frames trigger the appointment ---
-if ($has_frames) {
+// --- RESTORED LOGIC: Check both Frames AND Lenses ---
+if ($has_frames && $has_lenses) {
+    $requires_appointment = true;
+    $appointment_reason = "Frame and Lens check";
+} elseif ($has_frames) {
     $requires_appointment = true;
     $appointment_reason = "Frame check";
+} elseif ($has_lenses) {
+    $requires_appointment = true;
+    $appointment_reason = "Lens check";
 }
-// Note: We removed the check for $has_lenses, so lenses alone are now free to checkout.
-// ----------------------------------------------------------
+// ----------------------------------------------------
 
 $total = $subtotal + $shipping;
 ?>
@@ -227,7 +231,7 @@ $total = $subtotal + $shipping;
                         <?php if ($requires_appointment): ?>
                             <div id="appointment-section" style="display: none;">
                                 <div style="background-color: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin-bottom: 10px; font-size: 14px;">
-                                    <strong>Note:</strong> Delivery for frames requires an appointment.
+                                    <strong>Note:</strong> Delivery for frames or lenses requires an appointment.
                                 </div>
                                 <a href="book-appointment.php?cart_reason=<?php echo urlencode($appointment_reason); ?>" 
                                    class="btn-checkout" 
@@ -261,14 +265,14 @@ $total = $subtotal + $shipping;
             const btnProceed = document.getElementById('btn-proceed');
 
             function updateButtons() {
-                // If cart has no Frames (requiresAppt is false), always allow checkout
+                // If cart has no restricted items (requiresAppt is false), always allow checkout
                 if (!requiresAppt) {
                     if(apptSection) apptSection.style.display = 'none';
                     if(btnProceed) btnProceed.style.display = 'block';
                     return;
                 }
 
-                // If cart HAS Frames:
+                // If cart HAS restricted items (Frames or Lenses):
                 if (radioDelivery.checked) {
                     // Delivery = Show Appointment Button
                     if(apptSection) apptSection.style.display = 'block';
@@ -283,6 +287,8 @@ $total = $subtotal + $shipping;
             if (radioDelivery && radioPickup) {
                 radioDelivery.addEventListener('change', updateButtons);
                 radioPickup.addEventListener('change', updateButtons);
+                
+                // Run on page load
                 updateButtons();
             }
         });
