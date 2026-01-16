@@ -36,7 +36,7 @@ if (isset($_GET['cart_reason'])) {
 <body>
 
     <header class="main-header">
-        <div class="logo">
+        <div class="logo-search-container">
             <h1>IMPIAN OPTOMETRIST</h1>
             <form action="search.php" method="GET" class="search-form">
                 <input type="search" name="search_query" placeholder="Search items..." class="search-box">
