@@ -86,11 +86,12 @@ mysqli_close($conn);
 <body>
 
     <header class="main-header">
-        <div class="logo"><h1>IMPIAN OPTOMETRIST</h1>
-        <form action="search.php" method="GET" class="search-form">
+        <div class="logo-search-container">
+            <h1>IMPIAN OPTOMETRIST</h1>
+            <form action="search.php" method="GET" class="search-form">
                 <input type="search" name="search_query" placeholder="Search items..." class="search-box">
             </form>
-    </div>
+        </div>
         <nav class="main-nav">
             <ul>
                 <li><a href="index.php#frames-section">FRAMES</a></li>
